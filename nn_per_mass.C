@@ -20,88 +20,94 @@
 using namespace std;
 
 string idir, tmass, sdir;
+//
+//
+// ======================================================
+
 string get_file_name(int mass, string phys_model="GM") {
-  string insert_str="main";
-  string              file_path="OutputRoot/"+sdir+"/new_"+phys_model+"_"+insert_str;
-  if      (mass==200) file_path+="MVA.450765_MGaMcAtNloPy8EG_A14NNPDF23LO_vbfGM_sH05_H5pWZ_lvll_m200_ntuples.root";
-  else if (mass==250) file_path+="MVA.450766_MGaMcAtNloPy8EG_A14NNPDF23LO_vbfGM_sH05_H5pWZ_lvll_m250_ntuples.root";
-  else if (mass==300) file_path+="MVA.450767_MGaMcAtNloPy8EG_A14NNPDF23LO_vbfGM_sH05_H5pWZ_lvll_m300_ntuples.root";
-  else if (mass==350) file_path+="MVA.450768_MGaMcAtNloPy8EG_A14NNPDF23LO_vbfGM_sH05_H5pWZ_lvll_m350_ntuples.root";
-  else if (mass==400) file_path+="MVA.450769_MGaMcAtNloPy8EG_A14NNPDF23LO_vbfGM_sH05_H5pWZ_lvll_m400_ntuples.root";
-  else if (mass==450) file_path+="MVA.450770_MGaMcAtNloPy8EG_A14NNPDF23LO_vbfGM_sH05_H5pWZ_lvll_m450_ntuples.root";
-  else if (mass==500) file_path+="MVA.450771_MGaMcAtNloPy8EG_A14NNPDF23LO_vbfGM_sH05_H5pWZ_lvll_m500_ntuples.root";
-  else if (mass==600) file_path+="MVA.450772_MGaMcAtNloPy8EG_A14NNPDF23LO_vbfGM_sH05_H5pWZ_lvll_m600_ntuples.root";
-  else if (mass==700) file_path+="MVA.450773_MGaMcAtNloPy8EG_A14NNPDF23LO_vbfGM_sH05_H5pWZ_lvll_m700_ntuples.root";
-  else if (mass==800) file_path+="MVA.450774_MGaMcAtNloPy8EG_A14NNPDF23LO_vbfGM_sH05_H5pWZ_lvll_m800_ntuples.root";
-  else if (mass==900) file_path+="MVA.305035_MGPy8_A14NNPDF30NLO_VBS_H5p_lvll_900_qcd0_ntuples.root";
+  //string insert_str="main";
+  string              file_path="OutputRoot/"+sdir+phys_model+"_";
+  if      (mass==200) file_path+="mainMVA.450765_MGaMcAtNloPy8EG_A14NNPDF23LO_vbfGM_sH05_H5pWZ_lvll_m200_ntuples.root";
+  else if (mass==225) file_path+="resonance.502511_aMCPy8EG_GM_H5_WZ_lvll_m225_lepfilt_ntuples.root";
+  else if (mass==250) file_path+="mainMVA.450766_MGaMcAtNloPy8EG_A14NNPDF23LO_vbfGM_sH05_H5pWZ_lvll_m250_ntuples.root ";
+  else if (mass==275) file_path+="resonance.502512_aMCPy8EG_GM_H5_WZ_lvll_m275_lepfilt_ntuples.root";
+  else if (mass==300) file_path+="mainMVA.450767_MGaMcAtNloPy8EG_A14NNPDF23LO_vbfGM_sH05_H5pWZ_lvll_m300_ntuples.root";
+  else if (mass==325) file_path+="resonance.502513_aMCPy8EG_GM_H5_WZ_lvll_m325_lepfilt_ntuples.root";
+  else if (mass==350) file_path+="mainMVA.450768_MGaMcAtNloPy8EG_A14NNPDF23LO_vbfGM_sH05_H5pWZ_lvll_m350_ntuples.root";
+  else if (mass==375) file_path+="resonance.502514_aMCPy8EG_GM_H5_WZ_lvll_m375_lepfilt_ntuples.root";
+  else if (mass==400) file_path+="mainMVA.450769_MGaMcAtNloPy8EG_A14NNPDF23LO_vbfGM_sH05_H5pWZ_lvll_m400_ntuples.root";
+  else if (mass==425) file_path+="resonance.502515_aMCPy8EG_GM_H5_WZ_lvll_m425_lepfilt_ntuples.root";
+  else if (mass==450) file_path+="mainMVA.450770_MGaMcAtNloPy8EG_A14NNPDF23LO_vbfGM_sH05_H5pWZ_lvll_m450_ntuples.root";
+  else if (mass==475) file_path+="resonance.502516_aMCPy8EG_GM_H5_WZ_lvll_m475_lepfilt_ntuples.root";
+  else if (mass==500) file_path+="mainMVA.450771_MGaMcAtNloPy8EG_A14NNPDF23LO_vbfGM_sH05_H5pWZ_lvll_m500_ntuples.root";
+  else if (mass==525) file_path+="resonance.502517_aMCPy8EG_GM_H5_WZ_lvll_m525_lepfilt_ntuples.root";
+  else if (mass==550) file_path+="resonance.502518_aMCPy8EG_GM_H5_WZ_lvll_m550_lepfilt_ntuples.root";
+  else if (mass==600) file_path+="resonance.502519_aMCPy8EG_GM_H5_WZ_lvll_m600_lepfilt_ntuples.root";
+  else if (mass==700) file_path+="resonance.502520_aMCPy8EG_GM_H5_WZ_lvll_m700_lepfilt_ntuples.root";
+  else if (mass==800) file_path+="resonance.502521_aMCPy8EG_GM_H5_WZ_lvll_m800_lepfilt_ntuples.root";
+  else if (mass==900) file_path+="resonance.502522_aMCPy8EG_GM_H5_WZ_lvll_m900_lepfilt_ntuples.root";
+  else if (mass==1000) file_path+="resonance.502523_aMCPy8EG_GM_H5_WZ_lvll_m1000_lepfilt_ntuples.root";
 
   if (phys_model=="HVT") {
-    file_path="OutputRoot/"+sdir+"/new_"+phys_model+"_"+insert_str;
-    if      (mass== 250) file_path+="MVA.307730_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m0250_ntuples.root";
-    else if (mass== 300) file_path+="MVA.307731_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m0300_ntuples.root";
-    else if (mass== 350) file_path+="MVA.309528_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m0350_ntuples.root";
-    else if (mass== 400) file_path+="MVA.307732_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m0400_ntuples.root";
-    else if (mass== 450) file_path+="MVA.309529_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m0450_ntuples.root";
-    else if (mass== 500) file_path+="MVA.307733_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m0500_ntuples.root";
-    else if (mass== 600) file_path+="MVA.307734_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m0600_ntuples.root";
-    else if (mass== 700) file_path+="MVA.307735_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m0700_ntuples.root";
-    else if (mass== 800) file_path+="MVA.307736_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m0800_ntuples.root";
-    else if (mass== 900) file_path+="MVA.307737_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m0900_ntuples.root";
-    else if (mass==1000) file_path+="MVA.307738_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m1000_ntuples.root";
+    file_path="OutputRoot/"+sdir+phys_model+"_";
+    if      (mass== 250) file_path+="resonance.307730_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m0250_ntuples.root";
+    //    else if (mass== 300) file_path+="mainMVA.307731_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m0300_ntuples.root";
+    else if (mass== 350) file_path+="resonance.309528_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m0350_ntuples.root";
+    else if (mass== 400) file_path+="resonance.307732_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m0400_ntuples.root";
+    else if (mass== 450) file_path+="resonance.309529_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m0450_ntuples.root";
+    else if (mass== 500) file_path+="resonance.307733_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m0500_ntuples.root";
+    else if (mass== 600) file_path+="resonance.307734_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m0600_ntuples.root";
+    else if (mass== 700) file_path+="resonance.307735_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m0700_ntuples.root";
+    //    else if (mass== 800) file_path+="MVA.307736_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m0800_ntuples.root";
+    //    else if (mass== 900) file_path+="MVA.307737_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m0900_ntuples.root";
+    else if (mass==1000) file_path+="resonance.307738_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m1000_ntuples.root";
   }
 
   if (phys_model=="QQ") {
-    file_path="OutputRoot/"+sdir+"/new_"+phys_model+"_"+insert_str;
-    if      (mass== 500) file_path+="MVA.307733_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m0500_ntuples.root";
-    else if (mass== 600) file_path+="MVA.307734_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m0600_ntuples.root";
-    else if (mass== 700) file_path+="MVA.307735_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m0700_ntuples.root";
-    else if (mass== 800) file_path+="MVA.307736_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m0800_ntuples.root";
-    else if (mass== 900) file_path+="MVA.307737_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m0900_ntuples.root";
-    else if (mass==1000) file_path+="MVA.307738_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m1000_ntuples.root";
-    else if (mass==1100) file_path+="MVA.307739_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m1100_ntuples.root";
-    else if (mass==1200) file_path+="MVA.307740_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m1200_ntuples.root";
-    else if (mass==1300) file_path+="MVA.307741_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m1300_ntuples.root";
-    else if (mass==1400) file_path+="MVA.307742_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m1400_ntuples.root";
-    else if (mass==1500) file_path+="MVA.307743_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m1500_ntuples.root";
-    else if (mass==1600) file_path+="MVA.307744_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m1600_ntuples.root";
-    else if (mass==1700) file_path+="MVA.307745_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m1700_ntuples.root";
-    else if (mass==1800) file_path+="MVA.307746_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m1800_ntuples.root";
-    else if (mass==1900) file_path+="MVA.307747_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m1900_ntuples.root";
-    else if (mass==2000) file_path+="MVA.307748_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m2000_ntuples.root";
+    file_path="OutputRoot/"+sdir+phys_model+"_";
+    if      (mass== 250) file_path+="resonance.307730_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m0250_ntuples.root";
+    else if (mass== 350) file_path+="resonance.309528_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m0350_ntuples.root";
+    else if (mass== 400) file_path+="resonance.307732_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m0400_ntuples.root";
+    else if (mass== 450) file_path+="resonance.309529_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m0450_ntuples.root";
+    else if (mass== 500) file_path+="resonance.307733_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m0500_ntuples.root";
+    else if (mass==600) file_path+="resonance.307734_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m0600_ntuples.root";
+    else if (mass==700) file_path+="resonance.307735_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m0700_ntuples.root";
+    else if (mass==1000) file_path+="resonance.307738_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m1000_ntuples.root";
+    //    else if (mass== 300) file_path+="mainMVA.307731_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m0300_ntuples.root";
+    //    else if (mass==800) file_path+="mainMVA.307736_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m0800_ntuples.root";
+    //    else if (mass==900) file_path+="mainMVA.307737_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m0900_ntuples.root";
   }
-
-  bool warning= (phys_model=="GM" and mass>900) or (phys_model=="HVT" and mass==200) or (phys_model=="QQ" and mass<500);
-  if (warning) {cout<<"phys_model: "<<phys_model<<" while mass= "<<mass<<". Aborting the process."<<endl; exit(1);}
 
   return file_path;
 }
+  
+// ======================================================
 
 string QQ_filename(int mass) {
   // HVT's qq-fusion ntuples' filenames per mass
   string insert_str="main";
-  string               file_path="OutputRoot/"+sdir+"/new_QQ_"+insert_str;
-  if      (mass==500)  file_path+="MVA.302266_MadGraphPythia8EvtGen_A14NNPDF23LO_HVT_Agv1_VcWZ_lvll_m0500_ntuples.root";
-  else if (mass==600)  file_path+="MVA.302267_MadGraphPythia8EvtGen_A14NNPDF23LO_HVT_Agv1_VcWZ_lvll_m0600_ntuples.root";
-  else if (mass==700)  file_path+="MVA.302268_MadGraphPythia8EvtGen_A14NNPDF23LO_HVT_Agv1_VcWZ_lvll_m0700_ntuples.root";
-  else if (mass==800)  file_path+="MVA.302269_MadGraphPythia8EvtGen_A14NNPDF23LO_HVT_Agv1_VcWZ_lvll_m0800_ntuples.root";
-  else if (mass==900)  file_path+="MVA.302270_MadGraphPythia8EvtGen_A14NNPDF23LO_HVT_Agv1_VcWZ_lvll_m0900_ntuples.root";
-  else if (mass==1000) file_path+="MVA.302271_MadGraphPythia8EvtGen_A14NNPDF23LO_HVT_Agv1_VcWZ_lvll_m1000_ntuples.root";
-  else if (mass==1100) file_path+="MVA.302272_MadGraphPythia8EvtGen_A14NNPDF23LO_HVT_Agv1_VcWZ_lvll_m1100_ntuples.root";
-  else if (mass==1200) file_path+="MVA.302273_MadGraphPythia8EvtGen_A14NNPDF23LO_HVT_Agv1_VcWZ_lvll_m1200_ntuples.root";
-  else if (mass==1300) file_path+="MVA.302274_MadGraphPythia8EvtGen_A14NNPDF23LO_HVT_Agv1_VcWZ_lvll_m1300_ntuples.root";
-  else if (mass==1400) file_path+="MVA.302275_MadGraphPythia8EvtGen_A14NNPDF23LO_HVT_Agv1_VcWZ_lvll_m1400_ntuples.root";
-  else if (mass==1500) file_path+="MVA.302276_MadGraphPythia8EvtGen_A14NNPDF23LO_HVT_Agv1_VcWZ_lvll_m1500_ntuples.root";
-  else if (mass==1700) file_path+="MVA.302278_MadGraphPythia8EvtGen_A14NNPDF23LO_HVT_Agv1_VcWZ_lvll_m1700_ntuples.root";
-  else if (mass==1800) file_path+="MVA.302279_MadGraphPythia8EvtGen_A14NNPDF23LO_HVT_Agv1_VcWZ_lvll_m1800_ntuples.root";
-  else if (mass==1900) file_path+="MVA.302280_MadGraphPythia8EvtGen_A14NNPDF23LO_HVT_Agv1_VcWZ_lvll_m1900_ntuples.root";
-  else if (mass==2000) file_path+="MVA.302281_MadGraphPythia8EvtGen_A14NNPDF23LO_HVT_Agv1_VcWZ_lvll_m2000_ntuples.root";
+  //  string               file_path="OutputRoot/"+sdir+"/new_QQ_"+insert_str;
+  string               file_path="OutputRoot/"+sdir+"/QQ_";
+  if      (mass==600)  file_path+="resonance.302267_MadGraphPythia8EvtGen_A14NNPDF23LO_HVT_Agv1_VcWZ_lvll_m0600_ntuples.root";
+  //  else if (mass==800) file_path+="resonance.302269_MadGraphPythia8EvtGen_A14NNPDF23LO_HVT_Agv1_VcWZ_lvll_m0800_ntuples.root";
+  //  else if (mass==900) file_path+="resonance.302270_MadGraphPythia8EvtGen_A14NNPDF23LO_HVT_Agv1_VcWZ_lvll_m0900_ntuples.root";
+  else if (mass==1000) file_path+="resonance.302271_MadGraphPythia8EvtGen_A14NNPDF23LO_HVT_Agv1_VcWZ_lvll_m1000_ntuples.root";
+  //                  'mainMVA.302266_MadGraphPythia8EvtGen_A14NNPDF23LO_HVT_Agv1_VcWZ_lvll_m0500_ntuples.root';
+  //                  'mainMVA.302268_MadGraphPythia8EvtGen_A14NNPDF23LO_HVT_Agv1_VcWZ_lvll_m0700_ntuples.root';
+  //                  'mainMVA.302272_MadGraphPythia8EvtGen_A14NNPDF23LO_HVT_Agv1_VcWZ_lvll_m1100_ntuples.root';
+  //                  'mainMVA.302275_MadGraphPythia8EvtGen_A14NNPDF23LO_HVT_Agv1_VcWZ_lvll_m1400_ntuples.root';
+  //                  'mainMVA.302278_MadGraphPythia8EvtGen_A14NNPDF23LO_HVT_Agv1_VcWZ_lvll_m1700_ntuples.root';
+  //                  'mainMVA.302284_MadGraphPythia8EvtGen_A14NNPDF23LO_HVT_Agv1_VcWZ_lvll_m2600_ntuples.root';
   return file_path;
 }
+
+  // ======================================================
 
 int get_color(int mass) {
 
   int color = kBlack;
-  if      (mass==250 or mass==1000 or mass==1800)  color=kGray+2;
+  if      (mass==225 or mass==1000 or mass==1800)  color=kBlue;
+  else if(mass==250 or mass==1000 or mass==1800)  color=kGray+2;
   else if (mass==300 or mass==1100 or mass==1900)  color=kMagenta;
   else if (mass==400 or mass==1200 or mass==2000)  color=kBlue; 
   else if (mass==500 or mass==1300)                color=kCyan+2;
@@ -127,14 +133,22 @@ TString title, proj_str,select_weight;
 TString proj_option="";
 int nbins = 50; float xmin =0, xmax = 1;
 
+// ======================================================
+
 TH1F* get_bkg_hist(TString phys_model="GM") {
   TChain* chain = new TChain("nominal");
-  TString ins_str="main";
+  //  TString ins_str="main";
   //chain->Add("OutputRoot/new_GM_"+ins_str+"MVA.364253_Sherpa_222_NNPDF30NNLO_lllv_ntuples.root");
 
-  chain->Add(((TString)"OutputRoot/")+sdir.data()+"/new_"+phys_model+"_"+ins_str+"MVA.361292_MGaMcAtNloPy8EG_NNPDF30LO_A14NNPDF23LO_WZ_lvll_FxFx_ntuples.root");
-  chain->Add(((TString)"OutputRoot/")+sdir.data()+"/new_"+phys_model+"_"+ins_str+"MVA.364284_Sherpa_222_NNPDF30NNLO_lllvjj_EW6_ntuples.root");
-
+  //  chain->Add(((TString)"OutputRoot/")+sdir.data()+"/new_"+phys_model+"_"+ins_str+"MVA.361292_MGaMcAtNloPy8EG_NNPDF30LO_A14NNPDF23LO_WZ_lvll_FxFx_ntuples.root");
+  //   chain->Add(((TString)"OutputRoot/")+sdir.data()+"/new_"+phys_model+"_"+ins_str+"MVA.364284_Sherpa_222_NNPDF30NNLO_lllvjj_EW6_ntuples.root");
+  if(phys_model=="QQ"){
+    chain->Add( ((TString)"OutputRoot/")+sdir+phys_model+"_"+"resonance.302267_MadGraphPythia8EvtGen_A14NNPDF23LO_HVT_Agv1_VcWZ_lvll_m0600_ntuples.root"); // 600 GeV HVT qq
+  }
+  else{
+    chain->Add( ((TString)"OutputRoot/")+sdir+phys_model+"_"+"resonance.364253_Sherpa_222_NNPDF30NNLO_lllv_ntuples.0.root");
+    chain->Add( ((TString)"OutputRoot/")+sdir+phys_model+"_"+"resonance.364742_MGPy8EG_NNPDF30NLO_A14NNPDF23LO_lvlljjEW6_SFPlus_ntuples.root");
+  }
   TH1F* hist = new TH1F("bkg",title,nbins,xmin,xmax);
   chain->Project(hist->GetName(),proj_str,select_weight,proj_option);
 
@@ -143,13 +157,15 @@ TH1F* get_bkg_hist(TString phys_model="GM") {
 
 float mfac=20;
 
+
+// ======================================================
 TH1F* get_hist(int mass,TString phys_model="GM", bool qqplot=false) {
 
   TH1F* hist;
   if (mass>0) {
     string fname=get_file_name(mass,phys_model.Data());
     if (qqplot==true) fname = QQ_filename(mass);
-    
+    //    cout << "fname = " << fname << endl;
     TFile* f = TFile::Open(fname.data(),"read");
     TTree* t = (TTree*)f->Get("nominal");
     
@@ -160,54 +176,69 @@ TH1F* get_hist(int mass,TString phys_model="GM", bool qqplot=false) {
     select_weight += "*(abs(Weight)<10)";
     t->Project(hist->GetName(),proj_str,select_weight,proj_option);
   }
-  else hist = get_bkg_hist(phys_model.Data());
 
+  else {
+    hist = get_bkg_hist(phys_model.Data());
+  }
   hist->SetLineColor(get_color(mass));
 
   return hist;
 }
 
-float AMS_old(float s, float b, bool debug=false) {
-  // Older version of AMS the includes some strange terms in its log
-  if (s<=0 or b<=0) return 0;
+// ======================================================
 
-  float br = 0.00001;// #KM: systematic unc?
-  float sigma=sqrt(b+br);
-  float n=s+b+br;
-  float radicand = 2 *( n * log (n*(b+br+sigma)/(b*b+n*sigma+br))-b*b/sigma*log(1+sigma*(n-b)/(b*(b+br+sigma))));
+// float AMS_old(float s, float b, bool debug=false) {
+//   // Older version of AMS the includes some strange terms in its log
+//   if (s<=0 or b<=0) return 0;
 
-  float ams= 0;
-  if (radicand < 0) std::cout<<"AMS: radicand is negative. Returning 0."<<std::endl;
-  else       ams= sqrt(radicand);
+//   float br = 0.00001;// #KM: systematic unc?
+//   float sigma=sqrt(b+br);
+//   float n=s+b+br;
+//   float radicand = 2 *( n * log (n*(b+br+sigma)/(b*b+n*sigma+br))-b*b/sigma*log(1+sigma*(n-b)/(b*(b+br+sigma))));
 
-  if (debug) std::cout<<"s, b="<<s<<"\t"<<b<<", ams="<<ams<<std::endl;
+//   float ams= 0;
+//   if (radicand < 0) std::cout<<"AMS: radicand is negative. Returning 0."<<std::endl;
+//   else       ams= sqrt(radicand);
 
-  return ams;
-}
+//   if (debug) std::cout<<"s, b="<<s<<"\t"<<b<<", ams="<<ams<<std::endl;
+
+//   return ams;
+// }
+
+// ======================================================
 
 float AMS(float s, float b, bool debug=false, float br=0) {
-  float rad = 2*((s+b+br)*log(1+(s/(b+br)))-s);
-  if (rad>0 && rad<1000) return sqrt(rad);
-  else {cout << "AMS: radicand is negative. Returning 0" << endl; return 0;}
+  float rad=0.;
+  float temp = 1+(s/(b+br));
+  if(temp >0) {
+    rad = 2*((s+b+br)*log(1+(s/(b+br)))-s);
+  }
+  if (rad>=0 && rad<1000) return sqrt(rad);
+  else {
+    cout << "AMS: radicand is negative. Returning 0" << endl; 
+    return 0;}
 }
+
+// ======================================================
+
 
 float Nsig_ocv, Nbkg_ocv, Nsig_cv, Nbkg_cv, AMS_cv;
 int tmCV;
 TH1F* get_significance_hist(TH1F* h_sig, TH1F* h_bkg, float sf, bool is_tm=false) {
-  
+  //  cout << " ==>>>> creating h_sig " << endl;  
   TString hname="significance_";
   TH1F* significance = new TH1F("significance",title,nbins,xmin,xmax);
   significance->SetTitle("Significance for yield / 140fb-1");
 
   h_sig->Scale(sf);
   h_bkg->Scale(sf);
-
   const int nb = significance->GetNbinsX();
   float Nsig[nb], Nbkg[nb];
 
   for( int i=0; i<nb; i++) {
     Nsig[i] = h_sig->Integral(i,h_sig->GetNbinsX());
     Nbkg[i] = h_bkg->Integral(i,h_bkg->GetNbinsX());
+    //    cout << "i = " << i <<","<< Nsig[i] <<","<< Nbkg[i] <<","<< endl;
     significance->SetBinContent(i,AMS(Nsig[i],Nbkg[i]));
   }
   
@@ -223,13 +254,16 @@ TH1F* get_significance_hist(TH1F* h_sig, TH1F* h_bkg, float sf, bool is_tm=false
   return significance;
 }
 
+// ======================================================
+
 void nn_per_mass(string dir="", string name="",TString varname="pSignal",bool norm2yield=true, TString phys_model="GM", bool drawCB=true, bool mMulti=false) {
 
   if (norm2yield) mfac=20;
 
-  idir  = dir;
+  idir  = dir;   // first input argument
   tmass = name;
-  sdir  = idir+'/'+ (tmass=="mMulti" ? "" : tmass+"/");
+  //  sdir  = idir+'/'+ (tmass=="mMulti" ? "" : tmass+"/");
+  sdir  = idir+ "/"+(tmass=="mMulti" ? "" : tmass+"/");
 
   if      (varname == "pSignal"     ) title="NN output : "+tmass, proj_str=varname, nbins = 50, xmin =0, xmax = 1;
   else if (varname == "M_WZ"        ) title=varname, proj_str=varname, nbins = 25, xmin =0, xmax = 1500;
@@ -274,8 +308,10 @@ void nn_per_mass(string dir="", string name="",TString varname="pSignal",bool no
 
   else proj_option="norm"; //normalize to 1
 
-  vector<int> masses{0,250,300,400,500,600,700,800,900};
-  if (phys_model=="QQ") masses={0,500,600,700,800,900,1000,1100,1200,1300,1400,1500,1700,1800,1900,2000};
+  vector<int> masses{0,200,225,250,275,300,325, 400,425,450,475, 500,525,550,600,700,800,900,1000};
+  //  vector<int> masses{0,225,250,300};
+  //  vector<int> masses{0,250,350,400}; // backg + masses for which NN as applied
+if (phys_model=="QQ") masses={0,600};
   int      hms = masses.size()/2+1;
   const int ms = masses.size();
 
@@ -303,13 +339,13 @@ void nn_per_mass(string dir="", string name="",TString varname="pSignal",bool no
 
   c1->cd(1); 
   auto legend=legend1;
-  TH1F* hist;
+  //  TH1F* hist;   // GA: commented out
   char smass[3];
-  
+
   for (auto mass : masses) {
 
     select_weight = "(M_jj>100)";
-    if (norm2yield) select_weight += "*WeightNormalized";
+    if (norm2yield) select_weight += "*WeightNormalized";   
 
     //Separating the curves on 2 figures
     if (mass==masses[hms]) {
@@ -320,18 +356,22 @@ void nn_per_mass(string dir="", string name="",TString varname="pSignal",bool no
       legend=legend2; 
     
       //Plotting background on second figure
-      hist = get_hist(0,phys_model.Data());
+      TH1F* hist = get_hist(0,phys_model.Data());
       TString option="hist";
       hist->Draw(option);
-      sprintf(smass, "%s", "bkg");
+      hists[mass]  = hist;  // GA: added
+      //      cout << " hists[mass] , mass = " << mass << endl;
+      sprintf(smass, "%s", "BKG");
       legend->AddEntry(hist,smass,"f");
     }
 
-    if (mass != 0) select_weight += Form("*(M_WZ>(%i*0.6)*(M_WZ<(%i*1.4)))",mass,mass);
+    if (mass != 0) select_weight += Form("*(M_WZ>(%i*0.6)*(M_WZ<(%i*1.4)))",mass,mass);   
     // Background histogram
     hists_bkg[mass] = get_hist(0,phys_model.Data());
+    //    cout << " hists_bkg[mass] , mass = " << mass << endl;
     // Current mass histogram
-    hist = get_hist(mass,phys_model.Data());
+    TH1F* hist = get_hist(mass,phys_model.Data());  
+    //    cout << " hists[mass] , mass = " << mass << endl;
     hists[mass]  = hist;
 
     if (mass != 0) {
@@ -357,21 +397,25 @@ void nn_per_mass(string dir="", string name="",TString varname="pSignal",bool no
   gStyle->SetOptStat(0);
   legend->Draw();
 
-  string imagePath = "ControlPlots/"+idir+"/NN_output/"+varname.Data() + (idir!="" ? "_"+idir : "") + (tmass!="" ? "_"+tmass : "");
+  //  string imagePath = "ControlPlots/"+idir+"/NN_output/"+varname.Data() + (idir!="" ? "_"+idir : "") + (tmass!="" ? "_"+tmass : "");
+  string imagePath = "ControlPlots/"+idir + "/" + (tmass!="" ? tmass : "") + "/NN_output_"+varname.Data() ;
 
   c1->SaveAs((imagePath+".png" ).data());
-  c1->SaveAs((imagePath+".root").data());
+  c1->SaveAs((imagePath+".C").data());
+
+  cout << "  ==>>>> norm2yield = " << norm2yield << ",  varname = " << varname << endl;
 
   if (not (norm2yield and varname=="pSignal")) return;
-  
-  auto c2 = new TCanvas("c2","title",800,400);
+    auto c2 = new TCanvas("c2","title",800,400);
+ 
   c2->Divide(2,1);
   c2->cd(1);
 
   float sf= 1;
 
   // CB vs NN table initializing
-  ofstream cnfile("ControlPlots/"+idir+"/NN_output/CbvsNN"+ (idir!="" ? "_"+idir : "") + (tmass!="" ? "_"+tmass : "")+".csv");
+  //  ofstream cnfile("ControlPlots/"+idir+"/NN_output/CbvsNN"+ (idir!="" ? "_"+idir : "") + (tmass!="" ? "_"+tmass : "")+".csv");
+  ofstream cnfile("ControlPlots/"+idir+ (tmass!="" ? "/"+tmass : "") +"/NN_output_CbvsNN"+".csv");
   map<int, float> sig_CB, sig_NN_ocv, bkg_CB, bkg_NN_ocv, ams_CB, ams_NN_ocv;
   map<int, float> sig_NN_cv, bkg_NN_cv, ams_NN_cv;
   if (mMulti==false) {
@@ -423,10 +467,11 @@ void nn_per_mass(string dir="", string name="",TString varname="pSignal",bool no
   }
   legend2->Draw();
 
-  string signPath = "ControlPlots/"+idir+"/NN_output/significance" + (idir!="" ? "_"+idir : "") + (tmass!="" ? "_"+tmass : "");
-
+  //  string signPath = "ControlPlots/"+idir+"/NN_output/significance" + (idir!="" ? "_"+idir : "") + (tmass!="" ? "_"+tmass : "");
+  //  string signPath = "ControlPlots/"+idir+"/NN_output_significance" + (idir!="" ? "_"+idir : "") + (tmass!="" ? "_"+tmass : "");
+  string signPath = "ControlPlots/"+idir + "/" + (tmass!="" ? tmass : "") + "/NN_output_significance" ;
   c2->SaveAs((signPath+".png" ).data());
-  c2->SaveAs((signPath+".root").data());
+  c2->SaveAs((signPath+".C").data());
 
   // Plotting the significance per mass and method
   auto c3 = new TCanvas("c3","title",500,400);
@@ -435,7 +480,7 @@ void nn_per_mass(string dir="", string name="",TString varname="pSignal",bool no
   TString ams_curve_opt;
   TString label;
   TString ams_title = "Significance per mass and method - "+tmass;
-  for (int l; l<3; l++) {
+  for (int l=0; l<3; l++) {
     auto ams_curve = new TGraph();
     if (l==0)                       {ams_TD = ams_NN_ocv; ams_curve_opt = "APL"; ams_curve->SetMarkerStyle(20); label="NN opt";}
     else if (l==1 && mMulti==false) {ams_TD = ams_NN_cv;  ams_curve_opt = "PL";  ams_curve->SetMarkerStyle(21); label="NN tcv";}
@@ -462,41 +507,47 @@ void nn_per_mass(string dir="", string name="",TString varname="pSignal",bool no
     ams_legend->AddEntry(ams_curve,label,"lep");
   }
   ams_legend->Draw();
-  c3->SaveAs(("ControlPlots/"+idir+"/NN_output/AMS_curves" + (idir!="" ? "_"+idir : "") + (tmass!="" ? "_"+tmass : "") + ".png").data());
-  c3->SaveAs(("ControlPlots/"+idir+"/NN_output/AMS_curves" + (idir!="" ? "_"+idir : "") + (tmass!="" ? "_"+tmass : "") + ".root").data());
-
-  auto c4 = new TCanvas("c4","title",800,400);
-  c4->Divide(2,1);
-  c4->cd(1);
-
-  for (auto mass : masses) {
-    select_weight = "(M_jj>100)";
-    if (norm2yield) select_weight += "*WeightNormalized";
-
-    //Separating the curves on 2 figures
-    if (mass==masses[hms]) {
-      legend1->Draw();
-      gStyle->SetOptStat(0);
-      if (varname=="pSignal" and norm2yield) gPad->SetLogy();
-      c4->cd(2);
+  
+  c3->SaveAs(("ControlPlots/"+idir+ "/" + (tmass!="" ? tmass : "") + "/NN_output_AMS_curves" +".png").data());
+  c3->SaveAs(("ControlPlots/"+idir+ "/" + (tmass!="" ? tmass : "") + "/NN_output_AMS_curves" +".C").data());;
+  //  c3->SaveAs(("ControlPlots/"+idir+"/NN_output_AMS_curves" + (idir!="" ? "_"+idir : "") + (tmass!="" ? "_"+tmass : "") + ".root").data());
+  
+  //========================================= 
+  if (phys_model=="QQ"){
+    auto c4 = new TCanvas("c4","title",800,400);
+    c4->Divide(2,1);
+    c4->cd(1);
+    
+    for (auto mass : masses) {
+      select_weight = "(M_jj>100)";
+      if (norm2yield) select_weight += "*WeightNormalized";
+      
+      //Separating the curves on 2 figures
+      if (mass==masses[hms]) {
+	legend1->Draw();
+	gStyle->SetOptStat(0);
+	if (varname=="pSignal" and norm2yield) gPad->SetLogy();
+	c4->cd(2);
+      }
+      
+      if (mass != 0) select_weight += Form("*(M_WZ>(%i*0.6)*(M_WZ<(%i*1.4)))",mass,mass);
+      // Current mass histogram
+      
+      TH1F* hist = get_hist(mass,phys_model.Data(),true);
+      
+      // Drawing the curve
+      TString option="same hist";
+      if (mass==0) option="hist";
+      hist->Draw(option);
     }
-
-    if (mass != 0) select_weight += Form("*(M_WZ>(%i*0.6)*(M_WZ<(%i*1.4)))",mass,mass);
-    // Current mass histogram
-    hist = get_hist(mass,phys_model.Data(),true);
-
-    // Drawing the curve
-    TString option="same hist";
-    if (mass==0) option="hist";
-    hist->Draw(option);
+    legend2->Draw();
+    c4->SaveAs(("ControlPlots/"+idir+ "/" + (tmass!="" ? tmass : "") +"/NN_output_QQ_pSignal" + ".png").data());
+    c4->SaveAs(("ControlPlots/"+idir+ "/" + (tmass!="" ? tmass : "") +"/NN_output_QQ_pSignal" + ".C").data());
   }
-  legend2->Draw();
-  c4->SaveAs(("ControlPlots/"+idir+"/NN_output/QQ_pSignal" + (idir!="" ? "_"+idir : "") + (tmass!="" ? "_"+tmass : "") + ".png").data());
-  c4->SaveAs(("ControlPlots/"+idir+"/NN_output/QQ_pSignal" + (idir!="" ? "_"+idir : "") + (tmass!="" ? "_"+tmass : "") + ".root").data());
-
+  
   // Filling CSV file of number of signal and bakcground, and significance by method
   cnfile << endl;
-  for (int j; j<4; j++) {
+  for (int j=0; j<4; j++) {
     if (j==0) cnfile << ",";
     if (j==1) cnfile << "Signal,";
     if (j==2) cnfile << "Background,";
