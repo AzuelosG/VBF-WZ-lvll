@@ -8,7 +8,7 @@ from keras.optimizers import SGD
 from keras import optimizers
 import numpy as np
 import pandas as pd
-import math
+import math, os
 from root_numpy import root2array, tree2array, array2root
 import ROOT
 import matplotlib as mpl
@@ -113,12 +113,18 @@ def save_file(data, pred, proba, filename, phys_model, sub_dir):
     #data['isSignal'] = pred
     data['pSignal'] = proba[:]
     print("Input file  =\t\t\t",filename)
-
+    
     # Checking for or creating subdirectory
     sub_dir_or = "OutputRoot/"+sub_dir
     Path(sub_dir_or).mkdir(parents=True, exist_ok=True)
-    outputPath=sub_dir_or+'/new_'+phys_model+'_'+filename     #print(outputPath)
+    #    outputPath=sub_dir_or+'/new_'+phys_model+'_'+filename     #print(outputPath)
+    outputPath=sub_dir_or+'/'+phys_model+'_'+filename     #print(outputPath)
+    
+    
+    
+    
     array2root(np.array(data.to_records()), outputPath, 'nominal', mode='recreate')
+    
     print('Save file as= {}'.format(outputPath))
     print()
     return
@@ -244,23 +250,36 @@ if __name__ == '__main__':
 
     #Apply NN on all samples in config file
     list_bkg = apply_sample.list_apply_bkg # not only background but all sample is listed in this
-#    if phys_model=='GM': 
-#        list_sig = apply_sample.list_apply_sigGM
-#    elif phys_model=='HVT':
-#        list_sig = apply_sample.list_apply_sigHVT  
-
+    if phys_model=='GM': 
+        list_sig = apply_sample.list_apply_sigGM
+    elif phys_model=='HVT':
+        list_sig = apply_sample.list_apply_sigHVT  
+        
+    print("Starting  >>>>>>>" )  #  GA
     print('Applying on all samples')
+    print(apply_sample.filedirapp)
+    print(models)
+    print(tr_files)
+    print(input_sample.variables)
+    print(phys_model)
+    print(cut_values)
+    print(args.sdir)
+    print(list_bkg)
+    print(">>>>>>> Starting  >>>>>>>" )  #  GA
+
     for bkg_file in list_bkg:
+        print(bkg_file)
         #if "450765" in bkg_file:
         analyze_data_folds(apply_sample.filedirapp, bkg_file,models,  tr_files, -1, input_sample.variables, phys_model, cut_values,args.sdir)
         pass
-
+    
 #    print('Applying on sig sample')
 #    for i in range(len(list_sig)):
+#        print(i)
 #        analyze_data_folds(apply_sample.filedirsig,list_sig[i],models, X_mean, X_dev, i,input_sample.variables,phys_model,cut_values)
 #        pass
-
-    # print('Applying on data sample')
-    # for i in range(len(list_data)):
-    #     print('input file  =',list_data[i])
-    #     analyze_data(apply_sample.filedirdata,list_data[i],model, X_mean, X_dev,i,input_sample.variables,phys_model,cut_value)
+    
+    #    print('Applying on data sample')
+#    for i in range(len(list_data)):
+#        print('input file  =',list_data[i])
+#        analyze_data(apply_sample.filedirdata,list_data[i],model, X_mean, X_dev,i,input_sample.variables,phys_model,cut_value)
