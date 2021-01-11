@@ -93,17 +93,18 @@ if __name__ == '__main__':
     #Additional name from model and hyper parameters
     nameadd=args.output+args.model
 
-    mass_list = [200,250,300,350,400,450,500,600,700,800,900]
-    if args.model=="HVT": mass_list = [250,300,350,400,450,500,600,700,800,900,1000]
-    if args.model=="QQ":  mass_list = [m for m in range(500,2001,100)]
+    mass_list = [200,225,250,275,300,325,350,375, 400,425, 450,475, 500,525, 550, 600,700,800,900,1000]  # for GM model
+    if args.model=="HVT": mass_list = [250,350,400,450,500,600,700,800,900,1000]
+#    if args.model=="QQ":  mass_list = [m for m in range(250,350,400,450,500,600,700,1000)]   # sig_HVT list
+    if args.model=="QQ":  mass_list = [600,1000]   # sig_HVT list, same masses for signal and background
 
-    if args.model=="HVT" and 200 in args.mass_points:
-        print ("WARNING: you specified 200 GeV mass point for HVT which does not exist, 200 GeV will be removed!!")
-        args.mass_points.remove(200)
-    elif args.model=="GM" and 1000 in args.mass_points:
-        print ("WARNING: you specified 1000 GeV mass point for GM which does not exist, 1000 GeV will be removed!!")
-        args.mass_points.remove(1000)
-        pass
+#    if args.model=="HVT" and 200 in args.mass_points:
+#        print ("WARNING: you specified 200 GeV mass point for HVT which does not exist, 200 GeV will be removed!!")
+#        args.mass_points.remove(200)
+#    elif args.model=="GM" and 1000 in args.mass_points:
+#        print ("WARNING: you specified 1000 GeV mass point for GM which does not exist, 1000 GeV will be removed!!")
+#        args.mass_points.remove(1000)
+#        pass
 
     tmp_switches=list() #switches for mass points
     if len(args.mass_points)>0:

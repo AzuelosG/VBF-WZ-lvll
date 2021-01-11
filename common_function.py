@@ -11,6 +11,7 @@ import math
 import tensorflow as tf
 from keras import backend as K
 
+##########################################################
 def AMS(s, b):
     """ Approximate Median Significance defined as:
         AMS = sqrt(
@@ -36,6 +37,7 @@ def AMS(s, b):
     
     return significance
 
+##########################################################
 def read_data_apply(filepath, tr_files, Label, variables,model,apply_transform=True,debug=False):
     data = read_data(filepath,isApplication=True)
 
@@ -85,6 +87,7 @@ def read_data_apply(filepath, tr_files, Label, variables,model,apply_transform=T
     return data, X
 
 
+##########################################################
 def read_data(filename,mass_window=False, mass=0,isSignal=False,isApplication=False):
     root = ROOT.TFile(filename)
     tree = root.Get('nominal')
@@ -103,6 +106,7 @@ def read_data(filename,mass_window=False, mass=0,isSignal=False,isApplication=Fa
     #print(filename,": nEvents bfr & aft cut=",tree.GetEntries()," ",np.shape(array))
     return pd.DataFrame(array)
 
+##########################################################
 class dataset:
     def __init__(self,data,frac_train,variables,model,nFold,Findex,transform,apply_transform=True):
         full=data.sample(frac=1)#,random_state=42)
@@ -162,6 +166,7 @@ class dataset:
         self.mass_valid_label=validation[['LabelMass']]
         #self.X_test['LabelMass']=test[['LabelMass']]
 
+##########################################################
 def get_mass_label(mWZ):
 
     bars = [225,275,325,375,425,475,550,650,750,850,950]
@@ -176,6 +181,7 @@ def get_mass_label(mWZ):
 
     return mass_labels
         
+##########################################################
 def prepare_data(input_samples,model,Findex,nFold,arg_switches=list(),mass_window=True, mass=0):
     """Read background and signal files and save them as panda data frames"""
 
@@ -206,31 +212,34 @@ def prepare_data(input_samples,model,Findex,nFold,arg_switches=list(),mass_windo
     #Either GM or HVT model
     if model=='GM':
         switches   = input_samples.sigGM["switch" ]
+#        print(len(arg_switches))  # GA
+#        print(len(switches))  # GA
         if len(arg_switches)==len(switches): switches = arg_switches
         namessig   = list() #input_samples.sigGM["name"   ]
-        xssig      = list() #input_samples.sigGM["xs"     ]
-        neventssig = list() #input_samples.sigGM["nevents"]
+#        xssig      = list() #input_samples.sigGM["xs"     ]
+#        neventssig = list() #input_samples.sigGM["nevents"]
         for i in range(len(switches)):
             if not switches[i]: continue
             namessig   .append( input_samples.sigGM["name"   ][i] )
-            xssig      .append( input_samples.sigGM["xs"     ][i] )
-            neventssig .append( input_samples.sigGM["nevents"][i] )
+#            xssig      .append( input_samples.sigGM["xs"     ][i] )
+#            neventssig .append( input_samples.sigGM["nevents"][i] )
             pass
         #print(namessig,len(namessig))
     elif model=='HVT':
         switches   = input_samples.sigHVT["switch" ]
         if len(arg_switches)==len(switches): switches = arg_switches
         namessig   = list() #input_samples.sigHVT["name"   ]
-        xssig      = list() #input_samples.sigHVT["xs"     ]
+#        xssig      = list() #input_samples.sigHVT["xs"     ]
         neventssig = list() #input_samples.sigHVT["nevents"]
         for i in range(len(switches)):
             if not switches[i]: continue
             namessig   .append( input_samples.sigHVT["name"   ][i] )
-            xssig      .append( input_samples.sigHVT["xs"     ][i] )
-            neventssig .append( input_samples.sigHVT["nevents"][i] )
+#            xssig      .append( input_samples.sigHVT["xs"     ][i] )
+#            neventssig .append( input_samples.sigHVT["nevents"][i] )
             pass
         #print(namessig,len(namessig))
     elif model=='QQ':
+        print(len(arg_switches))  # GA
         namessig = (np.array(input_samples.sigHVT['name'])[arg_switches]).tolist()
         switches = arg_switches
     else :
@@ -272,6 +281,7 @@ def prepare_data(input_samples,model,Findex,nFold,arg_switches=list(),mass_windo
     data_cont = dataset(data,input_samples.trafrac,input_samples.variables,model,nFold,Findex,transform)
     return data_cont,switches,transform
 
+##########################################################
 #Draws Control plot for Neural Network classification
 def drawfigure(model,prob_predict_train_NN,data,X_test,nameadd,cut_value,Findex,nFold,sub_dir):
     #pcutNN = np.percentile(prob_predict_train_NN,pcut)
@@ -342,6 +352,7 @@ def drawfigure(model,prob_predict_train_NN,data,X_test,nameadd,cut_value,Findex,
     plt.clf() 
     return
 
+##########################################################
 def calc_sig_new(data_set, prob_predict_train, prob_predict_valid, file_string, sub_dir, masspoints, mass=200, apply_trva_norm=True, apply_mass_window=False, use_abs_weight=False, nbins=1000, debug=False):
     nFold = int(file_string[len(file_string)-1:])
     
@@ -483,7 +494,7 @@ def calc_sig_new(data_set, prob_predict_train, prob_predict_valid, file_string, 
     plt.savefig(output_file)
     plt.clf()
 
-    print("Signal efficiency with cut for best significance: ",sig_eff, ",\t yeilding {} signal events".format(sig_yeild))
+    print("Signal efficiency with cut for best significance: ",sig_eff, ",\t yielding {} signal events".format(sig_yeild))
 
     return largestAMS, cut_w_maxAMS
 
@@ -580,6 +591,7 @@ def f1(y_true, y_pred):
     f1 = tf.where(tf.is_nan(f1), tf.zeros_like(f1), f1)
     return K.mean(f1)
 
+##########################################################
 def f1_loss(y_true, y_pred):
     
     tp = K.sum(K.cast(y_true*y_pred, 'float'), axis=0)
