@@ -1,0 +1,88 @@
+
+  based on   Guillaume's code: ~/lvll/MVA/VBF-WZ-lvll_GL
+  ------------------------------------------------------------------------
+
+https://github.com/GLaurin/VBF-WZ-lvll
+
+git clone https://github.com//VBF-WZ-lvll.git VBF-WZ-lvll_test
+
+>> created directory Inputs with latest ntuple files
+
+
+
+05-01-21
+
+--> in  config_OPT_NN.py:
+  comment out mass 300 for HVTbecause it's old
+--> in  OPT_VBS_NN.py:
+     if args.model=="HVT": mass_list = [250,350,400,450,500,600,700,800,900,1000] 
+
+for mass in 250 350  ;
+do for n in 0 1 ;
+    do python3 OPT_VBS_NN.py --mass_points $mass --model HVT --dropout=0.20 --lr=0.013 --patience=18 --numn=10 --numlayer=3 --epochs=100 --Findex $n --nFold 2 --sdir HVT_05-01-21/m$mass;
+        done;
+    done
+
+
+   --> produces ControlPlots/HVT_05-01-21/m250/
+           class_HVT_F0o2.png  loss_HVT_F0o2.png           NN_clf_HVT_F0o2.png          significance_HVT_NN_F0o2_m250.png
+           class_HVT_F1o2.png  loss_HVT_F1o2.png          NN_clf_HVT_F1o2.png           significance_HVT_NN_F1o2_m250.png
+
+--------------
+
+			--> choose  masses on which to apply the treaining: 250, 350, 400  in config_OPT_NN.py, array "shortlist" ; include masses and backgrounds used for training.
+    shortList= [307730,  309528, 307732] # masses 250, 350, 400
+
+     list_apply_bkg = [
+       'resonance.364253_Sherpa_222_NNPDF30NNLO_lllv_ntuples.0.root',
+       'resonance.364742_MGPy8EG_NNPDF30NLO_A14NNPDF23LO_lvlljjEW6_SFPlus_ntuples.root'
+        ]
+
+for mass in 250 350;
+do  input="";
+    for path in OutputModel/HVT_05-01-21/m$mass/sig*NN.h5;
+    do  model=HVT_05-01-21/m$mass/${path##*/};
+        input+=$model",";
+        done;
+    python3 Apply_NN.py --input ${path##*/} --sdir HVT_05-01-21/m$mass; 
+    done
+
+	==>> produces:  OutputRoot/HVT_05-01-21/m250/HVT_*.root  (masses 250, 350, 400 and backgs.)
+                                    OutputRoot/HVT_05-01-21/m350/HVT_*.root  
+------------
+
+				 >> edit  pSignal_cv_plotting.C (see "parameters to edit")
+//========================== PARAMETERS TO EDIT ================================
+string savedir = "ControlPlots/HVT_05-01-21/";   // MAKE SURE PSIGNAL EXISTS IN SUBDIRECTORY
+string rdir   = "OutputRoot/HVT_05-01-21/";       // Subdirectory containing the root files produced by appluing the NN
+string model  = "HVT";            // Model used
+string opt_ID = "_";    // Optional file name identification
+//=======================================================================
+
+root -l pSignal_cv_plotting.C
+
+     	==>>  produces ControlPlots/HVT_05-01-21/m250/pSig_integrals_HVT_m250_and_bckgrd_.png, C
+                                   ControlPlots/HVT_05-01-21/m350/pSig_integrals_HVT_m350_and_bckgrd_.png, C
+
+
+------------
+  --> edit nn_per_mass.C and set:
+  vector<int> masses{0,250,350,400};  // backg + masses for which NN as applied
+
+python3   nn_per_mass.py "HVT_05-01-21" "m250" "pSignal" true "HVT"
+
+	  Info in <TCanvas::Print>: png file ControlPlots/HVT_05-01-21/m250/NN_output_pSignal.png has been created
+	  Info in <TCanvas::SaveSource>: C++ Macro file: ControlPlots/HVT_05-01-21/m250/NN_output_pSignal.C has been generated
+
+	  Info in <TCanvas::Print>: png file ControlPlots/HVT_05-01-21/m250/NN_output_significance.png has been created
+	  Info in <TCanvas::SaveSource>: C++ Macro file: ControlPlots/HVT_05-01-21/m250/NN_output_significance.C has been generated
+
+	  Info in <TCanvas::Print>: png file ControlPlots/HVT_05-01-21/m250/NN_output_AMS_curves.png has been created
+	  Info in <TCanvas::SaveSource>: C++ Macro file: ControlPlots/HVT_05-01-21/m250/NN_output_AMS_curves.C has been generated
+
+------------
+
+cd ControlPlots/HVT_05-01-21/m250 
+display -density 60 'vid:*.png'
+
+------------

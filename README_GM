@@ -1,0 +1,190 @@
+
+    based on Guillaume's code: ~/lvll/MVA/VBF-WZ-lvll_GL
+  ------------------------------------------------------------------------
+
+https://github.com/GLaurin/VBF-WZ-lvll
+
+git clone https://github.com//VBF-WZ-lvll.git VBF-WZ-lvll_test
+
+>> created directory Inputs with latest ntuple files
+
+
+
+30-12-2020
+
+
+for mass in 250 300  ;
+do for n in 0 1 ;
+    do python3 OPT_VBS_NN.py --mass_points $mass --model GM --dropout=0.20 --lr=0.013 --patience=18 --numn=10 --numlayer=3 --epochs=100 --Findex $n --nFold 2 --sdir GM_30-12-20/m$mass;
+        done;
+    done
+
+Evaluating significance curve at mass: 250
+TRAIN: nbins= 1000 ,	Nsig,Nbkg= 199.016058138 	 4013.46200374 ,	Nsig+Nbkg= 4212.47806188
+VALID: nbins= 1000 ,	Nsig,Nbkg= 211.858060787 	 3991.71737098 ,	Nsig+Nbkg= 4203.57543177
+Saving sinificance plot:  ControlPlots/GM_30-12-20/m250/significance_GM_NN_F0o2_m250.png
+Signal efficiency with cut for best significance:  0.491889844544 ,	 yeilding 104.2108285856666 signal events
+
+Evaluating significance curve at mass: 250
+TRAIN: nbins= 1000 ,	Nsig,Nbkg= 211.858060219 	 3991.71746527 ,	Nsig+Nbkg= 4203.57552548
+VALID: nbins= 1000 ,	Nsig,Nbkg= 199.016058134 	 4013.46199742 ,	Nsig+Nbkg= 4212.47805555
+Saving sinificance plot:  ControlPlots/GM_30-12-20/m250/significance_GM_NN_F1o2_m250.png
+Signal efficiency with cut for best significance:  0.532282047517 ,	 yeilding 105.93267491250299 signal events
+
+Evaluating significance curve at mass: 300
+TRAIN: nbins= 1000 ,	Nsig,Nbkg= 45.8309559895 	 4535.49624183 ,	Nsig+Nbkg= 4581.32719782
+VALID: nbins= 1000 ,	Nsig,Nbkg= 42.3295415312 	 4519.2634043 ,	Nsig+Nbkg= 4561.59294583
+Saving sinificance plot:  ControlPlots/GM_30-12-20/m300/significance_GM_NN_F0o2_m300.png
+Signal efficiency with cut for best significance:  0.561644971202 ,	 yeilding 23.77417413425428 signal events
+
+Evaluating significance curve at mass: 300
+TRAIN: nbins= 1000 ,	Nsig,Nbkg= 42.3295414509 	 4519.26337703 ,	Nsig+Nbkg= 4561.59291848
+VALID: nbins= 1000 ,	Nsig,Nbkg= 45.8309560022 	 4535.49619639 ,	Nsig+Nbkg= 4581.32715239
+Saving sinificance plot:  ControlPlots/GM_30-12-20/m300/significance_GM_NN_F1o2_m300.png
+Signal efficiency with cut for best significance:  0.46118188164 ,	 yeilding 21.136406526436986 signal events
+
+  ==>> produces ControlPlots/GM_30-12-20/m250/
+								   /m300
+		            OutputModel/GM_30_12-20/m250/*pkl, *.h5
+			                                             /m300/*pkl, *h5
+
+-----------
+
+			--> choose  masses 250, 225, 300 in config_OPT_NN.py, array "shortlist" ; include masses and backgrounds used for training.
+
+    list_apply_bkg = [
+        'resonance.364253_Sherpa_222_NNPDF30NNLO_lllv_ntuples.0.root',
+        'resonance.364742_MGPy8EG_NNPDF30NLO_A14NNPDF23LO_lvlljjEW6_SFPlus_ntuples.root'
+        ]
+#GM  sig files to apply NN to
+    shortList= [450766,  502511,   450767 # masses 250, 225, 300
+
+
+for mass in 250 300;
+do  input="";
+    for path in OutputModel/GM_30-12-20/m$mass/sig*NN.h5;
+    do  model=GM_30-12-20/m$mass/${path##*/};
+        input+=$model",";
+        done;
+    python3 Apply_NN.py --input ${path##*/} --sdir GM_30-12-20/m$mass; 
+    done
+
+	==>> produces OutputRoot/GM_30-12-20/m250/*.root   for backg, and signals 300, 225 and 250
+	                          OutputRoot/GM_30-12-20/m300/*.root   for backg, and signals 300, 225 and 250
+
+------------
+
+				 >> edit  pSignal_cv_plotting.C (see "parameters to edit")
+//========================== PARAMETERS TO EDIT ================================
+string savedir = "ControlPlots/GM_30-12-20/";   // MAKE SURE PSIGNAL EXISTS IN SUBDIRECTORY
+string rdir   = "OutputRoot/GM_30-12-20/";       // Subdirectory containing the root files produced by appluing the NN
+string model  = "GM";            // Model used
+string opt_ID = "_";    // Optional file name identification
+//==============================================================================
+
+root -l pSignal_cv_plotting.C
+
+     	==>>  produces ControlPlots/GM_30-12-20/m250/pSig_integrals_GM_m250_and_bckgrd_.root, .png
+	      	       		   ControlPlots/GM_30-12-20/m300/pSig_integrals_GM_m300_and_bckgrd_.root, .png
+
+
+------------
+  --> edit nn_per_mass.C and set:
+  vector<int> masses{0,225,250,300};
+
+python3   nn_per_mass.py "GM_30-12-20" "m250"
+	  ==> produces ControlPlots/GM_30-12-20/m250/NN_output_CbvsNN.csv,   
+										   NN_output_pSignal.png, .C
+										   NN_output_significance.png, .C
+										   NN_output_AMS_curves.png, .C
+
+
+python3   nn_per_mass.py "GM_30-12-20" "m300"
+	  ==> produces ControlPlots/GM_30-12-20/m300/NN_output_CbvsNN.csv,   
+										   NN_output_pSignal.png, .C
+										   NN_output_significance.png, .C
+										   NN_output_AMS_curves.png, .C
+
+------------
+
+cd ControlPlots/GM_30-12-20/m250 
+display -density 60 'vid:*.png'
+  --> saved as summary.pdf
+
+
+====================================================================================
+====================================================================================
+====================================================================================
+
+  All masses:  GM_05-01-21
+
+    #Variables used for training
+    variables = ['M_jj','Deta_jj', 'Dphi_jj',
+                 'Jet1Pt', 'Jet2Pt',
+                 'Jet1Eta','Jet2Eta',
+                 'Jet1E','Jet2E','Jet3Eta',
+                 'Lep1Eta','Lep2Eta', 'Lep3Eta', 
+                 'PtBalanceZ','PtBalanceW',
+                 'Eta_W', 'Eta_Z',
+                 'ZetaLep','Njets']
+
+for mass in 200 225 250 275 300 325 350 375 400 425 450 475 500 525 550 600 700 800 900 1000;
+> do for n in 0 1 2 3;
+> do python3 OPT_VBS_NN.py --mass_points $mass --model GM --dropout=0.20 --lr=0.013 --patience=18 --numn=10 --numlayer=3 --epochs=100 --Findex $n --nFold 4 --sdir GM_05-01-21/m$mass;
+> done;
+> done
+
+-----------
+
+			--> choose  all masses in config_OPT_NN.py, array "shortlist" 
+
+    list_apply_bkg = [
+        'resonance.364253_Sherpa_222_NNPDF30NNLO_lllv_ntuples.0.root',
+        'resonance.364742_MGPy8EG_NNPDF30NLO_A14NNPDF23LO_lvlljjEW6_SFPlus_ntuples.root'
+        ]
+
+#GM  sig files to apply NN to:
+    shortList= [
+#    200,        225,       250,        275,       300,       325,        350,        375,        400,         425,       450,       475,        500,        525,        550,       600,         700,        800,       900,        1000
+  450765,  502511,  450766,  502512,  450767, 502513, 450768, 502514,  450769,  502515,  450770,  502516,  450771,  502517,  502518,  502519,  502520,  502521,  502522, 502523]
+
+
+for mass in 200 225 250 275 300 325 350 375 400 425 450 475 500 525 550 600 700 800 900 1000;
+do  input="";
+    for path in OutputModel/GM_05-01-21/m$mass/sig*NN.h5;
+    do  model=GM_05-01-21/m$mass/${path##*/};
+        input+=$model",";
+        done;
+    python3 Apply_NN.py --input ${path##*/} --sdir GM_05-01-21/m$mass; 
+    done
+
+------------
+
+				 >> edit  pSignal_cv_plotting.C (see "parameters to edit")
+//========================== PARAMETERS TO EDIT ================================
+string savedir = "ControlPlots/GM_05-01-21/";   // MAKE SURE PSIGNAL EXISTS IN SUBDIRECTORY
+string rdir   = "OutputRoot/GM_05-01-21/";       // Subdirectory containing the root files produced by appluing the NN
+string model  = "GM";            // Model used
+string opt_ID = "_";    // Optional file name identification
+//=======================================================================
+
+
+root -l pSignal_cv_plotting.C
+
+     	==>>  produces ControlPlots/GM_05-01-21/m200/pSig_integrals_GM_m200_and_bckgrd_.C, .png
+										      m300/pSig_integrals_GM_m300_and_bckgrd_.C, .png
+...
+										      m1000/pSig_integrals_GM_m1000_and_bckgrd_.C, .png
+
+------------
+  --> edit nn_per_mass.C and set:
+  vector<int> masses{0,200,225,250,275,300,325, 400,425,450,475, 500,525,550,600,700,800,900,1000};
+
+python3   nn_per_mass.py "GM_05-01-21" "m300"
+
+   Info in <TCanvas::Print>: png file ControlPlots/GM_05-01-21/m300/NN_output_pSignal.png has been created
+   Info in <TCanvas::SaveSource>: C++ Macro file: ControlPlots/GM_05-01-21/m300/NN_output_pSignal.C has been generated
+   Info in <TCanvas::Print>: png file ControlPlots/GM_05-01-21/m300/NN_output_significance.png has been created
+   Info in <TCanvas::SaveSource>: C++ Macro file: ControlPlots/GM_05-01-21/m300/NN_output_significance.C has been generated
+   Info in <TCanvas::Print>: png file ControlPlots/GM_05-01-21/m300/NN_output_AMS_curves.png has been created
+   Info in <TCanvas::SaveSource>: C++ Macro file: ControlPlots/GM_05-01-21/m300/NN_output_AMS_curves.C has been generated
