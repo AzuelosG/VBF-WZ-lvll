@@ -18,7 +18,7 @@ source setup.sh
 
 1) define git directory:  git remote set-url origin https://USER@github.com/AzuelosG/VBF-WZ-lvll.git
 
-  (replace USER by you Github ID)
+  (replace USER by your Github ID)
 
 2) check status
 
