@@ -66,19 +66,19 @@ int main() {
   
   const int imaxGM=20; 
   string GMname[imaxGM] = {
-    "GM_mainMVA.450765_MGaMcAtNloPy8EG_A14NNPDF23LO_vbfGM_sH05_H5pWZ_lvll_m200_ntuples.root",
+    "GM_resonance.450765_MGaMcAtNloPy8EG_A14NNPDF23LO_vbfGM_sH05_H5pWZ_lvll_m200_ntuples.root",
     "GM_resonance.502511_aMCPy8EG_GM_H5_WZ_lvll_m225_lepfilt_ntuples.root",
-    "GM_mainMVA.450766_MGaMcAtNloPy8EG_A14NNPDF23LO_vbfGM_sH05_H5pWZ_lvll_m250_ntuples.root ",
+    "GM_resonance.450766_MGaMcAtNloPy8EG_A14NNPDF23LO_vbfGM_sH05_H5pWZ_lvll_m250_ntuples.root",
     "GM_resonance.502512_aMCPy8EG_GM_H5_WZ_lvll_m275_lepfilt_ntuples.root",
-    "GM_mainMVA.450767_MGaMcAtNloPy8EG_A14NNPDF23LO_vbfGM_sH05_H5pWZ_lvll_m300_ntuples.root",
+    "GM_resonance.450767_MGaMcAtNloPy8EG_A14NNPDF23LO_vbfGM_sH05_H5pWZ_lvll_m300_ntuples.root",
     "GM_resonance.502513_aMCPy8EG_GM_H5_WZ_lvll_m325_lepfilt_ntuples.root",
-    "GM_mainMVA.450768_MGaMcAtNloPy8EG_A14NNPDF23LO_vbfGM_sH05_H5pWZ_lvll_m350_ntuples.root",
+    "GM_resonance.450768_MGaMcAtNloPy8EG_A14NNPDF23LO_vbfGM_sH05_H5pWZ_lvll_m350_ntuples.root",
     "GM_resonance.502514_aMCPy8EG_GM_H5_WZ_lvll_m375_lepfilt_ntuples.root",
-    "GM_mainMVA.450769_MGaMcAtNloPy8EG_A14NNPDF23LO_vbfGM_sH05_H5pWZ_lvll_m400_ntuples.root",
+    "GM_resonance.450769_MGaMcAtNloPy8EG_A14NNPDF23LO_vbfGM_sH05_H5pWZ_lvll_m400_ntuples.root",
     "GM_resonance.502515_aMCPy8EG_GM_H5_WZ_lvll_m425_lepfilt_ntuples.root",
-    "GM_mainMVA.450770_MGaMcAtNloPy8EG_A14NNPDF23LO_vbfGM_sH05_H5pWZ_lvll_m450_ntuples.root",
+    "GM_resonance.450770_MGaMcAtNloPy8EG_A14NNPDF23LO_vbfGM_sH05_H5pWZ_lvll_m450_ntuples.root ",
     "GM_resonance.502516_aMCPy8EG_GM_H5_WZ_lvll_m475_lepfilt_ntuples.root",
-    "GM_mainMVA.450771_MGaMcAtNloPy8EG_A14NNPDF23LO_vbfGM_sH05_H5pWZ_lvll_m500_ntuples.root",
+    "GM_resonance.450771_MGaMcAtNloPy8EG_A14NNPDF23LO_vbfGM_sH05_H5pWZ_lvll_m500_ntuples.root",
     "GM_resonance.502517_aMCPy8EG_GM_H5_WZ_lvll_m525_lepfilt_ntuples.root",
     "GM_resonance.502518_aMCPy8EG_GM_H5_WZ_lvll_m550_lepfilt_ntuples.root",
     "GM_resonance.502519_aMCPy8EG_GM_H5_WZ_lvll_m600_lepfilt_ntuples.root",
@@ -90,18 +90,18 @@ int main() {
   
 	//        mass           200,  225,  250,  275, 300, 325, 350, 375, 400, 425, 450, 475, 500, 525, 550, 600, 700, 800, 900, 1000
 
-    const int imaxHVT=8;
+    const int imaxHVT=11;
     string HVTname[imaxHVT] = {
       "HVT_resonance.307730_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m0250_ntuples.root",
-      //                  "mainMVA.307731_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m0300_ntuples.root",
+      "HVT_resonance.307731_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m0300_ntuples.root",
       "HVT_resonance.309528_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m0350_ntuples.root",
       "HVT_resonance.307732_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m0400_ntuples.root",
       "HVT_resonance.309529_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m0450_ntuples.root",
       "HVT_resonance.307733_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m0500_ntuples.root",
       "HVT_resonance.307734_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m0600_ntuples.root",
       "HVT_resonance.307735_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m0700_ntuples.root",
-      //      "HVT_mainMVA.307736_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m0800_ntuples.root",
-      //      "HVT_mainMVA.307737_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m0900_ntuples.root",
+      "HVT_resonance.307736_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m0800_ntuples.root",
+      "HVT_resonance.307737_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m0900_ntuples.root",
       "HVT_resonance.307738_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m1000_ntuples.root",
     };
 
@@ -146,7 +146,7 @@ int main() {
     //    const char *savedir2[20];
     int imax;
     int mass_arrGM[imaxGM] = {200,  225,  250,  275, 300, 325, 350, 375, 400, 425, 450, 475, 500, 525, 550, 600, 700, 800, 900, 1000};
-    int mass_arrHVT[imaxHVT] = {250,   350,   400,   450,   500,   600,    700,   1000};
+    int mass_arrHVT[imaxHVT] = {250,   350,   350,  400,   450,   500,   600,    700,  800, 900,  1000};
     if(model == "GM") {
       imax=imaxGM;
     }
@@ -384,10 +384,13 @@ int main() {
       //      string sfname2 = savedir + "pSig_integrals_"+model+"_m" + to_string(mass) + "_and_bckgrd" + opt_ID + ".root";
       string sfname1 = savedir + "m" + to_string(mass)+"/" + "pSig_integrals_"+model+"_m" + to_string(mass) + "_and_bckgrd" + opt_ID + ".png";
       string sfname2 = savedir + "m" + to_string(mass)+"/" + "pSig_integrals_"+model+"_m" + to_string(mass) + "_and_bckgrd" + opt_ID + ".C";
+      string sfname3 = savedir + "m" + to_string(mass)+"/" + "pSig_integrals_"+model+"_m" + to_string(mass) + "_and_bckgrd" + opt_ID + ".root";
       char const *sfname1_c = sfname1.c_str();
       char const *sfname2_c = sfname2.c_str();
+      char const *sfname3_c = sfname3.c_str();
       c1->SaveAs(sfname1_c);
       c1->SaveAs(sfname2_c);
+      c1->SaveAs(sfname3_c);
       
       c1->Close();
       cout << "--------------------------" << endl;
