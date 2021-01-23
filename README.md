@@ -8,7 +8,7 @@ ln -s /home/zp/azuelos/lvll/MVA/VBF-WZ-lvll_GL/Inputs/
 
 source setup.sh
 
-  to make changes:
+  to make changes: (not tested)
   
   1) check status
 git remote set-url origin https://USER@github.com/AzuelosG/VBF-WZ-lvll.git
