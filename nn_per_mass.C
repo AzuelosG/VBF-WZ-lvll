@@ -27,19 +27,19 @@ string idir, tmass, sdir;
 string get_file_name(int mass, string phys_model="GM") {
   //string insert_str="main";
   string              file_path="OutputRoot/"+sdir+phys_model+"_";
-  if      (mass==200) file_path+="mainMVA.450765_MGaMcAtNloPy8EG_A14NNPDF23LO_vbfGM_sH05_H5pWZ_lvll_m200_ntuples.root";
+  if      (mass==200) file_path+="resonance.450765_MGaMcAtNloPy8EG_A14NNPDF23LO_vbfGM_sH05_H5pWZ_lvll_m200_ntuples.root";
   else if (mass==225) file_path+="resonance.502511_aMCPy8EG_GM_H5_WZ_lvll_m225_lepfilt_ntuples.root";
-  else if (mass==250) file_path+="mainMVA.450766_MGaMcAtNloPy8EG_A14NNPDF23LO_vbfGM_sH05_H5pWZ_lvll_m250_ntuples.root ";
+  else if (mass==250) file_path+="resonance.450766_MGaMcAtNloPy8EG_A14NNPDF23LO_vbfGM_sH05_H5pWZ_lvll_m250_ntuples.root";
   else if (mass==275) file_path+="resonance.502512_aMCPy8EG_GM_H5_WZ_lvll_m275_lepfilt_ntuples.root";
-  else if (mass==300) file_path+="mainMVA.450767_MGaMcAtNloPy8EG_A14NNPDF23LO_vbfGM_sH05_H5pWZ_lvll_m300_ntuples.root";
+  else if (mass==300) file_path+="resonance.450767_MGaMcAtNloPy8EG_A14NNPDF23LO_vbfGM_sH05_H5pWZ_lvll_m300_ntuples.root";
   else if (mass==325) file_path+="resonance.502513_aMCPy8EG_GM_H5_WZ_lvll_m325_lepfilt_ntuples.root";
-  else if (mass==350) file_path+="mainMVA.450768_MGaMcAtNloPy8EG_A14NNPDF23LO_vbfGM_sH05_H5pWZ_lvll_m350_ntuples.root";
+  else if (mass==350) file_path+="resonance.450768_MGaMcAtNloPy8EG_A14NNPDF23LO_vbfGM_sH05_H5pWZ_lvll_m350_ntuples.root";
   else if (mass==375) file_path+="resonance.502514_aMCPy8EG_GM_H5_WZ_lvll_m375_lepfilt_ntuples.root";
-  else if (mass==400) file_path+="mainMVA.450769_MGaMcAtNloPy8EG_A14NNPDF23LO_vbfGM_sH05_H5pWZ_lvll_m400_ntuples.root";
+  else if (mass==400) file_path+="resonance.450769_MGaMcAtNloPy8EG_A14NNPDF23LO_vbfGM_sH05_H5pWZ_lvll_m400_ntuples.root";
   else if (mass==425) file_path+="resonance.502515_aMCPy8EG_GM_H5_WZ_lvll_m425_lepfilt_ntuples.root";
-  else if (mass==450) file_path+="mainMVA.450770_MGaMcAtNloPy8EG_A14NNPDF23LO_vbfGM_sH05_H5pWZ_lvll_m450_ntuples.root";
+  else if (mass==450) file_path+="resonance.450770_MGaMcAtNloPy8EG_A14NNPDF23LO_vbfGM_sH05_H5pWZ_lvll_m450_ntuples.root";
   else if (mass==475) file_path+="resonance.502516_aMCPy8EG_GM_H5_WZ_lvll_m475_lepfilt_ntuples.root";
-  else if (mass==500) file_path+="mainMVA.450771_MGaMcAtNloPy8EG_A14NNPDF23LO_vbfGM_sH05_H5pWZ_lvll_m500_ntuples.root";
+  else if (mass==500) file_path+="resonance.450771_MGaMcAtNloPy8EG_A14NNPDF23LO_vbfGM_sH05_H5pWZ_lvll_m500_ntuples.root";
   else if (mass==525) file_path+="resonance.502517_aMCPy8EG_GM_H5_WZ_lvll_m525_lepfilt_ntuples.root";
   else if (mass==550) file_path+="resonance.502518_aMCPy8EG_GM_H5_WZ_lvll_m550_lepfilt_ntuples.root";
   else if (mass==600) file_path+="resonance.502519_aMCPy8EG_GM_H5_WZ_lvll_m600_lepfilt_ntuples.root";
@@ -51,31 +51,31 @@ string get_file_name(int mass, string phys_model="GM") {
   if (phys_model=="HVT") {
     file_path="OutputRoot/"+sdir+phys_model+"_";
     if      (mass== 250) file_path+="resonance.307730_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m0250_ntuples.root";
-    //    else if (mass== 300) file_path+="mainMVA.307731_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m0300_ntuples.root";
+    else if (mass== 300) file_path+="resonance.307731_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m0300_ntuples.root";
     else if (mass== 350) file_path+="resonance.309528_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m0350_ntuples.root";
     else if (mass== 400) file_path+="resonance.307732_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m0400_ntuples.root";
     else if (mass== 450) file_path+="resonance.309529_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m0450_ntuples.root";
     else if (mass== 500) file_path+="resonance.307733_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m0500_ntuples.root";
     else if (mass== 600) file_path+="resonance.307734_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m0600_ntuples.root";
     else if (mass== 700) file_path+="resonance.307735_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m0700_ntuples.root";
-    //    else if (mass== 800) file_path+="MVA.307736_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m0800_ntuples.root";
-    //    else if (mass== 900) file_path+="MVA.307737_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m0900_ntuples.root";
+    else if (mass== 800) file_path+="resonance.307736_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m0800_ntuples.root";
+    else if (mass== 900) file_path+="resonance.307737_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m0900_ntuples.root";
     else if (mass==1000) file_path+="resonance.307738_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m1000_ntuples.root";
   }
 
   if (phys_model=="QQ") {
     file_path="OutputRoot/"+sdir+phys_model+"_";
     if      (mass== 250) file_path+="resonance.307730_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m0250_ntuples.root";
+    else if (mass== 300) file_path+="resonance.307731_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m0300_ntuples.root";
     else if (mass== 350) file_path+="resonance.309528_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m0350_ntuples.root";
     else if (mass== 400) file_path+="resonance.307732_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m0400_ntuples.root";
     else if (mass== 450) file_path+="resonance.309529_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m0450_ntuples.root";
     else if (mass== 500) file_path+="resonance.307733_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m0500_ntuples.root";
-    else if (mass==600) file_path+="resonance.307734_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m0600_ntuples.root";
-    else if (mass==700) file_path+="resonance.307735_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m0700_ntuples.root";
+    else if (mass== 600) file_path+="resonance.307734_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m0600_ntuples.root";
+    else if (mass== 700) file_path+="resonance.307735_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m0700_ntuples.root";
+    else if (mass== 800) file_path+="resonance.307736_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m0800_ntuples.root";
+    else if (mass== 900) file_path+="resonance.307737_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m0900_ntuples.root";
     else if (mass==1000) file_path+="resonance.307738_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m1000_ntuples.root";
-    //    else if (mass== 300) file_path+="mainMVA.307731_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m0300_ntuples.root";
-    //    else if (mass==800) file_path+="mainMVA.307736_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m0800_ntuples.root";
-    //    else if (mass==900) file_path+="mainMVA.307737_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m0900_ntuples.root";
   }
 
   return file_path;
@@ -88,16 +88,13 @@ string QQ_filename(int mass) {
   string insert_str="main";
   //  string               file_path="OutputRoot/"+sdir+"/new_QQ_"+insert_str;
   string               file_path="OutputRoot/"+sdir+"/QQ_";
-  if      (mass==600)  file_path+="resonance.302267_MadGraphPythia8EvtGen_A14NNPDF23LO_HVT_Agv1_VcWZ_lvll_m0600_ntuples.root";
-  //  else if (mass==800) file_path+="resonance.302269_MadGraphPythia8EvtGen_A14NNPDF23LO_HVT_Agv1_VcWZ_lvll_m0800_ntuples.root";
-  //  else if (mass==900) file_path+="resonance.302270_MadGraphPythia8EvtGen_A14NNPDF23LO_HVT_Agv1_VcWZ_lvll_m0900_ntuples.root";
+  if      (mass==300) file_path+="resonance.302274_MadGraphPythia8EvtGen_A14NNPDF23LO_HVT_Agv1_VcWZ_lvll_m1300_ntuples.root";
+  else if(mass==500) file_path+="resonance.302266_MadGraphPythia8EvtGen_A14NNPDF23LO_HVT_Agv1_VcWZ_lvll_m0500_ntuples.root";
+  else if (mass==600)  file_path+="resonance.302267_MadGraphPythia8EvtGen_A14NNPDF23LO_HVT_Agv1_VcWZ_lvll_m0600_ntuples.root";
+  else if(mass==700)   file_path+="resonance.302268_MadGraphPythia8EvtGen_A14NNPDF23LO_HVT_Agv1_VcWZ_lvll_m0700_ntuples.root";
+  else if(mass==800)   file_path+="resonance.302269_MadGraphPythia8EvtGen_A14NNPDF23LO_HVT_Agv1_VcWZ_lvll_m0800_ntuples.root";
+  else if(mass==900)   file_path+="resonance.302270_MadGraphPythia8EvtGen_A14NNPDF23LO_HVT_Agv1_VcWZ_lvll_m0900_ntuples.root";
   else if (mass==1000) file_path+="resonance.302271_MadGraphPythia8EvtGen_A14NNPDF23LO_HVT_Agv1_VcWZ_lvll_m1000_ntuples.root";
-  //                  'mainMVA.302266_MadGraphPythia8EvtGen_A14NNPDF23LO_HVT_Agv1_VcWZ_lvll_m0500_ntuples.root';
-  //                  'mainMVA.302268_MadGraphPythia8EvtGen_A14NNPDF23LO_HVT_Agv1_VcWZ_lvll_m0700_ntuples.root';
-  //                  'mainMVA.302272_MadGraphPythia8EvtGen_A14NNPDF23LO_HVT_Agv1_VcWZ_lvll_m1100_ntuples.root';
-  //                  'mainMVA.302275_MadGraphPythia8EvtGen_A14NNPDF23LO_HVT_Agv1_VcWZ_lvll_m1400_ntuples.root';
-  //                  'mainMVA.302278_MadGraphPythia8EvtGen_A14NNPDF23LO_HVT_Agv1_VcWZ_lvll_m1700_ntuples.root';
-  //                  'mainMVA.302284_MadGraphPythia8EvtGen_A14NNPDF23LO_HVT_Agv1_VcWZ_lvll_m2600_ntuples.root';
   return file_path;
 }
 
@@ -181,6 +178,7 @@ TH1F* get_hist(int mass,TString phys_model="GM", bool qqplot=false) {
     hist = get_bkg_hist(phys_model.Data());
   }
   hist->SetLineColor(get_color(mass));
+  hist->SetLineWidth(3);
 
   return hist;
 }
@@ -308,7 +306,8 @@ void nn_per_mass(string dir="", string name="",TString varname="pSignal",bool no
 
   else proj_option="norm"; //normalize to 1
 
-  vector<int> masses{0,200,225,250,275,300,325, 400,425,450,475, 500,525,550,600,700,800,900,1000};
+  //  vector<int> masses{0,200,225,250,275,300,325, 400,425,450,475, 500,525,550,600,700,800,900,1000};
+  vector<int> masses{0,200,300,400,500,700,1000};
   //  vector<int> masses{0,225,250,300};
   //  vector<int> masses{0,250,350,400}; // backg + masses for which NN as applied
 if (phys_model=="QQ") masses={0,600};
@@ -446,6 +445,7 @@ if (phys_model=="QQ") masses={0,600};
 
     // Drawing significance curve
     significance->SetLineColor(get_color(mass));
+    significance->SetLineWidth(3);
     significance->Draw(option);
 
     // Comparing with Cut-based
