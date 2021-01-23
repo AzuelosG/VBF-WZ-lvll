@@ -9,7 +9,7 @@ to setup each time:
 source setup.sh
 
 
-for examples, see:  
+for running examples, see:  
       README_GM
       README_HVT
       README_QQ   
