@@ -40,8 +40,8 @@ each of these are also drawn.
 //------------------------------------------------------------------------------
 
 //========================== PARAMETERS TO EDIT ================================
-string savedir = "ControlPlots/GM_05-01-21/";   // MAKE SURE PSIGNAL EXISTS IN SUBDIRECTORY
-string rdir   = "OutputRoot/GM_05-01-21/";       // Subdirectory containing the root files produced by appluing the NN
+string savedir = "ControlPlots/GM_05-01-21/";   
+string rdir   = "OutputRoot/GM_05-01-21/";       // Subdirectory containing the root files produced by applying the NN
 string model  = "GM";            // Model used
 string opt_ID = "_";    // Optional file name identification
 //=======================================================================
