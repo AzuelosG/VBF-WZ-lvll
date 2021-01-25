@@ -1,13 +1,5 @@
 
-  based on   Guillaume's code: ~/lvll/MVA/VBF-WZ-lvll_GL
-  ------------------------------------------------------------------------
-
-https://github.com/GLaurin/VBF-WZ-lvll
-
-git clone https://github.com//VBF-WZ-lvll.git VBF-WZ-lvll_test
-
->> created directory Inputs with latest ntuple files
-
+Example of run with HVT vbf vs background
 
 
 ===  24-01-21
