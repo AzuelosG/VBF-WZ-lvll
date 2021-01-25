@@ -40,9 +40,9 @@ each of these are also drawn.
 //------------------------------------------------------------------------------
 
 //========================== PARAMETERS TO EDIT ================================
-string savedir = "ControlPlots/GM_05-01-21/";   
-string rdir   = "OutputRoot/GM_05-01-21/";       // Subdirectory containing the root files produced by applying the NN
-string model  = "GM";            // Model used
+string savedir = "ControlPlots/HVT_24-01-21/";   
+string rdir   = "OutputRoot/HVT_24-01-21/";       // Subdirectory containing the root files produced by applying the NN
+string model  = "HVT";            // Model used
 string opt_ID = "_";    // Optional file name identification
 //=======================================================================
 

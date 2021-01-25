@@ -307,7 +307,8 @@ void nn_per_mass(string dir="", string name="",TString varname="pSignal",bool no
   else proj_option="norm"; //normalize to 1
 
   //  vector<int> masses{0,200,225,250,275,300,325, 400,425,450,475, 500,525,550,600,700,800,900,1000};
-  vector<int> masses{0,200,300,400,500,700,1000};
+  //  vector<int> masses{0,200,300,400,500,700,1000};
+  vector<int> masses{0,250,350,400,600};
   //  vector<int> masses{0,225,250,300};
   //  vector<int> masses{0,250,350,400}; // backg + masses for which NN as applied
 if (phys_model=="QQ") masses={0,600};
