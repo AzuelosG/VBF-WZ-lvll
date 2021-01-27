@@ -40,8 +40,8 @@ each of these are also drawn.
 //------------------------------------------------------------------------------
 
 //========================== PARAMETERS TO EDIT ================================
-string savedir = "ControlPlots/QQ_31-12-20/";   // MAKE SURE PSIGNAL EXISTS IN SUBDIRECTORY
-string rdir   = "OutputRoot/QQ_31-12-20/";       // Subdirectory containing the root files produced by appluing the NN
+string savedir = "ControlPlots/QQ_26-01-21/";   // MAKE SURE PSIGNAL EXISTS IN SUBDIRECTORY
+string rdir   = "OutputRoot/QQ_26-01-21/";       // Subdirectory containing the root files produced by appluing the NN
 string model  = "QQ";            // Model used
 string opt_ID = "_";    // Optional file name identification
 //=======================================================================
@@ -66,19 +66,18 @@ float AMS(float s, float b, bool debug=false) {
 int main() {
   string rootdir = rdir; 
 
-    string QQname[1] = {
+    string QQname[6] = {
       // "QQ_resonance.307730_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m0250_ntuples.root",
       // "QQ_resonance.309528_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m0350_ntuples.root",
       // "QQ_resonance.307732_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m0400_ntuples.root",
       // "QQ_resonance.309529_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m0450_ntuples.root",
-      // "QQ_resonance.307733_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m0500_ntuples.root",
+      "QQ_resonance.307733_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m0500_ntuples.root",
       "QQ_resonance.307734_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m0600_ntuples.root",
-      // "QQ_resonance.307735_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m0700_ntuples.root",
-      // // // //      "QQ_resonance.307738_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m1000_ntuples.root",
-      // "QQ_mainMVA.307731_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m0300_ntuples.root",
-      // "QQ_mainMVA.307736_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m0800_ntuples.root",
-      // "QQ_mainMVA.307737_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m0900_ntuples.root"
-    };
+      "QQ_resonance.307735_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m0700_ntuples.root",
+      "QQ_resonance.307736_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m0800_ntuples.root",
+      "QQ_resonance.307737_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m0900_ntuples.root",
+      "QQ_resonance.307738_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m1000_ntuples.root",
+};
 
 
     // background files  -- here, bckgr is qq HVT
@@ -252,9 +251,9 @@ int main() {
 	
 	// Calculating significance
 	sig[j]   = AMS(sig_events, bkg_events);
-	cout << "a :" << j << "  s = " << sig_events << "  b = " << bkg_events << endl;
+	//	cout << "a :" << j << "  s = " << sig_events << "  b = " << bkg_events << endl;
 	sig_f[j] = AMS(sig_events_f, bkg_events_f);
-	cout << "b :" << j << "  s = " << sig_events << "  b = " << bkg_events << endl;
+	//	cout << "b :" << j << "  s = " << sig_events << "  b = " << bkg_events << endl;
       }
       
       // Drawing the integrals
