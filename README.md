@@ -13,7 +13,7 @@
   
       README_GM,         README_HVT,         README_QQ   
 
---> to modify  (not tested):
+--> to modify :
 
     1) define git directory:  git remote set-url origin https://USER@github.com/AzuelosG/VBF-WZ-lvll.git
         (replace USER by your Github ID)
