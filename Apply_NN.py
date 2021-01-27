@@ -64,8 +64,8 @@ def read_cut(file_name):
 
     return cut_value
 
-def calculate_pred(model,X,cut_value):
-    print('nEvents / file=\t',len(X))
+def calculate_pred(model,X,cut_value,verbose):
+    if verbose: print('\t nEvents / file=\t',len(X))
     prob_predict=model.predict(X.values, verbose=False)
     #pcutNN = np.percentile(prob_predict,40.)
     Yhat=prob_predict[:] > cut_value
@@ -77,7 +77,7 @@ def calculate_pred_fold(models,data,X,cut_values):
     predictions  =list()
 
     for idx in range(len(models)):
-        pred_fold, prob_fold = calculate_pred(models[idx],X,cut_values[idx])
+        pred_fold, prob_fold = calculate_pred(models[idx],X,cut_values[idx],verbose=(idx==0))
         predictions.append(pred_fold)
         probabilities.append(prob_fold)
         pass
@@ -109,10 +109,10 @@ def calculate_pred_fold(models,data,X,cut_values):
     
     return pred_fold,prob_fold
 
-def save_file(data, pred, proba, filename, phys_model, sub_dir):
+def save_file(data, pred, proba, filename, phys_model, sub_dir, syst_var):
     #data['isSignal'] = pred
-    data['pSignal'] = proba[:]
-    print("Input file  =\t\t\t",filename)
+    data['pSignal_'+phys_model] = proba[:]
+    #print("Input file  =\t\t\t",filename)
     
     # Checking for or creating subdirectory
     sub_dir_or = "OutputRoot/"+sub_dir
@@ -120,13 +120,14 @@ def save_file(data, pred, proba, filename, phys_model, sub_dir):
     #    outputPath=sub_dir_or+'/new_'+phys_model+'_'+filename     #print(outputPath)
     outputPath=sub_dir_or+'/'+phys_model+'_'+filename     #print(outputPath)
     
+    save_mode='update'
+    if syst_var=='nominal': save_mode='recreate'
     
-    
-    
-    array2root(np.array(data.to_records()), outputPath, 'nominal', mode='recreate')
+    array2root(np.array(data.to_records(index=False)), outputPath, syst_var, mode=save_mode)
     
     print('Save file as= {}'.format(outputPath))
     print()
+
     return
 
 def analyze_data(filedir,filename, model, X_mean, X_dev, label, variables, sigmodel,cut_value,sub_dir):
@@ -135,14 +136,14 @@ def analyze_data(filedir,filename, model, X_mean, X_dev, label, variables, sigmo
     pred, proba = calculate_pred(model,X,cut_value)
     save_file(data, pred, proba, filename, sigmodel, sub_dir)
 
-def analyze_data_folds(filedir,filename, models, tr_files, label, variables, sigmodel,cut_values,sub_dir,debug=False):
-    data, X = read_data_apply(filedir+filename, tr_files, label, variables, sigmodel)
+def analyze_data_folds(filedir,filename, models, tr_files, label, variables, sigmodel,cut_values,sub_dir,syst_var,debug=False):
+    data, X = read_data_apply(filedir+filename, tr_files, label, variables, sigmodel, syst_var)
 
     if len(X)==0: return
     #print(len(data),len(X))
     
     pred_fold, proba_fold = calculate_pred_fold(models,data,X,cut_values)
-    save_file(data, pred_fold, proba_fold, filename, sigmodel, sub_dir)
+    save_file(data, pred_fold, proba_fold, filename, sigmodel, sub_dir,syst_var)
     if debug:
         for i in range(len(data['EventNumber'])):
             print (data['EventNumber'][i], proba_fold[i][0])
@@ -160,14 +161,14 @@ Optional arguments
   --phys_model =<phys_model> Specify signal phys_model ('HVT' or 'GM')
 """
 
-def parse_model_files(input):
+def parse_model_files(sdir,input):
 
     files=list()
     Findices=list()
     nFold=int(0)
     lockFold=False
     for File in input.split(","):
-        files.append(File)
+        files.append(sdir+"/"+File)
         if '_F' in File:
             f_str=File[File.find('_F')+2:File.rfind("_")]
             
@@ -207,24 +208,60 @@ def read_models(model_files):
 
     models=list()
 
+    first_model = True
     for File in model_files:
         model = load_model('OutputModel/'+File)
-        model.summary()
+        if first_model: 
+            model.summary()
+            first_model=False
         models.append(model)
         pass
 
+    print("")
+    print(len(model_files)," models loaded.")
+    print("")
+
     return models
+
+def read_syst_variations(file):
+    syst_variations=list()
+    for line in open(args.syst_list, 'r').read().splitlines(): 
+        if '#' in line: continue
+        syst_variations.append(line)
+        pass
+    return syst_variations
+
+def read_sample_dir(input_dirpath):
+    list_bkg=list() #    input_dirpath=args.target_dir
+    for r,d,f in os.walk(input_dirpath): #args.target_dir):
+        for file_name in f:
+            if not('.root' in file_name): continue
+            list_bkg.append(file_name)
+            pass
+        pass
+    return list_bkg
+
     
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description = 'Apply NN on ntuples')
     parser.add_argument("--input", help="Name of saved trained NN", default='GM_output_NN.h5', type=str)
     parser.add_argument("--sdir", help="Subdirectory of saved output", default="", type=str)
+    #parser.add_argument("--syst_var", help="Target systematic variation", default="nominal", type=str)
+    parser.add_argument("--syst_list", help="list of systematic variation", default="syst_vars.list", type=str)
+    parser.add_argument("--run_systematics", help="Bool whether to run syst variations", default=False, type=bool)
+    parser.add_argument("--target_dir", help="Target directory of root files to apply NN ouput", default="", type=str)
+    parser.add_argument("--single_file", help="Single target file", default="", type=str)
     # parser.add_argument("--phys_model", help="Specify Model (HVT or GM)", default='GM', type=str)
 
     args = parser.parse_args()
     print(args)
 
-    model_files,tr_files=parse_model_files(args.sdir+"/"+args.input)
+    model_files,tr_files=parse_model_files(args.sdir,args.input)
+
+    print()
+    print(model_files)
+    print(tr_files)
+    print()
 
     #Load input_sample class from config file
     input_sample=conf.input_samples
@@ -250,10 +287,25 @@ if __name__ == '__main__':
 
     #Apply NN on all samples in config file
     list_bkg = apply_sample.list_apply_bkg # not only background but all sample is listed in this
-    if phys_model=='GM': 
-        list_sig = apply_sample.list_apply_sigGM
-    elif phys_model=='HVT':
-        list_sig = apply_sample.list_apply_sigHVT  
+    #if phys_model=='GM': 
+    #    list_sig = apply_sample.list_apply_sigGM
+    #elif phys_model=='HVT':
+    #    list_sig = apply_sample.list_apply_sigHVT  
+    input_dirpath=apply_sample.filedirapp
+    if args.target_dir!='': 
+        input_dirpath = args.target_dir
+        list_bkg = read_sample_dir(input_dirpath)
+        pass
+
+    if args.single_file!='':
+        list_bkg.clear()
+        list_bkg.append(args.single_file)
+        pass
+
+    syst_variations=['nominal']
+    if args.run_systematics and args.syst_list!="" and not('data' in  args.single_file): syst_variations = read_syst_variations(args.syst_list)
+    print(syst_variations)
+
         
     print("Starting  >>>>>>>" )  #  GA
     print('Applying on all samples')
@@ -270,7 +322,12 @@ if __name__ == '__main__':
     for bkg_file in list_bkg:
         print(bkg_file)
         #if "450765" in bkg_file:
-        analyze_data_folds(apply_sample.filedirapp, bkg_file,models,  tr_files, -1, input_sample.variables, phys_model, cut_values,args.sdir)
+        for syst_var in syst_variations:
+            #if ("JET" in syst_var) or ("MET" in syst_var) or ("EG" in syst_var) or ("EL" in syst_var): continue
+            #if ('450772' in bkg_file) and (('FT_EFF_Eigen_C' in syst_var) or syst_var=='FT_EFF_Eigen_Light_0__1down'): continue
+            #if ('410155' in bkg_file) and syst_var=='MUON_EFF_TTVA_SYS__1up' : continue
+            print('Current file and systematic variation= ',bkg_file,"\t",syst_var,end='')
+            analyze_data_folds(input_dirpath,bkg_file,models, tr_files,-1,input_sample.variables,phys_model,cut_values,args.sdir,syst_var)
         pass
     
 #    print('Applying on sig sample')
