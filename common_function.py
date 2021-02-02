@@ -111,6 +111,7 @@ def read_data(filename,mass_window=False, mass=0,isSignal=False,isApplication=Fa
 class dataset:
     def __init__(self,data,frac_train,variables,model,nFold,Findex,transform,apply_transform=True):
         full=data.sample(frac=1)#,random_state=42)
+        full['WeightFinalized'] = full.WeightNormalized * full.WZInclusive
         #test=data.drop(full.index)
 
         train = full[(full['EventNumber'])%nFold!=Findex] #x-valid here
@@ -130,8 +131,8 @@ class dataset:
         self.mass_valid=mass_valid.reset_index(drop=True)
         #self.mass_test=mass_test.reset_index(drop=True)
 
-        self.W_train=train[['WeightNormalized']]
-        self.W_valid=validation[['WeightNormalized']]
+        self.W_train=train[['WeightFinalized']]
+        self.W_valid=validation[['WeightFinalized']]
         #self.W_test=test[['Weight']]
 
         #self.evtNum_train=train[['EventNumber']]
