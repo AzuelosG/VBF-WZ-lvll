@@ -167,7 +167,7 @@ TH1F* get_hist(int mass,TString phys_model="GM", bool qqplot=false) {
     TTree* t = (TTree*)f->Get("nominal");
     
     TString histName = "mass"+TString::Itoa(mass,10);
-    //std::cout<<histName<<std::endl;
+    //    cout<< "histName = " << histName<<std::endl;
 
     hist = new TH1F(histName ,title,nbins,xmin,xmax);
     select_weight += "*(abs(Weight)<10)";
@@ -213,7 +213,7 @@ float AMS(float s, float b, bool debug=false, float br=0) {
   }
   if (rad>=0 && rad<1000) return sqrt(rad);
   else {
-    cout << "AMS: radicand is negative. Returning 0" << endl; 
+    //    cout << "AMS: radicand is negative. Returning 0" << endl; 
     return 0;}
 }
 
@@ -254,7 +254,7 @@ TH1F* get_significance_hist(TH1F* h_sig, TH1F* h_bkg, float sf, bool is_tm=false
 
 // ======================================================
 
-void nn_per_mass(string dir="", string name="",TString varname="pSignal",bool norm2yield=true, TString phys_model="GM", bool drawCB=true, bool mMulti=false) {
+void nn_per_mass(string dir="", string name="",TString varname="pSignal_GM",bool norm2yield=true, TString phys_model="GM", bool drawCB=true, bool mMulti=false) {
 
   if (norm2yield) mfac=20;
 
@@ -263,7 +263,9 @@ void nn_per_mass(string dir="", string name="",TString varname="pSignal",bool no
   //  sdir  = idir+'/'+ (tmass=="mMulti" ? "" : tmass+"/");
   sdir  = idir+ "/"+(tmass=="mMulti" ? "" : tmass+"/");
 
-  if      (varname == "pSignal"     ) title="NN output : "+tmass, proj_str=varname, nbins = 50, xmin =0, xmax = 1;
+  if      (varname == "pSignal_GM"     ) title="NN output : "+tmass, proj_str=varname, nbins = 50, xmin =0, xmax = 1;
+  else if (varname == "pSignal_HVT"     ) title="NN output : "+tmass, proj_str=varname, nbins = 50, xmin =0, xmax = 1;
+  else if (varname == "pSignal_QQ"     ) title="NN output : "+tmass, proj_str=varname, nbins = 50, xmin =0, xmax = 1;
   else if (varname == "M_WZ"        ) title=varname, proj_str=varname, nbins = 25, xmin =0, xmax = 1500;
   else if (varname == "M_jj"        ) title=varname, proj_str=varname, nbins = 50, xmin =0, xmax = 1500;
   else if (varname == "ZetaLep"     ) title=varname, proj_str=varname, nbins = 50, xmin =-3.5, xmax = 3.5;
@@ -305,26 +307,27 @@ void nn_per_mass(string dir="", string name="",TString varname="pSignal",bool no
   // Jet3Phi // Jet3Y           
 
   else proj_option="norm"; //normalize to 1
-
-  //  vector<int> masses{0,200,225,250,275,300,325, 400,425,450,475, 500,525,550,600,700,800,900,1000};
-  //  vector<int> masses{0,200,300,400,500,700,1000};
-  vector<int> masses{0,250,350,400,600};
+  
+  vector<int> masses{0,200,225,250,275,300,325, 350, 375, 400,425,450,475, 500,525,550,600,700,800,900,1000}; // background + masses for which trained NN was applied
+  //   vector<int> masses{0,200,275,350,400,600,800,1000};
+//  vector<int> masses{0,200,300,400,500,700,1000};
+  //  vector<int> masses{0,250,350,400,600};
   //  vector<int> masses{0,225,250,300};
   //  vector<int> masses{0,250,350,400}; // backg + masses for which NN as applied
-if (phys_model=="QQ") masses={0,600};
+  if (phys_model=="QQ") masses={0,600};
   int      hms = masses.size()/2+1;
   const int ms = masses.size();
-
+  
   TCanvas* c1 = new TCanvas ("name", "title", 800, 400);
   c1->Divide(2,1);
-
+  
   c1->cd(1);
   auto legend1 = new TLegend(0.7,0.7,0.9,0.9);
   legend1->SetHeader("Mass (GeV)","C"); 
   legend1->SetFillStyle(0); 
   legend1->SetLineWidth(0); 
   legend1->SetNColumns(2);
-
+  
   c1->cd(2);
   auto legend2 = new TLegend(0.7,0.7,0.9,0.9);
   legend2->SetHeader("Mass (GeV)","C"); 
@@ -341,12 +344,12 @@ if (phys_model=="QQ") masses={0,600};
   auto legend=legend1;
   //  TH1F* hist;   // GA: commented out
   char smass[3];
-
+  
   for (auto mass : masses) {
-
+    
     select_weight = "(M_jj>100)";
-    if (norm2yield) select_weight += "*WeightNormalized";   
-
+    if (norm2yield) select_weight += "*WeightNormalized*WZInclusive";   
+    
     //Separating the curves on 2 figures
     if (mass==masses[hms]) {
       legend->Draw();
@@ -377,7 +380,7 @@ if (phys_model=="QQ") masses={0,600};
     if (mass != 0) {
       // Cut-based selection histogram
       select_weight = Form("(M_jj>500)*(Deta_jj>3.5)*(M_WZ>(%i*0.6)*(M_WZ<(%i*1.4)))",mass,mass);
-      if (norm2yield) select_weight += "*WeightNormalized";
+      if (norm2yield) select_weight += "*WeightNormalized*WZInclusive";
       hists_bkg_cb[mass] = get_hist(0,phys_model.Data());
       hists_cb[mass] = get_hist(mass,phys_model.Data());
     }
@@ -403,9 +406,9 @@ if (phys_model=="QQ") masses={0,600};
   c1->SaveAs((imagePath+".png" ).data());
   c1->SaveAs((imagePath+".C").data());
 
-  cout << "  ==>>>> norm2yield = " << norm2yield << ",  varname = " << varname << endl;
+  //  cout << "  ==>>>> norm2yield = " << norm2yield << ",  varname = " << varname << endl;
 
-  if (not (norm2yield and varname=="pSignal")) return;
+  if (not (norm2yield and (varname=="pSignal_GM" || varname=="pSignal_HVT" || varname=="pSignal_QQ")) ) return;
     auto c2 = new TCanvas("c2","title",800,400);
  
   c2->Divide(2,1);
@@ -521,7 +524,7 @@ if (phys_model=="QQ") masses={0,600};
     
     for (auto mass : masses) {
       select_weight = "(M_jj>100)";
-      if (norm2yield) select_weight += "*WeightNormalized";
+      if (norm2yield) select_weight += "*WeightNormalized*WZInclusive";
       
       //Separating the curves on 2 figures
       if (mass==masses[hms]) {
