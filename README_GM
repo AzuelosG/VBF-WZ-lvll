@@ -1,9 +1,11 @@
 
 Example of run with GM samples
 
-===   23-01-21  ===
 
-  All masses:  GM_23-01-21
+
+===   03-02-2021  ===
+
+  A few masses :  GM_03-02-2021
 
     #Variables used for training
     variables = ['M_jj','Deta_jj', 'Dphi_jj',
@@ -15,14 +17,14 @@ Example of run with GM samples
                  'Eta_W', 'Eta_Z',
                  'ZetaLep','Njets']
 
-for mass in 200 225 250 275 300 325 350 375 400 425 450 475 500 525 550 600 700 800 900 1000;
+for mass in 200  275  350  400    600  800 1000;
  do for n in 0 1 2 3;
-     do python3 OPT_VBS_NN.py --mass_points $mass --model GM --dropout=0.20 --lr=0.013 --patience=18 --numn=10 --numlayer=3 --epochs=100 --Findex $n --nFold 4 --sdir GM_23-01-21/m$mass;
+     do python3 OPT_VBS_NN.py --mass_points $mass --model GM --dropout=0.20 --lr=0.013 --patience=18 --numn=10 --numlayer=3 --epochs=100 --Findex $n --nFold 4 --sdir GM_03-02-2021/m$mass;
      done;
-   done   &>  log/training_GM_23-01-21.log
+   done   &>  log/training_GM_03-02-2021.log
 
 
-  ==>> produces ControlPlots/GM_23-01-21/m200/ , ... , /m1000
+  ==>> produces ControlPlots/GM_03-02-2021/m200/ , ... , /m1000
 		            OutputModel/GM_23_01-21/m200... 1000/*pkl, *.h5
 
 -----------
@@ -34,29 +36,29 @@ for mass in 200 225 250 275 300 325 350 375 400 425 450 475 500 525 550 600 700 
         'resonance.364742_MGPy8EG_NNPDF30NLO_A14NNPDF23LO_lvlljjEW6_SFPlus_ntuples.root'
         ]
 
-#GM  sig files to apply NN to:
+#GM  sig files to apply NN to
     shortList= [
-#    200,        225,       250,        275,       300,       325,        350,        375,        400,         425,       450,       475,        500,        525,        550,       600,         700,        800,       900,        1000
-  450765,  502511,  450766,  502512,  450767, 502513, 450768, 502514,  450769,  502515,  450770,  502516,  450771,  502517,  502518,  502519,  502520,  502521,  502522, 502523]
+  450765,  502511,  450766,  502512,  450767,  502513,  450768,  502514,  450769,  502515,  450770,  502516,  450771,  502517,  502518,  502519,  502520,  502521,  502522, 502523]
+#      200,         225,        250,         275,        300,         325,         350,        375,        400,         425,         450,         475,        500,         525,         550,        600,        700,        800,         900,     1000
 
 
 for mass in 200 225 250 275 300 325 350 375 400 425 450 475 500 525 550 600 700 800 900 1000;
 do  input="";
-    for path in OutputModel/GM_23-01-21/m$mass/sig*NN.h5;
-    do  model=GM_23-01-21/m$mass/${path##*/};
+    for path in OutputModel/GM_03-02-2021/m$mass/sig*NN.h5;
+    do  model=GM_03-02-2021/m$mass/${path##*/};
         input+=$model",";
         done;
-    python3 Apply_NN.py --input ${path##*/} --sdir GM_23-01-21/m$mass; 
-    done  | tee  log/Apply_GM_23-01-21
+    python3 Apply_NN.py --input ${path##*/} --sdir GM_03-02-2021/m$mass; 
+    done  | tee  log/Apply_GM_03-02-2021
 
-==>> produces OutputRoot/GM_23-01-21/m200 ... m1000/GM_*.root
+==>> produces OutputRoot/GM_03-02-2021/m200 ... m1000/GM_*.root
 
 ------------
 
 				 >> edit  pSignal_cv_plotting.C (see "parameters to edit")
 //========================== PARAMETERS TO EDIT ================================
-string savedir = "ControlPlots/GM_23-01-21/";   // MAKE SURE PSIGNAL EXISTS IN SUBDIRECTORY
-string rdir   = "OutputRoot/GM_23-01-21/";       // Subdirectory containing the root files produced by appluing the NN
+string savedir = "ControlPlots/GM_03-02-2021/";   // MAKE SURE PSIGNAL EXISTS IN SUBDIRECTORY
+string rdir   = "OutputRoot/GM_03-02-2021/";       // Subdirectory containing the root files produced by appluing the NN
 string model  = "GM";            // Model used
 string opt_ID = "_";    // Optional file name identification
 //=======================================================================
@@ -64,18 +66,18 @@ string opt_ID = "_";    // Optional file name identification
 
 root -l pSignal_cv_plotting.C
 
-     	==>>  produces ControlPlots/GM_23-01-21/m200... m1000/pSig_integrals_GM_m*_.C,   .png
+     	==>>  produces ControlPlots/GM_03-02-2021/m200... m1000/pSig_integrals_GM_m*_.C,   .png
 
 ------------
   --> edit nn_per_mass.C and set:
-  vector<int> masses{0,200,225,250,275,300,325, 400,425,450,475, 500,525,550,600,700,800,900,1000};
+  vector<int> masses{0,200,225,250,275,300,325, 350, 375, 400,425,450,475, 500,525,550,600,700,800,900,1000}; // background + masses for which trained NN was applied
 
-python3   nn_per_mass.py "GM_23-01-21" "m300"
+python3   nn_per_mass.py "GM_03-02-2021" "m350"
 
-Info in <TCanvas::Print>: png file ControlPlots/GM_23-01-21/m300/NN_output_pSignal.png has been created
-Info in <TCanvas::SaveSource>: C++ Macro file: ControlPlots/GM_23-01-21/m300/NN_output_pSignal.C has been generated
-Info in <TCanvas::Print>: png file ControlPlots/GM_23-01-21/m300/NN_output_significance.png has been created
-Info in <TCanvas::SaveSource>: C++ Macro file: ControlPlots/GM_23-01-21/m300/NN_output_significance.C has been generated
-Info in <TCanvas::Print>: png file ControlPlots/GM_23-01-21/m300/NN_output_AMS_curves.png has been created
-Info in <TCanvas::SaveSource>: C++ Macro file: ControlPlots/GM_23-01-21/m300/NN_output_AMS_curves.C has been generated
+Info in <TCanvas::Print>: png file ControlPlots/GM_03-02-2021/m350/NN_output_pSignal.png has been created
+Info in <TCanvas::SaveSource>: C++ Macro file: ControlPlots/GM_03-02-2021/m350/NN_output_pSignal.C has been generated
+Info in <TCanvas::Print>: png file ControlPlots/GM_03-02-2021/m350/NN_output_significance.png has been created
+Info in <TCanvas::SaveSource>: C++ Macro file: ControlPlots/GM_03-02-2021/m350/NN_output_significance.C has been generated
+Info in <TCanvas::Print>: png file ControlPlots/GM_03-02-2021/m350/NN_output_AMS_curves.png has been created
+Info in <TCanvas::SaveSource>: C++ Macro file: ControlPlots/GM_03-02-2021/m350/NN_output_AMS_curves.C has been generated
 
