@@ -40,9 +40,9 @@ each of these are also drawn.
 //------------------------------------------------------------------------------
 
 //========================== PARAMETERS TO EDIT ================================
-string savedir = "ControlPlots/HVT_24-01-21/";   
-string rdir   = "OutputRoot/HVT_24-01-21/";       // Subdirectory containing the root files produced by applying the NN
-string model  = "HVT";            // Model used
+string savedir = "ControlPlots/GM_03-02-2021/";   
+string rdir   = "OutputRoot/GM_03-02-2021/";       // Subdirectory containing the root files produced by applying the NN
+string model  = "GM";            // Model used GM or HVT.  For QQ, use  pSignal_cv_plotting_QQ.C
 string opt_ID = "_";    // Optional file name identification
 //=======================================================================
 
@@ -210,7 +210,8 @@ int main() {
       c1->Divide(2,2);
       c1->cd(1);
       data->SetLineColor(99);
-      data->Draw("pSignal >> pSig","(WeightNormalized)","HIST");
+      if(model=="GM") data->Draw("pSignal_GM >> pSig","(WeightNormalized*WZInclusive)","HIST");
+      if(model=="HVT") data->Draw("pSignal_HVT >> pSig","(WeightNormalized*WZInclusive)","HIST");
       TH1F *hist = (TH1F*)gDirectory->Get("pSig");
       hist->SetTitle(Form("pSignal - mass %i",mass));
       gPad->SetLogy();
@@ -218,7 +219,9 @@ int main() {
       // Applying condtions to signal
       c1->cd(3);
       data->SetLineColor(99);
-      data->Draw("pSignal >> pSig_f","(WeightNormalized)*(M_jj>500)*(Deta_jj>3.5)","HIST");
+      if(model=="GM") data->Draw("pSignal_GM >> pSig_f","(WeightNormalized*WZInclusive)*(M_jj>500)*(Deta_jj>3.5)","HIST");
+      if(model=="HVT") data->Draw("pSignal_HVT >> pSig_f","(WeightNormalized*WZInclusive)*(M_jj>500)*(Deta_jj>3.5)","HIST");
+      //      data->Draw("pSignal >> pSig_f","(WeightNormalized*WZInclusive)*(M_jj>500)*(Deta_jj>3.5)","HIST");
       TH1F *hist_f = (TH1F*)gDirectory->Get("pSig_f");
       hist_f->SetTitle("pSignal - cut-based");
       gPad->SetLogy();
@@ -245,8 +248,12 @@ int main() {
       c1->cd(1);
       b1->SetLineColor(77);
       b2->SetLineColor(4);
-      b1->Draw("pSignal >> pSig_b1","(WeightNormalized)","SAME HIST");
-      b2->Draw("pSignal >> pSig_b2","(WeightNormalized)","SAME HIST");
+      if(model=="GM") b1->Draw("pSignal_GM >> pSig_b1","(WeightNormalized*WZInclusive)","SAME HIST");
+      if(model=="HVT") b1->Draw("pSignal_HVT >> pSig_b1","(WeightNormalized*WZInclusive)","SAME HIST");
+      //      b1->Draw("pSignal >> pSig_b1","(WeightNormalized*WZInclusive)","SAME HIST");
+      if(model=="GM") b2->Draw("pSignal_GM >> pSig_b2","(WeightNormalized*WZInclusive)","SAME HIST");
+      if(model=="HVT") b2->Draw("pSignal_HVT >> pSig_b2","(WeightNormalized*WZInclusive)","SAME HIST");
+      //      b2->Draw("pSignal >> pSig_b2","(WeightNormalized*WZInclusive)","SAME HIST");
       
       TH1F *hist_b1 = (TH1F*)gDirectory->Get("pSig_b1");
       TH1F *hist_b2 = (TH1F*)gDirectory->Get("pSig_b2");
@@ -255,8 +262,12 @@ int main() {
       c1->cd(3);
       b1->SetLineColor(77);
       b2->SetLineColor(4);
-      b1->Draw("pSignal >> pSig_b1_f","(WeightNormalized)*(M_jj>500)*(Deta_jj>3.5)","SAME HIST");
-      b2->Draw("pSignal >> pSig_b2_f","(WeightNormalized)*(M_jj>500)*(Deta_jj>3.5)","SAME HIST");
+      if(model=="GM") b1->Draw("pSignal_GM >> pSig_b1_f","(WeightNormalized*WZInclusive)*(M_jj>500)*(Deta_jj>3.5)","SAME HIST");
+      if(model=="HVT") b1->Draw("pSignal_HVT >> pSig_b1_f","(WeightNormalized*WZInclusive)*(M_jj>500)*(Deta_jj>3.5)","SAME HIST");
+      //      b1->Draw("pSignal >> pSig_b1_f","(WeightNormalized*WZInclusive)*(M_jj>500)*(Deta_jj>3.5)","SAME HIST");
+      if(model=="GM") b2->Draw("pSignal_GM >> pSig_b2_f","(WeightNormalized*WZInclusive)*(M_jj>500)*(Deta_jj>3.5)","SAME HIST");
+      if(model=="HVT") b2->Draw("pSignal_HVT >> pSig_b2_f","(WeightNormalized*WZInclusive)*(M_jj>500)*(Deta_jj>3.5)","SAME HIST");
+      //      b2->Draw("pSignal >> pSig_b2_f","(WeightNormalized*WZInclusive)*(M_jj>500)*(Deta_jj>3.5)","SAME HIST");
       
       TH1F *hist_b1_f = (TH1F*)gDirectory->Get("pSig_b1_f");
       TH1F *hist_b2_f = (TH1F*)gDirectory->Get("pSig_b2_f");
