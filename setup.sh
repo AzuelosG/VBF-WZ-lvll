@@ -9,6 +9,7 @@ then
 	"lcgenv -p LCG_92python3 x86_64-slc6-gcc62-opt tensorflow" \
 	"lcgenv -p LCG_92python3 x86_64-slc6-gcc62-opt keras" \
 	"lcgenv -p LCG_92python3 x86_64-slc6-gcc62-opt pandas" \
+	"lcgenv -p LCG_92python3 x86_64-slc6-gcc62-opt Jinja2" \
 	"lcgenv -p LCG_92python3 x86_64-slc6-gcc62-opt matplotlib" \
 	"lcgenv -p LCG_92python3 x86_64-slc6-gcc62-opt h5py" \
 	"lcgenv -p LCG_92python3 x86_64-slc6-gcc62-opt scikitlearn"
@@ -18,6 +19,7 @@ else
         "lcgenv -p LCG_97python3 x86_64-centos7-gcc8-opt tensorflow" \
         "lcgenv -p LCG_97python3 x86_64-centos7-gcc8-opt keras" \
         "lcgenv -p LCG_97python3 x86_64-centos7-gcc8-opt pandas" \
+        "lcgenv -p LCG_97python3 x86_64-centos7-gcc8-opt Jinja2" \
         "lcgenv -p LCG_97python3 x86_64-centos7-gcc8-opt matplotlib" \
         "lcgenv -p LCG_97python3 x86_64-centos7-gcc8-opt h5py" \
         "lcgenv -p LCG_97python3 x86_64-centos7-gcc8-opt scikitlearn"
