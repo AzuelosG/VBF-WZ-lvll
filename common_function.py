@@ -38,7 +38,7 @@ def AMS(s, b):
     return significance
 
 ##########################################################
-def read_data_apply(filepath, tr_files, Label, variables,model,syst_var,apply_transform=True,debug=False):
+def read_data_apply(filepath, tr_files, Label, variables,model,syst_var,mass_points,apply_transform=True,debug=False):
     data = read_data(filepath,isApplication=True,syst_var=syst_var)
 
     nFold=len(tr_files)
@@ -80,7 +80,7 @@ def read_data_apply(filepath, tr_files, Label, variables,model,syst_var,apply_tr
 
         label=np.random.choice(prob.shape[0],X.shape[0], p=prob)
         #X['LabelMass'] = label
-        X['LabelMass'] = get_mass_label(data["M_WZ"])
+        X['LabelMass'] = get_mass_label(data["M_WZ"],mass_points)
         pass
 
     data = data.reset_index(drop=True) # now remove index again
@@ -169,22 +169,47 @@ class dataset:
         #self.X_test['LabelMass']=test[['LabelMass']]
 
 ##########################################################
-def get_mass_label(mWZ):
+def get_mass_label(mWZ,mass_points,debug=False):
 
-    bars = [225,275,325,375,425,475,550,650,750,850,950]
+    #bars = [225,275,325,375,425,475,550,650,750,850,950]
+#    bars = [212.5,237.5,262.5,287.5,
+#            312.5,337.5,362.5,387.5,
+#            412.5,437.5,462.5,487.5,
+#            512.5,537.5,
+#            575,650,750,850,950]
+#    print(bars)
+
+    bars=list()
+    for i in range(len(mass_points)-1): bars.append( (mass_points[i]+mass_points[i+1])/2 )
 
     #mass_labels = np.invert(mWZ<=bars[0]) # smallest range, index=0
     mass_labels = np.zeros(len(mWZ)) # smallest range, index=0
 
-    for i in range(1,len(bars)-1):
-        mass_labels += ( ((bars[i] < mWZ) & (mWZ < bars[i+1])) * i )
+    #mass_labels+=(mWZ < bars[0]) #this would be 0 = default value
+    for i in range(len(bars)-1):
+        if debug: print(bars[i],"\t",bars[i+1],"\t",i+1)
+        mass_labels += ( ((bars[i] < mWZ) & (mWZ < bars[i+1])) * (i+1) )
+        pass
+    if debug: print(bars[-1],"\t","","\t",len(bars))
+    mass_labels += (bars[-1] < mWZ) * len(bars)
 
-    mass_labels += (mWZ > bars[-1]) * len(bars)
+    #print(mass_labels)
 
     return mass_labels
+
+def conv_mass_points(mass_points_str):
+    # Convert mass points from str to float
+
+    mass_points_float = list()
+
+    for mass_str in mass_points_str:
+        mass_points_float.append( float(mass_str) )
+        pass
+    
+    return mass_points_float
         
 ##########################################################
-def prepare_data(input_samples,model,Findex,nFold,arg_switches=list(),mass_window=True, mass=0):
+def prepare_data(input_samples,model,Findex,nFold,arg_switches=list(),mass_window=True, mass=0,mass_points=[200],use_signal_masslabel=False):
     """Read background and signal files and save them as panda data frames"""
 
     #Names of bck samples
@@ -253,8 +278,14 @@ def prepare_data(input_samples,model,Findex,nFold,arg_switches=list(),mass_windo
     for i in range(len(namessig)):
         sample = read_data(input_samples.filedirsig+namessig[i],mass_window=mass_window, mass=mass,isSignal=True)
         #sample['Weight']=sample['Weight']*input_samples.lumi*xssig[i]/neventssig[i]  #KM: This is done in WeightNormalized
-        sample['LabelMass'] = get_mass_label(sample['M_WZ']) #sample['LabelMass'] = i
-        print(namessig[i],"\tLabelMass=",i)
+
+        if use_signal_masslabel: 
+            sample['LabelMass'] = i
+            print(namessig[i],"\tLabelMass=",i)            
+        else:
+            sample['LabelMass'] = get_mass_label(sample['M_WZ'],mass_points,debug=(i==0)) #sample['LabelMass'] = i
+            print(namessig[i],"  Using LabelMass(m), not",i)
+            pass
         prob[i] = sample.shape[0] 
         if sig is None:
             sig=sample
@@ -265,7 +296,7 @@ def prepare_data(input_samples,model,Findex,nFold,arg_switches=list(),mass_windo
     sig['Label'] = '1'
 
     #Apply random mass label to bkg
-    label= get_mass_label(bg['M_WZ']) #np.random.choice(len(namessig),bg.shape[0], p=prob)
+    label= get_mass_label(bg['M_WZ'],mass_points) #np.random.choice(len(namessig),bg.shape[0], p=prob)
 
     bg['LabelMass'] = label
 
@@ -367,6 +398,7 @@ def calc_sig_new(data_set, prob_predict_train, prob_predict_valid, file_string, 
 
     mass_idx=-1 #default for inclusive masses
     if do_single_mass: mass_idx=masspoints.index(mass)
+    print("current mass point and index =",mass,mass_idx)
 
     if not do_single_mass: apply_mass_window=False
 
@@ -442,8 +474,16 @@ def calc_sig_new(data_set, prob_predict_train, prob_predict_valid, file_string, 
     counts_va_s,   _,_=plt.hist(p_va_s,bins=nbins,range=(0,1),weights=w_va_s)  #    print(np.shape(p_va_s),np.shape(w_va_s))
     counts_va_b,   _,_=plt.hist(p_va_b,bins=nbins,range=(0,1),weights=w_va_b)  #    print(np.shape(p_va_b),np.shape(w_va_b))
 
-    print("TRAIN: nbins=",len(counts_tr_s),",\tNsig,Nbkg=",np.sum(counts_tr_s),"\t",np.sum(counts_tr_b), ",\tNsig+Nbkg=",np.sum(counts_tr_s)+np.sum(counts_tr_b))
-    print("VALID: nbins=",len(counts_va_s),",\tNsig,Nbkg=",np.sum(counts_va_s),"\t",np.sum(counts_va_b), ",\tNsig+Nbkg=",np.sum(counts_va_s)+np.sum(counts_va_b))
+    yields = list()
+    yield_tr_s = np.sum(counts_tr_s)
+    yield_tr_b = np.sum(counts_tr_b)
+    yield_va_s = np.sum(counts_va_s)
+    yield_va_b = np.sum(counts_va_b)
+
+    yields.append(yield_tr_s)
+    yields.append(yield_va_s)
+    yields.append(yield_tr_b)
+    yields.append(yield_va_b)
 
     Nsig_init, sig_yeild, sig_eff, largestAMS, cut_w_maxAMS=0,0,0,0,0
     for i in range(len(counts_tr_s)):
@@ -496,9 +536,10 @@ def calc_sig_new(data_set, prob_predict_train, prob_predict_valid, file_string, 
     plt.savefig(output_file)
     plt.clf()
 
-    print("Signal efficiency with cut for best significance: ",sig_eff, ",\t yielding {} signal events".format(sig_yeild))
+    print("Sig-eff. with best significance cut: ",sig_eff, ",\t yielding {} signal events".format(sig_yeild))
+    print()
 
-    return largestAMS, cut_w_maxAMS
+    return largestAMS, cut_w_maxAMS, yields
 
 def calc_sig(data_set,prob_predict_train, prob_predict_valid,lower,upper,step,mass,massindex,file_string):
     #KM: these are arrays of graph points, to be used later in the plotting section

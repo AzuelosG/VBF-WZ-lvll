@@ -16,7 +16,7 @@ mpl.use('Agg')
 import matplotlib.pyplot as plt
 import math
 from root_numpy import root2array, tree2array, array2root
-from common_function import dataset, AMS, read_data, prepare_data, drawfigure, calc_sig, calc_sig_new, f1, f1_loss
+from common_function import dataset, AMS, read_data, prepare_data, drawfigure, calc_sig, calc_sig_new, f1, f1_loss, conv_mass_points
 import config_OPT_NN as conf
 import ROOT, pickle
 from pathlib import Path
@@ -118,7 +118,11 @@ if __name__ == '__main__':
     if len(args.mass_points)==1:
         mwin=True
         mss=int(args.mass_points[0])
-    data_set,tmp_switches,transform = prepare_data(input_sample, args.model, args.Findex, args.nFold, arg_switches=tmp_switches, mass_window=mwin, mass=mss)
+        pass
+
+    #KM: create list of integers from mass_points
+    mass_points_float=conv_mass_points(args.mass_points)
+    data_set,tmp_switches,transform = prepare_data(input_sample, args.model, args.Findex, args.nFold, arg_switches=tmp_switches, mass_window=mwin, mass=mss,mass_points=mass_points_float)
 
     ar_switches = np.array(tmp_switches)
     ar_mass     = np.array(mass_list)
@@ -216,18 +220,28 @@ if __name__ == '__main__':
     #Calculate significance in output
     #highsig,cut_value = calc_sig_new(data_set, prob_predict_train_NN[:,0], prob_predict_valid_NN[:,0], mass=200, '{0}_NN{1}_F{2}o{3}'.format(args.model,args.output,args.Findex,args.nFold) )
     highsig,cut_value = 0,0
+    tmp_dict = {}
     if len(args.mass_points)>1: args.mass_points.append(-1)
     for mass in reversed(args.mass_points):
-        print ("\nEvaluating significance curve at mass: {}".format(mass))
-        highsig,cut_value = calc_sig_new(data_set, prob_predict_train_NN[:,0], prob_predict_valid_NN[:,0], '{0}_NN{1}_F{2}o{3}'.format(args.model,args.output,args.Findex,args.nFold),sub_dir_cp,args.mass_points,mass=mass, apply_mass_window=False)
+        #print ("\nEvaluating significance curve at mass: {}".format(mass))
+        highsig,cut_value,yields = calc_sig_new(data_set, prob_predict_train_NN[:,0], prob_predict_valid_NN[:,0], '{0}_NN{1}_F{2}o{3}'.format(args.model,args.output,args.Findex,args.nFold),sub_dir_cp,args.mass_points,mass=mass, apply_mass_window=False)
+        yields.append(cut_value)
+        yields.append(highsig)
+        tmp_dict[mass] = yields
+
     # Draw figures
     drawfigure(model,prob_predict_train_NN,data_set,data_set.X_valid.values,nameadd,cut_value,args.Findex,args.nFold,sub_dir_cp)
+
+    idx_column=["Nsig-TR","Nsig-VA","Nbkg-TR","Nbkg-VA","cut-value","signif."]
+    tmp_df = pd.DataFrame(tmp_dict, index= idx_column)
+    print("\n Sig Bkg yields before NN cut (-1 = all mass points combined/added):")
+    print(tmp_df.T)
 
     cv_str=''
     if   cut_value<0: cv_str="m%.3f" % cut_value
     else:             cv_str="p%.3f" % cut_value
 
-    print(cv_str)
+    print("\n cut value chosen for lightest mass point:", cv_str)
 
     outputName='sigvalid_'+args.model+'_m{}'.format(args.mass_points if len(args.mass_points)==1 else "Multi")+'_S'+str(round(highsig,3))+args.output+"_CV"+cv_str+('_F{0}o{1}'.format(args.Findex,args.nFold))+'_NN'
 

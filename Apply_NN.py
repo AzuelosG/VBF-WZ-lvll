@@ -136,8 +136,8 @@ def analyze_data(filedir,filename, model, X_mean, X_dev, label, variables, sigmo
     pred, proba = calculate_pred(model,X,cut_value)
     save_file(data, pred, proba, filename, sigmodel, sub_dir)
 
-def analyze_data_folds(filedir,filename, models, tr_files, label, variables, sigmodel,cut_values,sub_dir,syst_var,debug=False):
-    data, X = read_data_apply(filedir+filename, tr_files, label, variables, sigmodel, syst_var)
+def analyze_data_folds(filedir,filename, models, tr_files, label, variables, sigmodel,cut_values,sub_dir,syst_var,mass_points,debug=False):
+    data, X = read_data_apply(filedir+filename, tr_files, label, variables, sigmodel, syst_var,mass_points=mass_points)
 
     if len(X)==0: return
     #print(len(data),len(X))
@@ -251,6 +251,7 @@ if __name__ == '__main__':
     parser.add_argument("--run_systematics", help="Bool whether to run syst variations", default=False, type=bool)
     parser.add_argument("--target_dir", help="Target directory of root files to apply NN ouput", default="", type=str)
     parser.add_argument("--single_file", help="Single target file", default="", type=str)
+    parser.add_argument('--mass_points', help = "mass points to be included in the training", default=list(), type=int,nargs='+')
     # parser.add_argument("--phys_model", help="Specify Model (HVT or GM)", default='GM', type=str)
 
     args = parser.parse_args()
@@ -319,6 +320,14 @@ if __name__ == '__main__':
     print(list_bkg)
     print(">>>>>>> Starting  >>>>>>>" )  #  GA
 
+    mass_points_GM =[200,225,250,275,300,325,350,375,400,425,450,475,500,525,550,600,700,800,900,1000]
+    mass_points_HVT=[250,300,350,400,450,500,600,700,800,900,1000]
+    mass_points=mass_points_GM
+    if phys_model=="HVT":mass_pionts=mass_points_HVT
+
+    #in case the argument is given, take that instead of default values
+    if len(args.mass_points)>0: masspoints=args.mass_points
+
     for bkg_file in list_bkg:
         print(bkg_file)
         #if "450765" in bkg_file:
@@ -327,7 +336,7 @@ if __name__ == '__main__':
             #if ('450772' in bkg_file) and (('FT_EFF_Eigen_C' in syst_var) or syst_var=='FT_EFF_Eigen_Light_0__1down'): continue
             #if ('410155' in bkg_file) and syst_var=='MUON_EFF_TTVA_SYS__1up' : continue
             print('Current file and systematic variation= ',bkg_file,"\t",syst_var,end='')
-            analyze_data_folds(input_dirpath,bkg_file,models, tr_files,-1,input_sample.variables,phys_model,cut_values,args.sdir,syst_var)
+            analyze_data_folds(input_dirpath,bkg_file,models, tr_files,-1,input_sample.variables,phys_model,cut_values,args.sdir,syst_var,mass_points)
         pass
     
 #    print('Applying on sig sample')
