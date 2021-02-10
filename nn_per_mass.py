@@ -6,7 +6,7 @@ ROOT.gROOT.ProcessLine(".L nn_per_mass.C+")
 
 # 1  void nn_per_mass(string dir="", 
 # 2                  string name="",
-# 3                  TString varname="pSignal",
+# 3                  TString varname="pSignal_GM",
 # 4                  bool norm2yield=true, 
 # 5                  TString phys_model="GM", 
 # 6                  bool drawCB=true, 
