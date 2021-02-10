@@ -35,6 +35,9 @@ The training dataset used is a set of simple ntuples containing all the necessar
   * the HVT signal samples
   * the QQ signal samples
 
+### Input features/variables
+You can have a look at the list of input features in [this part of the code](config_OPT_NN.py#L149-L160)
+
 ### Hyperparameter configuration of the network
 This is a simple fully connected NN, the principal hyper parameters are:
 * the number of layers
