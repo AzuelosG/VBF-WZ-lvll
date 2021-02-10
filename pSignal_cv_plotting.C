@@ -1,4 +1,3 @@
-
 #include <TString.h>
 #include <TFile.h>
 #include <TMath.h>
@@ -40,9 +39,9 @@ each of these are also drawn.
 //------------------------------------------------------------------------------
 
 //========================== PARAMETERS TO EDIT ================================
-string savedir = "ControlPlots/GM_03-02-2021/";   
-string rdir   = "OutputRoot/GM_03-02-2021/";       // Subdirectory containing the root files produced by applying the NN
-string model  = "GM";            // Model used GM or HVT.  For QQ, use  pSignal_cv_plotting_QQ.C
+string savedir = "ControlPlots/HVT_08-02-2021/";   
+string rdir   = "OutputRoot/HVT_08-02-2021/";       // Subdirectory containing the root files produced by applying the NN
+string model  = "HVT";            // Model used GM or HVT.  For QQ, use  pSignal_cv_plotting_QQ.C
 string opt_ID = "_";    // Optional file name identification
 //=======================================================================
 
@@ -146,7 +145,7 @@ int main() {
     //    const char *savedir2[20];
     int imax;
     int mass_arrGM[imaxGM] = {200,  225,  250,  275, 300, 325, 350, 375, 400, 425, 450, 475, 500, 525, 550, 600, 700, 800, 900, 1000};
-    int mass_arrHVT[imaxHVT] = {250,   350,   350,  400,   450,   500,   600,    700,  800, 900,  1000};
+    int mass_arrHVT[imaxHVT] = {250,   300,   350,  400,   450,   500,   600,    700,  800, 900,  1000};
     if(model == "GM") {
       imax=imaxGM;
     }
