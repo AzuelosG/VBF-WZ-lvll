@@ -4,12 +4,14 @@ Analysis-specific information and commands:
 
 Cloning repository and setting up environment:
 -------------------------------
-First time only:
+<details>
+  <summary>First time only [click to expand]</summary>
 
     git clone https://github.com/AzuelosG/VBF-WZ-lvll.git
     cd VBF-WZ-lvll
     ln -s /home/zp/azuelos/lvll/MVA/VBF-WZ-lvll_GL/Inputs/
     source setup.sh
+</details>
 
 Each time (you have to be in the main directory): 
 
@@ -57,7 +59,8 @@ Currently for running examples, see:
 
 Useful git-specific commands:
 -------------------------------
--------------------------------
+<details>
+  <summary>Click to expand!</summary>
 Setting up the recommended (and less buggy) git version and enabling coloring:
     
     lsetup git
@@ -95,5 +98,4 @@ Removing file from staging area (without removing added changes):
 
     git reset HEAD <filename>
 
-
-
+</details>
