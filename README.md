@@ -54,8 +54,9 @@ Currently the number of folds is decided to be at least 4.
 Running examples:
 -------------------------------
 Currently for running examples, see:
-  
-    README_GM,         README_HVT,         README_QQ   
+* [README_GM](README_GM.md) 
+* [README_HVT](README_HVT.md)
+* [README_QQ](README_QQ.md)
 
 Useful git-specific commands:
 -------------------------------
