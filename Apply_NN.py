@@ -76,7 +76,7 @@ def calculate_pred_fold(models,data,X,cut_values):
     probabilities=list()
     predictions  =list()
 
-    for idx in range(len(models)):
+    for idx in range(len(models)): #KM: loop over fold
         pred_fold, prob_fold = calculate_pred(models[idx],X,cut_values[idx],verbose=(idx==0))
         predictions.append(pred_fold)
         probabilities.append(prob_fold)
@@ -91,7 +91,7 @@ def calculate_pred_fold(models,data,X,cut_values):
     #    x_str = np.array_repr(X.values[i]).replace('\n', '')
     #    print(data["EventNumber"][i],x_str,probabilities[0][i][0])
             
-    for idx in range(len(probabilities[0])):
+    for idx in range(len(probabilities[0])): #KM: loop over events
         list_idx=data['EventNumber'][idx]%len(models)#idx%len(models)
         if list_idx!=0:
             probabilities[0][idx] = probabilities[list_idx][idx]
@@ -130,20 +130,37 @@ def save_file(data, pred, proba, filename, phys_model, sub_dir, syst_var):
 
     return
 
-def analyze_data(filedir,filename, model, X_mean, X_dev, label, variables, sigmodel,cut_value,sub_dir):
-    data, X = read_data_apply(filedir+filename, X_mean, X_dev, label, variables, sigmodel)
-    if len(X)==0: return
-    pred, proba = calculate_pred(model,X,cut_value)
-    save_file(data, pred, proba, filename, sigmodel, sub_dir)
+#def analyze_data(filedir,filename, model, X_mean, X_dev, label, variables, sigmodel,cut_value,sub_dir):
+#    data, X = read_data_apply(filedir+filename, X_mean, X_dev, label, variables, sigmodel)
+#    if len(X)==0: return
+#    pred, proba = calculate_pred(model,X,cut_value)
+#    save_file(data, pred, proba, filename, sigmodel, sub_dir)
 
-def analyze_data_folds(filedir,filename, models, tr_files, label, variables, sigmodel,cut_values,sub_dir,syst_var,mass_points,debug=False):
-    data, X = read_data_apply(filedir+filename, tr_files, label, variables, sigmodel, syst_var,mass_points=mass_points)
+def get_prob_files(nFold,phys_model,sub_dir):
+
+    prob_files=list()
+
+    for i in range(nFold):
+        pfile='OutputModel/'+sub_dir+'/prob'+phys_model+'_F{}o{}'.format(i,nFold)+'.npy'
+        prob_files.append(pfile)
+        pass
+    
+    return prob_files
+
+def analyze_data_folds(filedir,filename, models, tr_files, label, variables, phys_model,cut_values,sub_dir,syst_var,mass_points,debug=False):
+
+    prob_files = get_prob_files(len(models),phys_model,sub_dir)
+
+    use_app_randomlabel=False
+    if os.path.isfile(('OutputModel/'+sub_dir+'use_bkg_randomlabel')): use_app_randomlabel=True
+
+    data, X = read_data_apply(filedir+filename, tr_files, label, variables, prob_files, syst_var,mass_points=mass_points,use_app_randomlabel=use_app_randomlabel)
 
     if len(X)==0: return
     #print(len(data),len(X))
     
     pred_fold, proba_fold = calculate_pred_fold(models,data,X,cut_values)
-    save_file(data, pred_fold, proba_fold, filename, sigmodel, sub_dir,syst_var)
+    save_file(data, pred_fold, proba_fold, filename, phys_model, sub_dir,syst_var)
     if debug:
         for i in range(len(data['EventNumber'])):
             print (data['EventNumber'][i], proba_fold[i][0])
@@ -241,10 +258,61 @@ def read_sample_dir(input_dirpath):
         pass
     return list_bkg
 
+def parse_directory(sdir):
+
+    #get list of files in the dir, ordered with timestamp, latest at the end
+    paths = sorted(Path('OutputModel/'+sdir).iterdir(), key=os.path.getmtime)
+
+    strpaths=list()
+    # remove unnecessary files
+    for ppath in paths:
+        path=str(ppath)
+        if not('sigvalid' in path and '.h5' in path): continue
+        strpaths.append(path)
+        pass
+
+    # revert order
+    strpaths.reverse()
+
+    # remove remnants of old trainings
+    nFold=0
+    last_paths=list()
+    nFilled=0
+    for path in strpaths:
+        if nFilled==0: nFold = int(path[path.find('_F')+4:path.find('_F')+5])
+        last_paths.append(path)
+        nFilled+=1
+        if nFilled==nFold: break
+        pass
+
+    if nFilled<nFold:
+        print('Error: The number of model files is',nFilled,' which is smaller than the number of folds,',nFold)
+        print('Error: Abroting. Please make sure you have completed all trainings for every fold and model files exist in the directory.')
+        exit(1)
+        pass
+
+    #print(nFold,len(last_paths))
+    #for path in last_paths: print(path)
+
+    # revert back again and put together into a string
+    last_paths.reverse()
+    first_file=True
+    models_str=''
+    for path in last_paths:
+        if first_file:
+            models_str +=path[path.rfind('/')+1:]
+            first_file=False
+        else: models_str +=','+path[path.rfind('/')+1:]
+        pass
+    
+    #print(models_str)
+
+    return models_str
+    
     
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description = 'Apply NN on ntuples')
-    parser.add_argument("--input", help="Name of saved trained NN", default='GM_output_NN.h5', type=str)
+    parser.add_argument("--input", help="Name of saved trained NN", default='', type=str)
     parser.add_argument("--sdir", help="Subdirectory of saved output", default="", type=str)
     #parser.add_argument("--syst_var", help="Target systematic variation", default="nominal", type=str)
     parser.add_argument("--syst_list", help="list of systematic variation", default="syst_vars.list", type=str)
@@ -257,7 +325,14 @@ if __name__ == '__main__':
     args = parser.parse_args()
     print(args)
 
-    model_files,tr_files=parse_model_files(args.sdir,args.input)
+    #If there's no argument given, dig into the directory automatically
+    input_models = parse_directory(args.sdir)
+    if args.input!='': input_models = args.input
+    else:
+        print("No input argument was given, the specified directory is used to find the following models")
+        print(input_models)
+
+    model_files,tr_files=parse_model_files(args.sdir,input_models)
 
     print()
     print(model_files)

@@ -38,7 +38,8 @@ def AMS(s, b):
     return significance
 
 ##########################################################
-def read_data_apply(filepath, tr_files, Label, variables,model,syst_var,mass_points,apply_transform=True,debug=False):
+def read_data_apply(filepath, tr_files, Label, variables,prob_files,syst_var,mass_points,apply_transform=True,use_app_randomlabel=False,debug=False):
+    
     data = read_data(filepath,isApplication=True,syst_var=syst_var)
 
     nFold=len(tr_files)
@@ -46,7 +47,7 @@ def read_data_apply(filepath, tr_files, Label, variables,model,syst_var,mass_poi
     X = data[variables]
 
     if debug: print("before\n",X)
-    if apply_transform:
+    if apply_transform: #KM: Here, applying the following transformation to the input variables to match what's done in the training
         #X= (X-X_mean)/X_dev
         tr_lists = list()
         for trFile in tr_files: 
@@ -70,17 +71,18 @@ def read_data_apply(filepath, tr_files, Label, variables,model,syst_var,mass_poi
         if debug: print(type(X),np.shape(X))
 
         pass
-    if debug: print("after\n",X)
+    if debug: print("after transformation:\n",X)
 
     if (Label>-1): X['LabelMass']=Label
     else:
-        if   model=='GM' : prob=np.load('probGM.npy')
-        elif model=='HVT': prob=np.load('probHVT.npy')
-        elif model=='QQ' : prob=np.load('probQQ.npy')
-
-        label=np.random.choice(prob.shape[0],X.shape[0], p=prob)
-        #X['LabelMass'] = label
-        X['LabelMass'] = get_mass_label(data["M_WZ"],mass_points)
+        #KM: As far as -1 is given in the Apply_NN.py, it comes here
+        label = get_mass_label(data["M_WZ"],mass_points)
+        if use_app_randomlabel:
+            #prob=np.load(prob_file)
+            #label=np.random.choice(prob.shape[0],X.shape[0], p=prob)
+            label = get_mass_label_random(data,X,prob_files)
+            pass
+        X['LabelMass'] = label
         pass
 
     data = data.reset_index(drop=True) # now remove index again
@@ -169,6 +171,27 @@ class dataset:
         #self.X_test['LabelMass']=test[['LabelMass']]
 
 ##########################################################
+def get_mass_label_random(data,X,prob_files):
+
+    #Read all probs
+    probs=list()
+    for pfile in prob_files: probs.append(np.load(pfile))
+
+    #Store all set of mass labels for every fold
+    mlabels = list()
+    for i in range(len(probs)): mlabels. append( np.random.choice(prob.shape[0],X.shape[0], p=probs[i]) )
+
+    #Overwrite fold-0 with correct list_idx
+    for idx in range(len(labels[0])):
+        list_idx=data['EventNumber'][idx]%len(mlabels)
+        mlabels[0][idx] = mlabels[list_idx][idx]
+        pass
+    
+    #Extract necessary=overwritten fold
+    mlabel=mlabels[0]
+
+    return mlabel
+
 def get_mass_label(mWZ,mass_points,debug=False):
 
     #bars = [225,275,325,375,425,475,550,650,750,850,950]
@@ -209,7 +232,7 @@ def conv_mass_points(mass_points_str):
     return mass_points_float
         
 ##########################################################
-def prepare_data(input_samples,model,Findex,nFold,arg_switches=list(),mass_window=True, mass=0,mass_points=[200],use_signal_masslabel=False):
+def prepare_data(input_samples,model,Findex,nFold,arg_switches=list(),mass_window=True, mass=0,mass_points=[200],use_sig_masslabel=False,use_bkg_randomlabel=False):
     """Read background and signal files and save them as panda data frames"""
 
     #Names of bck samples
@@ -279,7 +302,7 @@ def prepare_data(input_samples,model,Findex,nFold,arg_switches=list(),mass_windo
         sample = read_data(input_samples.filedirsig+namessig[i],mass_window=mass_window, mass=mass,isSignal=True)
         #sample['Weight']=sample['Weight']*input_samples.lumi*xssig[i]/neventssig[i]  #KM: This is done in WeightNormalized
 
-        if use_signal_masslabel: 
+        if use_sig_masslabel: 
             sample['LabelMass'] = i
             print(namessig[i],"\tLabelMass=",i)            
         else:
@@ -296,14 +319,9 @@ def prepare_data(input_samples,model,Findex,nFold,arg_switches=list(),mass_windo
     sig['Label'] = '1'
 
     #Apply random mass label to bkg
-    label= get_mass_label(bg['M_WZ'],mass_points) #np.random.choice(len(namessig),bg.shape[0], p=prob)
-
+    label= get_mass_label(bg['M_WZ'],mass_points)
+    if use_bkg_randomlabel: label= np.random.choice(len(namessig),bg.shape[0], p=prob)
     bg['LabelMass'] = label
-
-    #Save prob distribution
-    if   model=='GM' : np.save('./probGM',  prob)
-    elif model=='HVT': np.save('./probHVT', prob)
-    elif model=='QQ' : np.save('./probQQ',  prob)
 
     #KM: now add sig+bkg to get entire 'data' sample
     data=bg.append(sig)#, sort=True)
@@ -312,7 +330,7 @@ def prepare_data(input_samples,model,Findex,nFold,arg_switches=list(),mass_windo
     # Pick a random seed for reproducible results
     transform=list()
     data_cont = dataset(data,input_samples.trafrac,input_samples.variables,model,nFold,Findex,transform)
-    return data_cont,switches,transform
+    return data_cont,switches,transform,prob
 
 ##########################################################
 #Draws Control plot for Neural Network classification
@@ -398,7 +416,7 @@ def calc_sig_new(data_set, prob_predict_train, prob_predict_valid, file_string, 
 
     mass_idx=-1 #default for inclusive masses
     if do_single_mass: mass_idx=masspoints.index(mass)
-    print("current mass point and index =",mass,mass_idx)
+    #print("current mass point and index =",mass,mass_idx)
 
     if not do_single_mass: apply_mass_window=False
 

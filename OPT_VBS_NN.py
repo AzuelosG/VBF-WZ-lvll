@@ -68,6 +68,8 @@ if __name__ == '__main__':
     parser.add_argument('--patience', help = "Specifies the patience for early stopping", default=5, type=int)
     parser.add_argument('--no_train', help = "Skip training process", default=False, type=bool)
     parser.add_argument('--mass_points', help = "mass points to be included in the training", default=list(), type=int,nargs='+')
+    parser.add_argument('--use_sig_masslabel', help = "signal mass label to be the same as mass point, not as a func of mass.", default=False, type=bool)
+    parser.add_argument('--use_bkg_randomlabel', help = "bkg mass label to be random in the training", default=False, type=bool)
     parser.add_argument('--nFold', help = "number of folds", default=2, type=int)
     parser.add_argument('--Findex', help = "index in nfolds", default=0, type=int)
     parser.add_argument('--sdir', help = 'Name of subdirectory within Controlplots/', default='', type=str)
@@ -95,12 +97,11 @@ if __name__ == '__main__':
 
     mass_list = [200,225,250,275,300,325,350,375, 400,425, 450,475, 500,525, 550, 600,700,800,900,1000]  # for GM model
     if args.model=="HVT": mass_list = [250,300,350,400,450,500,600,700,800,900,1000]
-#    if args.model=="QQ":  mass_list = [m for m in range(250,350,400,450,500,600,700,1000)]   # sig_HVT list
     if args.model=="QQ":  mass_list = [500,600,700,800,900,1000]   # sig_HVT list, same masses for signal and background
 
-#    if args.model=="HVT" and 200 in args.mass_points:
-#        print ("WARNING: you specified 200 GeV mass point for HVT which does not exist, 200 GeV will be removed!!")
-#        args.mass_points.remove(200)
+    if args.model=="HVT" and 200 in args.mass_points:
+        print ("WARNING: you specified 200 GeV mass point for HVT which does not exist, 200 GeV will be removed!!")
+        args.mass_points.remove(200)
 #    elif args.model=="GM" and 1000 in args.mass_points:
 #        print ("WARNING: you specified 1000 GeV mass point for GM which does not exist, 1000 GeV will be removed!!")
 #        args.mass_points.remove(1000)
@@ -122,7 +123,8 @@ if __name__ == '__main__':
 
     #KM: create list of integers from mass_points
     mass_points_float=conv_mass_points(args.mass_points)
-    data_set,tmp_switches,transform = prepare_data(input_sample, args.model, args.Findex, args.nFold, arg_switches=tmp_switches, mass_window=mwin, mass=mss,mass_points=mass_points_float)
+    data_set,tmp_switches,transform,prob= prepare_data(input_sample, args.model, args.Findex, args.nFold, arg_switches=tmp_switches, mass_window=mwin, mass=mss,mass_points=mass_points_float,use_sig_masslabel=args.use_sig_masslabel,use_bkg_randomlabel=args.use_bkg_randomlabel)
+    np.save('./OutputModel/'+args.sdir+'/prob'+args.model+('_F{}o{}'.format(args.Findex,args.nFold)), prob)
 
     ar_switches = np.array(tmp_switches)
     ar_mass     = np.array(mass_list)
@@ -169,9 +171,12 @@ if __name__ == '__main__':
     #    f.write(model.to_json())
 
     #Define checkpoint to save best performing NN and early stopping
-    path='./OutputModel/'+args.sdir+'/'+nameadd+'checkpoint_NN.h5'
+    path='./OutputModel/'+args.sdir+'/'+nameadd+'_checkpoint_NN.h5'
     #checkpoint=keras.callbacks.ModelCheckpoint(filepath='output_NN.h5', monitor='val_acc', verbose=args.v, save_best_only=True)
     callbacks=[EarlyStopping(monitor='val_loss', patience=args.patience),ModelCheckpoint(filepath=path, monitor='val_loss', verbose=args.v, save_best_only=True)]
+
+    if args.use_sig_masslabel:   Path('./OutputModel/'+args.sdir+'/use_sig_masslabel').touch()
+    if args.use_bkg_randomlabel: Path('./OutputModel/'+args.sdir+'/use_bkg_randomlabel').touch()
 
     if not args.no_train:
         # Train Model
