@@ -202,6 +202,8 @@ def get_mass_label(mWZ,mass_points,debug=False):
 #            575,650,750,850,950]
 #    print(bars)
 
+    if len(mass_points)==1: return np.zeros(len(mWZ))
+
     bars=list()
     for i in range(len(mass_points)-1): bars.append( (mass_points[i]+mass_points[i+1])/2 )
 
