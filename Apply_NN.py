@@ -317,7 +317,7 @@ if __name__ == '__main__':
     #parser.add_argument("--syst_var", help="Target systematic variation", default="nominal", type=str)
     parser.add_argument("--syst_list", help="list of systematic variation", default="syst_vars.list", type=str)
     parser.add_argument("--run_systematics", help="Bool whether to run syst variations", default=False, type=bool)
-    parser.add_argument("--target_dir", help="Target directory of root files to apply NN ouput", default="", type=str)
+    parser.add_argument("--target_dir", help="Target directory of root files to apply NN ouput", default="Inputs/", type=str)
     parser.add_argument("--single_file", help="Single target file", default="", type=str)
     parser.add_argument('--mass_points', help = "mass points to be included in the training", default=list(), type=int,nargs='+')
     # parser.add_argument("--phys_model", help="Specify Model (HVT or GM)", default='GM', type=str)
