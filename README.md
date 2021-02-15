@@ -36,11 +36,13 @@ You can have a look at the list of input features [here](config_OPT_NN.py#L149-L
 ### NN model and hyper-parameters
 The model we fit/train is a simple fully connected NN. The configurable hyper-parameters can be found [here](OPT_VBS_NN.py#L64-L71).
 The typical ones are:
-* number of layers
-* number of neurons per layer, currently chosen as 3. 
-* learning rate
+* epochs: number of epochs to run in the training. Training stops after seeing no improvement for n epochs you designate by the patience parameter
+* numlayer: number of hidden layers
+* numn: number of neurons per layer
+* lr: learning rate
 * momentum
-* patience
+* patience: patience parameter. Training automatically stops after N epochs without any improvemnt in the loss.
+* dropout: fraction that is droped out in the NN training, has an averaging effect which mitigates the overtraining. See [this link]() for details.
 
 The input is split into a training and validation set in percentage ratio 70%/30% (testing set will be added soon).
 After each epoch the accuracy is measured on the validation set and only the model with best performance is saved.
@@ -60,49 +62,91 @@ General explanation of the cross vadlidation can be found in [this link](https:/
 
 </details>
 
-### Running examples:
-Currently for running examples, see:
-* [README_GM](README_GM.md) 
-* [README_HVT](README_HVT.md)
-* [README_QQ](README_QQ.md)
+# How to run training and application processes
 
-### Running training process
+## Running training process
 <details> <summary>Expand/collapse the command</summary>
 
-    python3 OPT_VBS_NN.py --mass_points 200 225 250 275 300 325 350 375 400 425 450 475 500 525 550 600 700 800 900 1000 --model GM --dropout=0.20 --lr=0.013 --patience=18 --numn=10 --numlayer=3 --epochs=30 --Findex 0 --nFold 4 --sdir mMultiTest0
+    python3 OPT_VBS_NN.py --mass_points 200 225 250 275 300 325 350 375 400 425 450 475 500 525 550 600 700 800 900 1000 --model GM --dropout=0.20 --lr=0.013 --patience=18 --numn=10 --epochs=30 --Findex 0 --nFold 4 --sdir mMultiTest0
 where the options for this command looks like below:
+   * For **dropout**, **lr**, **patience**, **numn**, **numlayer**, **epochs**, see the hyper-parameter section above.
    * **mass_points**: the mass point you want to use for your training
-   * **model**: The physics model
-   * **dropout**: Dropout fraction used in the NN training.
-   * **lr**: learning rate
-   * **patience**: patience parameter to designate how many epochs you want to see if the training doesn't improve anymore.
-   * **numn**: number of neurons per layer
-   * **numlayer**: number of hidden layers in the network
-   * **epochs**: number of epochs you run in the training. Training still stops after seeing no improvement for the number you designate by the patience parameter.
+   * **model**: The physics model either of [GM, HVT, QQ]
    * **Findex**: index of the n-fold cross validation.
    * **nFold**: number of folds you use for cross-validation.
    * **sdir**: output subdirecotry you store almost all of your output. This will be always under the *OutputModel* directory.
 
 </details>
 
-### Running application process
+## Running application process
 <details> <summary>Expand/collapse the command</summary>
 
 The basic command to apply the NN to the ntuple looks like below.
 
-    python3 Apply_NN.py --sdir mMulti_test --target_dir=./Inputs/
+    python3 Apply_NN.py --sdir mMulti_test
 where the options for this command looks like the following:
    * **sdir**: Sub-directory. This has to correspond to the direcotry under *OutputModel/* which stores your output model files from trainings you ran for all folds.
    * **input**: This used to be a mandatory argument but not any more. You can still give this option to the command for which case it will use the argument given. If this argument was not given, the code will look into the *sdir* above and automatically selects the output model files by looking at the timestamps and the names of the files. It will use the latest model files produced. The older model files are going to be ignored. So make sure to use this option if you want to apply your old trainings in the same directory.
-   * **target**: This is the directory containing your 'target' ntuple files. It will look into the direcotry automatically and apply the NN to all of the samples/files inside, unless the next option is given.
+   * **target_dir**: This is the directory containing your 'target' ntuple files. It will look into the direcotry automatically and apply the NN to all of the samples/files inside, unless the next option is given.
    * **single_file**: If you give this option, it will apply NN only to the single sample you designated. This is to speed up the processing time for many systematic variations because this allows each job to take care of all the systematic variations in the *single file*, and you can run many jobs in parallel so that the total processing time is reduced typically from ~1 day to a few hours, compared to a single job taking care of all the samples and the systematic variations.
    * **run_systematics**: Whether to run the systematic variations or not. When given it will look at a list file to refer the names of the systematic variations.
    * **syst_list**: Totally optional to use this argument. Once given, it will look into the file which lists all the systematic variations. This is useful when you want to apply NN only to some specific systematic variations.
+</details>
 
+## Work flow examples:
+
+
+### Running many single mass point trainings and apply
+<details> <summary>Expand/collapse the command</summary>
+
+The example command to submit many single-masspoint trainings can be found in [train_single_masspoints.sh](train_single_masspoints.sh).
+This produces output files (pkl, and h5) under *ControlPlots/GM_test/m200/*.
+
+Choose  all masses in config_OPT_NN.py, array "shortlist"
+
+    list_apply_bkg = [
+        'resonance.364253_Sherpa_222_NNPDF30NNLO_lllv_ntuples.0.root',
+        'resonance.364742_MGPy8EG_NNPDF30NLO_A14NNPDF23LO_lvlljjEW6_SFPlus_ntuples.root'
+        ]
+    #GM  sig files to apply NN to
+        shortList= [
+      450765,  502511,  450766,  502512,  450767,  502513,  450768,  502514,  450769,  502515,  450770,  502516,  450771,  502517,  502518,  502519,  502520,  502521,  502522, 502523]
+
+The example command to apply many single-masspoints can be found in [apply_single_masspoints.sh](apply_single_masspoints.sh).
+This produces output files (root) under *OutputRoot/GM_test/m200/*
+
+edit  pSignal_cv_plotting.C (see "parameters to edit")
+
+    //========================== PARAMETERS TO EDIT ================================
+    string savedir = "ControlPlots/GM_test/";   // MAKE SURE PSIGNAL EXISTS IN SUBDIRECTORY
+    string rdir   = "OutputRoot/GM_test/";       // Subdirectory containing the root files produced by appluing the NN
+    string model  = "GM";            // Model used
+    string opt_ID = "_";    // Optional file name identification
+    //=======================================================================
+    
+Run the following command
+
+    root -l pSignal_cv_plotting.C
+
+which produces png files under *ControlPlots/GM_03-02-2021/m200/*
+
+edit nn_per_mass.C and set:
+
+    vector<int> masses{0,200,225,250,275,300,325, 350, 375, 400,425,450,475, 500,525,550,600,700,800,900,1000}; // background + masses for which trained NN was applied
+
+then run
+
+    python3 nn_per_mass.py "GM_test" "m300"
 
 </details>
 
-### Useful git-specific commands:
+
+
+* [README_HVT](README_HVT.md)
+* [README_QQ](README_QQ.md)
+
+
+# Useful git-specific commands:
 <details>
   <summary>Click to expand!</summary>
 Setting up the recommended (and less buggy) git version and enabling coloring:
