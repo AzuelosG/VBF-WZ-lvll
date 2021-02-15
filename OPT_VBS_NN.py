@@ -60,12 +60,16 @@ if __name__ == '__main__':
     parser.add_argument("--v", "--verbose", help="increase output verbosity", default=0, type=int)
     parser.add_argument("--model", help="Specify Model (HVT or GM or QQ)", default='GM', type=str)
     parser.add_argument("--output", help="Specify Output name", default='', type=str)
+
+    #NN specific arguments/options
     parser.add_argument('--numlayer', help = "Specifies the number of layers of the Neural Network", default=3, type=int)
     parser.add_argument('--numn', help = "Specifies the number of neurons per hidden layer", default=200, type=int)
     parser.add_argument('--lr','--learning_rate', help = "Specifies the learning rate for SGD optimizer", default=0.01, type=float)
+    parser.add_argument('--momentum', help = "Momentum", default=0.6, type=float)
     parser.add_argument('--dropout', help = "Specifies the applied dropout", default=0.05, type=float)
     parser.add_argument('--epochs', help = "Specifies the number of epochs", default=80, type=int)
     parser.add_argument('--patience', help = "Specifies the patience for early stopping", default=5, type=int)
+    
     parser.add_argument('--no_train', help = "Skip training process", default=False, type=bool)
     parser.add_argument('--mass_points', help = "mass points to be included in the training", default=list(), type=int,nargs='+')
     parser.add_argument('--use_sig_masslabel', help = "signal mass label to be the same as mass point, not as a func of mass.", default=False, type=bool)
@@ -157,7 +161,7 @@ if __name__ == '__main__':
     model=KerasModel(shape_train[1],args.numlayer,args.numn,args.dropout)
     
     #Possible optimizers
-    sgd = optimizers.SGD(lr=args.lr, decay=1e-6, momentum=0.6, nesterov=True)
+    sgd = optimizers.SGD(lr=args.lr, decay=1e-6, momentum=args.momentum, nesterov=True)
     ada= optimizers.Adadelta(lr=1, rho=0.95, epsilon=None, decay=0.01)
     nadam=keras.optimizers.Nadam(lr=0.002, beta_1=0.9, beta_2=0.999, epsilon=None, schedule_decay=0.004)
 
