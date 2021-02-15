@@ -95,6 +95,16 @@ where the options for this command looks like the following:
 
 ## Work flow examples:
 
+### Running one training for all mass points and apply
+<details> <summary>Expand/collapse the command</summary>
+
+    #1. Run 4 trainings for 4 fold
+    for i in {0..3}; do python3 OPT_VBS_NN.py --mass_points 200 225 250 275 300 325 350 375 400 425 450 475 500 525 550 600 700 800 900 1000 --model GM --dropout=0.20 --lr=0.013 --patience=18 --numn=10 --epochs=30 --Findex $i --nFold 4 --sdir testGM >& testGM_$i.log &; done
+    #2. Apply NN to ntuples
+    python3 Apply_NN.py --sdir testGM
+    #3. analyse
+
+</details>
 
 ### Running many single mass point trainings and apply
 <details> <summary>Expand/collapse the command</summary>
