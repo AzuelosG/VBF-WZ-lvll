@@ -15,42 +15,45 @@ From the next time you login each time (you have to be in the main directory):
 
     source setup.sh
 
-General information about the code:
--------------------------------
+# General information about the code:
 <details> <summary>Expand/collapse details</summary>
 
-Configuration of trainings:
-Training configuration is stored inside this python script: *config_OPT_NN.py*. It contains all relevant settings like:
-* hyper-parameters
-* list of input variables
-* list of samples used for backgrounds and signals
-
-The NN models are implemented using the Keras package with Tensoflow as backend. 
-The training dataset used is a set of simple ntuples containing all the necessary variables like Mjj, Detajj etc.
+## Configuration of trainings:
+General training configuration is stored in the file [config_OPT_NN.py](config_OPT_NN.py). It contains relevant settings like samples and input variables, which are detailed below.
+The NN model is implemented in [this part](OPT_VBS_NN.py#L25-L37) using the Keras package with Tensoflow as backend. 
+The training dataset used is a set of simple root ntuples containing all the necessary variables like Mjj, Detajj etc.
 
 ### Samples
 * Backgrounds: Your background is a combination of the SM WZ QCD and WZ EW processes. See [here](config_OPT_NN.py#L81-L90) for the actual samples used.
 * Signals: You can choose either of the following as your signal:
-  * the combined GM H5 samples 
-  * the HVT signal samples
+  * [GM signal samples](config_OPT_NN.py#L100-L122)
+  * [HVT signal samples](config_OPT_NN.py#L132-L144)
   * the QQ signal samples
 
 ### Input features/variables
-You can have a look at the list of input features in [this part of the code](config_OPT_NN.py#L149-L160)
+You can have a look at the list of input features [here](config_OPT_NN.py#L149-L160)
 
-### Hyperparameter configuration of the network
-This is a simple fully connected NN, the principal hyper parameters are:
-* the number of layers
+### NN model and hyper-parameters
+The model we fit/train is a simple fully connected NN. The configurable hyper-parameters can be found [here](OPT_VBS_NN.py#L64-L71).
+The typical ones are:
+* number of layers
 * number of neurons per layer, currently chosen as 3. 
-* the learning rate
-* momentum.  
+* learning rate
+* momentum
+* patience
 
 The input is split into a training and validation set in percentage ratio 70%/30% (testing set will be added soon).
 After each epoch the accuracy is measured on the validation set and only the model with best performance is saved.
-Each signal mass is assigned a label corresponding to the resonance mass.
-The background events have a randomly assigned label, taken of the same probability distribution as the signals.
-This should allow an optimal performance for all resonance masses. All Hyperparameters can be specified (see help). 
-Currently the number of folds is decided to be at least 4. 
+
+### Mass label
+In order to perform only one training that can take care of all signal mass points at the same time. One important technique, tentatively called 'mass label', is employed.
+Each signal mass is assigned with a label corresponding to the resonance mass, either by looking at the sample or the reconstructed resonnance mass:
+   * if you pass the option [*--use_sig_masslabel=True*](OPT_VBS_NN.py#L75) with three mass points of [200, 300, 400] for instance, they will have the mass labels of [0, 1, 2], respecitvely.
+   * if you don't pass the option of *use_sig_masslabel*, the mass label is determined by the reconstructed M_WZ (0 if M_WZ<250, 1 if 250<M_WZ<350, 2 if 350<MWZ).
+
+The background events can have either of the following two options for the mass labels
+   * a randomly assigned label is used if the option [*--use_bkg_randomlabel=True*](OPT_VBS_NN.py#L76) is given. It takes of the same probability distribution as the signals, hence should allow an optimal performance for all resonance masses.
+   * when the above option isn've give, the label will be determined by looking at reconstructed M_WZ, just like the signal example.
 
 ### n-fold cross-validation
 General explanation of the cross vadlidation can be found in [this link](https://towardsdatascience.com/cross-validation-explained-evaluating-estimator-performance-e51e5430ff85). It allows us to fully use the available statistics for our benchmark evaluation. So this becomes very powerful when your available statistics is limited. In the training command, you can find two arguments. *Findex* and *nFold* correspond to the index and the number of folds, respectively. The Findex runs from 0 to nFold-1, so in our example from 0 to 3, while your number of fold sticks always at 4.
