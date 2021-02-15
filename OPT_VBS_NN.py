@@ -175,7 +175,7 @@ if __name__ == '__main__':
     #    f.write(model.to_json())
 
     #Define checkpoint to save best performing NN and early stopping
-    path='./OutputModel/'+args.sdir+'/'+nameadd+'_checkpoint_NN.h5'
+    path='./OutputModel/'+args.sdir+'/'+nameadd+'_F{}o{}'.format(args.Findex,args.nfold)+'_checkpoint_NN.h5'
     #checkpoint=keras.callbacks.ModelCheckpoint(filepath='output_NN.h5', monitor='val_acc', verbose=args.v, save_best_only=True)
     callbacks=[EarlyStopping(monitor='val_loss', patience=args.patience),ModelCheckpoint(filepath=path, monitor='val_loss', verbose=args.v, save_best_only=True)]
 
