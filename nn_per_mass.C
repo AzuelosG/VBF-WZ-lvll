@@ -83,6 +83,9 @@ string get_file_name(int mass, string phys_model="GM") {
   
 // ======================================================
 
+float width=0.4;
+float m_lo=1-width,m_up=1+width;
+
 string QQ_filename(int mass) {
   // HVT's qq-fusion ntuples' filenames per mass
   string insert_str="main";
@@ -103,15 +106,16 @@ string QQ_filename(int mass) {
 int get_color(int mass) {
 
   int color = kBlack;
-  if      (mass==225 or mass==1000 or mass==1800)  color=kBlue;
-  else if(mass==250 or mass==1000 or mass==1800)  color=kGray+2;
-  else if (mass==300 or mass==1100 or mass==1900)  color=kMagenta;
-  else if (mass==400 or mass==1200 or mass==2000)  color=kBlue; 
-  else if (mass==500 or mass==1300)                color=kCyan+2;
-  else if (mass==600 or mass==1400)                color=kGreen+2; 
-  else if (mass==700 or mass==1500)                color=kYellow+2;
-  else if (mass==800 or mass==1600)                color=kOrange;
-  else if (mass==900 or mass==1700)                color=kRed;
+  if      (mass==200 or mass== 450 or mass==1100)  color=kBlue-5;
+  else if (mass==225 or mass== 475 or mass==1200)  color=kGray+2;
+  else if (mass==250 or mass== 500 or mass==1300)  color=kMagenta;
+  else if (mass==275 or mass== 525 or mass==1400)  color=kBlue;
+  else if (mass==300 or mass== 550 or mass==1500)  color=kCyan+1;
+  else if (mass==325 or mass== 600 or mass==1600)  color=kGreen+3; 
+  else if (mass==350 or mass== 700 or mass==1700)  color=kYellow+2;
+  else if (mass==375 or mass== 800 or mass==1800)  color=kOrange;
+  else if (mass==400 or mass== 900 or mass==1900)  color=kRed;
+  else if (mass==425 or mass==1000 or mass==2000)  color=kRed+3;
 
   return color;
 }
@@ -152,9 +156,6 @@ TH1F* get_bkg_hist(TString phys_model="GM") {
   return hist;
 }
 
-float mfac=20;
-
-
 // ======================================================
 TH1F* get_hist(int mass,TString phys_model="GM", bool qqplot=false) {
 
@@ -170,7 +171,7 @@ TH1F* get_hist(int mass,TString phys_model="GM", bool qqplot=false) {
     //    cout<< "histName = " << histName<<std::endl;
 
     hist = new TH1F(histName ,title,nbins,xmin,xmax);
-    select_weight += "*(abs(Weight)<10)";
+    //select_weight += "*(abs(Weight)<10)";//No longer needed
     t->Project(hist->GetName(),proj_str,select_weight,proj_option);
   }
 
@@ -222,27 +223,31 @@ float AMS(float s, float b, bool debug=false, float br=0) {
 
 float Nsig_ocv, Nbkg_ocv, Nsig_cv, Nbkg_cv, AMS_cv;
 int tmCV;
-TH1F* get_significance_hist(TH1F* h_sig, TH1F* h_bkg, float sf, bool is_tm=false) {
+TH1F* get_significance_hist(TH1F* h_sig, TH1F* h_bkg, float sf=1, bool is_tm=false) {
   //  cout << " ==>>>> creating h_sig " << endl;  
   TString hname="significance_";
-  TH1F* significance = new TH1F("significance",title,nbins,xmin,xmax);
+  TH1F* significance = (TH1F*) h_sig->Clone(hname+h_sig->GetName());
+  significance->Reset();
   significance->SetTitle("Significance for yield / 140fb-1");
 
   h_sig->Scale(sf);
   h_bkg->Scale(sf);
-  const int nb = significance->GetNbinsX();
-  float Nsig[nb], Nbkg[nb];
+  
+  float Nsig[significance->GetNbinsX()], Nbkg[significance->GetNbinsX()];
 
-  for( int i=0; i<nb; i++) {
+  for( int i=0; i<significance->GetNbinsX()+1; i++) {
     Nsig[i] = h_sig->Integral(i,h_sig->GetNbinsX());
-    Nbkg[i] = h_bkg->Integral(i,h_bkg->GetNbinsX());
+    Nbkg[i] =  h_bkg->Integral(i,h_bkg->GetNbinsX());
     //    cout << "i = " << i <<","<< Nsig[i] <<","<< Nbkg[i] <<","<< endl;
-    significance->SetBinContent(i,AMS(Nsig[i],Nbkg[i]));
+    significance->SetBinContent(i, AMS( Nsig[i], Nbkg[i]) );
   }
   
+  //bin number of optimal cut
   int ocv_bin = significance->GetMaximumBin();
-  Nsig_ocv = Nsig[ocv_bin];  
+  Nsig_ocv = Nsig[ocv_bin];
   Nbkg_ocv = Nbkg[ocv_bin];
+
+  std::cout<<". Optimal cut for this mass: " << significance->GetBinLowEdge(ocv_bin)<<std::endl;
 
   if (is_tm) tmCV = ocv_bin;
   Nsig_cv = Nsig[tmCV];
@@ -254,18 +259,17 @@ TH1F* get_significance_hist(TH1F* h_sig, TH1F* h_bkg, float sf, bool is_tm=false
 
 // ======================================================
 
-void nn_per_mass(string dir="", string name="",TString varname="pSignal_GM",bool norm2yield=true, TString phys_model="GM", bool drawCB=true, bool mMulti=false) {
+void nn_per_mass(string dir="", string name="",TString varname="pSignal_GM",bool norm2yield=true, TString phys_model="GM", bool drawCB=true, bool mMulti=true) {
 
-  if (norm2yield) mfac=20;
+  //if (norm2yield) mfac=20;
+  if (!norm2yield) proj_option="norm"; //normalize to 1
 
   idir  = dir;   // first input argument
   tmass = name;
-  //  sdir  = idir+'/'+ (tmass=="mMulti" ? "" : tmass+"/");
+
   sdir  = idir+ "/"+(tmass=="mMulti" ? "" : tmass+"/");
 
-  if      (varname == "pSignal_GM"     ) title="NN output : "+tmass, proj_str=varname, nbins = 50, xmin =0, xmax = 1;
-  else if (varname == "pSignal_HVT"     ) title="NN output : "+tmass, proj_str=varname, nbins = 50, xmin =0, xmax = 1;
-  else if (varname == "pSignal_QQ"     ) title="NN output : "+tmass, proj_str=varname, nbins = 50, xmin =0, xmax = 1;
+  if      (varname .Contains("pSignal") ) title="NN output : "+tmass, proj_str=varname, nbins = 100, xmin =0, xmax = 1;
   else if (varname == "M_WZ"        ) title=varname, proj_str=varname, nbins = 25, xmin =0, xmax = 1500;
   else if (varname == "M_jj"        ) title=varname, proj_str=varname, nbins = 50, xmin =0, xmax = 1500;
   else if (varname == "ZetaLep"     ) title=varname, proj_str=varname, nbins = 50, xmin =-3.5, xmax = 3.5;
@@ -298,38 +302,33 @@ void nn_per_mass(string dir="", string name="",TString varname="pSignal_GM",bool
   else if (varname == "Lep1Pt"      ) title=varname, proj_str= varname, nbins = 50, xmin =0, xmax = 500;
   else if (varname == "Lep2Pt"      ) title=varname, proj_str= varname, nbins = 50, xmin =0, xmax = 500;
   else if (varname == "Lep3Pt"      ) title=varname, proj_str= varname, nbins = 50, xmin =0, xmax = 300;
-  else if (varname == "Lep1Eta"      ) title=varname, proj_str= varname, nbins = 50, xmin =-2.5, xmax = 2.5;
-  else if (varname == "Lep2Eta"      ) title=varname, proj_str= varname, nbins = 50, xmin =-2.5, xmax = 2.5;
-  else if (varname == "Lep3Eta"      ) title=varname, proj_str= varname, nbins = 50, xmin =-2.5, xmax = 2.5;
+  else if (varname == "Lep1Eta"     ) title=varname, proj_str= varname, nbins = 50, xmin =-2.5, xmax = 2.5;
+  else if (varname == "Lep2Eta"     ) title=varname, proj_str= varname, nbins = 50, xmin =-2.5, xmax = 2.5;
+  else if (varname == "Lep3Eta"     ) title=varname, proj_str= varname, nbins = 50, xmin =-2.5, xmax = 2.5;
 
   // Jet1Phi // Jet1Y           // Mt_WZ
   // Jet2Phi // Jet2Y           // M_Z
   // Jet3Phi // Jet3Y           
 
-  else proj_option="norm"; //normalize to 1
-  
-  vector<int> masses{0,200,225,250,275,300,325, 350, 375, 400,425,450,475, 500,525,550,600,700,800,900,1000}; // background + masses for which trained NN was applied
-  //   vector<int> masses{0,200,275,350,400,600,800,1000};
-//  vector<int> masses{0,200,300,400,500,700,1000};
-  //  vector<int> masses{0,250,350,400,600};
-  //  vector<int> masses{0,225,250,300};
-  //  vector<int> masses{0,250,350,400}; // backg + masses for which NN as applied
+  // Mass points for GM
+  vector<int> masses{0, 200,225,250,275, 300,325,350,375, 400,425,450,475, 500,525,550, 600,700,800,900,1000}; // background + masses for which trained NN was applied
+
   if (phys_model=="QQ") masses={0,600};
   int      hms = masses.size()/2+1;
-  const int ms = masses.size();
+  //const int ms = masses.size();
   
-  TCanvas* c1 = new TCanvas ("name", "title", 800, 400);
+  TCanvas* c1 = new TCanvas ("name", "title", 1200, 600);
   c1->Divide(2,1);
   
   c1->cd(1);
-  auto legend1 = new TLegend(0.7,0.7,0.9,0.9);
+  auto legend1 = new TLegend(0.6,0.6,0.9,0.9);
   legend1->SetHeader("Mass (GeV)","C"); 
   legend1->SetFillStyle(0); 
   legend1->SetLineWidth(0); 
   legend1->SetNColumns(2);
   
   c1->cd(2);
-  auto legend2 = new TLegend(0.7,0.7,0.9,0.9);
+  auto legend2 = new TLegend(0.6,0.6,0.9,0.9);
   legend2->SetHeader("Mass (GeV)","C"); 
   legend2->SetFillStyle(0); 
   legend2->SetLineWidth(0); 
@@ -343,7 +342,7 @@ void nn_per_mass(string dir="", string name="",TString varname="pSignal_GM",bool
   c1->cd(1); 
   auto legend=legend1;
   //  TH1F* hist;   // GA: commented out
-  char smass[3];
+  TString smass;
   
   for (auto mass : masses) {
     
@@ -354,7 +353,7 @@ void nn_per_mass(string dir="", string name="",TString varname="pSignal_GM",bool
     if (mass==masses[hms]) {
       legend->Draw();
       gStyle->SetOptStat(0);
-      if (varname=="pSignal" and norm2yield) gPad->SetLogy();
+      if (varname.Contains("pSignal") and norm2yield) gPad->SetLogy();
       c1->cd(2); 
       legend=legend2; 
     
@@ -364,11 +363,11 @@ void nn_per_mass(string dir="", string name="",TString varname="pSignal_GM",bool
       hist->Draw(option);
       hists[mass]  = hist;  // GA: added
       //      cout << " hists[mass] , mass = " << mass << endl;
-      sprintf(smass, "%s", "BKG");
+      smass= "BKG";
       legend->AddEntry(hist,smass,"f");
     }
 
-    if (mass != 0) select_weight += Form("*(M_WZ>(%i*0.6)*(M_WZ<(%i*1.4)))",mass,mass);   
+    if (mass != 0) select_weight += Form("*(M_WZ>(%i*%f)*(M_WZ<(%i*%f)))",mass,m_lo,mass,m_up);
     // Background histogram
     hists_bkg[mass] = get_hist(0,phys_model.Data());
     //    cout << " hists_bkg[mass] , mass = " << mass << endl;
@@ -379,7 +378,7 @@ void nn_per_mass(string dir="", string name="",TString varname="pSignal_GM",bool
 
     if (mass != 0) {
       // Cut-based selection histogram
-      select_weight = Form("(M_jj>500)*(Deta_jj>3.5)*(M_WZ>(%i*0.6)*(M_WZ<(%i*1.4)))",mass,mass);
+      select_weight = Form("(M_jj>500)*(Deta_jj>3.5)*(M_WZ>(%i*%f)*(M_WZ<(%i*%f)))",mass,m_lo,mass,m_up);
       if (norm2yield) select_weight += "*WeightNormalized*WZInclusive";
       hists_bkg_cb[mass] = get_hist(0,phys_model.Data());
       hists_cb[mass] = get_hist(mass,phys_model.Data());
@@ -390,13 +389,13 @@ void nn_per_mass(string dir="", string name="",TString varname="pSignal_GM",bool
     if (mass==0) option="hist";
 
     hist->Draw(option);
-    char smass[3];
-    if (mass != 0) { sprintf(smass, "%i", mass); }
-    else { sprintf(smass, "%s", "bkg"); }
+
+    if (mass != 0) smass = TString::Itoa(mass,10);
+    else           smass = "bkg";
     legend->AddEntry(hist,smass,"f");
   }
 
-  if (varname=="pSignal" and norm2yield) gPad->SetLogy();
+  if (varname.Contains("pSignal") and norm2yield) gPad->SetLogy();
   gStyle->SetOptStat(0);
   legend->Draw();
 
@@ -404,27 +403,26 @@ void nn_per_mass(string dir="", string name="",TString varname="pSignal_GM",bool
   string imagePath = "ControlPlots/"+idir + "/" + (tmass!="" ? tmass : "") + "/NN_output_"+varname.Data() ;
 
   c1->SaveAs((imagePath+".png" ).data());
-  c1->SaveAs((imagePath+".C").data());
+  c1->SaveAs((imagePath+".pdf").data());
 
   //  cout << "  ==>>>> norm2yield = " << norm2yield << ",  varname = " << varname << endl;
 
-  if (not (norm2yield and (varname=="pSignal_GM" || varname=="pSignal_HVT" || varname=="pSignal_QQ")) ) return;
-    auto c2 = new TCanvas("c2","title",800,400);
+  if (not (norm2yield and varname.Contains("pSignal") )) return;
+  auto c2 = new TCanvas("c2","title",1200,600);
  
   c2->Divide(2,1);
   c2->cd(1);
-
-  float sf= 1;
 
   // CB vs NN table initializing
   //  ofstream cnfile("ControlPlots/"+idir+"/NN_output/CbvsNN"+ (idir!="" ? "_"+idir : "") + (tmass!="" ? "_"+tmass : "")+".csv");
   ofstream cnfile("ControlPlots/"+idir+ (tmass!="" ? "/"+tmass : "") +"/NN_output_CbvsNN"+".csv");
   map<int, float> sig_CB, sig_NN_ocv, bkg_CB, bkg_NN_ocv, ams_CB, ams_NN_ocv;
   map<int, float> sig_NN_cv, bkg_NN_cv, ams_NN_cv;
-  if (mMulti==false) {
-    auto significance = get_significance_hist(hists[stoi(tmass.substr(1,4))], hists_bkg[stoi(tmass.substr(1,4))], sf, true);
-  }
 
+  if (mMulti==false)
+    auto significance = get_significance_hist(hists[stoi(tmass.substr(1,4))], hists_bkg[stoi(tmass.substr(1,4))], 1., true);
+  
+  auto firstMassPoint=true;
   for (auto mass : masses) {
 
     if (mass==0) continue;
@@ -436,7 +434,9 @@ void nn_per_mass(string dir="", string name="",TString varname="pSignal_GM",bool
     }
 
     // Signal, background and significance
-    auto significance = get_significance_hist(hists[mass],hists_bkg[mass],sf);
+    std::cout<<"Calculating significance curve for mass: "<<mass;
+
+    auto significance = get_significance_hist(hists[mass],hists_bkg[mass],1,firstMassPoint);
     sig_NN_ocv[mass] = Nsig_ocv;
     bkg_NN_ocv[mass] = Nbkg_ocv;
     ams_NN_ocv[mass] = significance->GetBinContent(significance->GetMaximumBin());
@@ -466,8 +466,9 @@ void nn_per_mass(string dir="", string name="",TString varname="pSignal_GM",bool
       bkg_CB[mass] = Nbkg;
       sig_CB[mass] = Nsig;
       ams_CB[mass] = cb_ams;
-    significance->SetMaximum(30);
+      significance->SetMaximum(30);
     }
+    firstMassPoint=false;
   }
   legend2->Draw();
 
@@ -475,19 +476,19 @@ void nn_per_mass(string dir="", string name="",TString varname="pSignal_GM",bool
   //  string signPath = "ControlPlots/"+idir+"/NN_output_significance" + (idir!="" ? "_"+idir : "") + (tmass!="" ? "_"+tmass : "");
   string signPath = "ControlPlots/"+idir + "/" + (tmass!="" ? tmass : "") + "/NN_output_significance" ;
   c2->SaveAs((signPath+".png" ).data());
-  c2->SaveAs((signPath+".C").data());
+  c2->SaveAs((signPath+".pdf").data());
 
   // Plotting the significance per mass and method
-  auto c3 = new TCanvas("c3","title",500,400);
-  auto ams_legend = new TLegend(0.75,0.78,0.9,0.9);
+  auto c3 = new TCanvas("c3","title",1000,800);
+  auto ams_legend = new TLegend(0.6,0.6,0.9,0.9);
   map<int, float> ams_TD;
   TString ams_curve_opt;
   TString label;
   TString ams_title = "Significance per mass and method - "+tmass;
   for (int l=0; l<3; l++) {
     auto ams_curve = new TGraph();
-    if (l==0)                       {ams_TD = ams_NN_ocv; ams_curve_opt = "APL"; ams_curve->SetMarkerStyle(20); label="NN opt";}
-    else if (l==1 && mMulti==false) {ams_TD = ams_NN_cv;  ams_curve_opt = "PL";  ams_curve->SetMarkerStyle(21); label="NN tcv";}
+    if (l==0)                       {ams_TD = ams_NN_ocv; ams_curve_opt = "APL"; ams_curve->SetMarkerStyle(20); label="NN optimal cut(m)";}
+    else if (l==1)                  {ams_TD = ams_NN_cv;  ams_curve_opt = "PL";  ams_curve->SetMarkerStyle(21); label="NN cut ("+TString::Itoa(masses[1],10)+" GeV)";}
     else if (l==2)                  {ams_TD = ams_CB;     ams_curve_opt = "PL";  ams_curve->SetMarkerStyle(23); label="Cut-Based";}
     else continue;
 
@@ -513,7 +514,7 @@ void nn_per_mass(string dir="", string name="",TString varname="pSignal_GM",bool
   ams_legend->Draw();
   
   c3->SaveAs(("ControlPlots/"+idir+ "/" + (tmass!="" ? tmass : "") + "/NN_output_AMS_curves" +".png").data());
-  c3->SaveAs(("ControlPlots/"+idir+ "/" + (tmass!="" ? tmass : "") + "/NN_output_AMS_curves" +".C").data());;
+  c3->SaveAs(("ControlPlots/"+idir+ "/" + (tmass!="" ? tmass : "") + "/NN_output_AMS_curves" +".pdf").data());;
   //  c3->SaveAs(("ControlPlots/"+idir+"/NN_output_AMS_curves" + (idir!="" ? "_"+idir : "") + (tmass!="" ? "_"+tmass : "") + ".root").data());
   
   //========================================= 
@@ -530,11 +531,11 @@ void nn_per_mass(string dir="", string name="",TString varname="pSignal_GM",bool
       if (mass==masses[hms]) {
 	legend1->Draw();
 	gStyle->SetOptStat(0);
-	if (varname=="pSignal" and norm2yield) gPad->SetLogy();
+	if (varname.Contains("pSignal") and norm2yield) gPad->SetLogy();
 	c4->cd(2);
       }
       
-      if (mass != 0) select_weight += Form("*(M_WZ>(%i*0.6)*(M_WZ<(%i*1.4)))",mass,mass);
+      if (mass != 0) select_weight += Form("*(M_WZ>(%i*%f)*(M_WZ<(%i*%f)))",mass,m_lo,mass,m_up);
       // Current mass histogram
       
       TH1F* hist = get_hist(mass,phys_model.Data(),true);
@@ -546,7 +547,7 @@ void nn_per_mass(string dir="", string name="",TString varname="pSignal_GM",bool
     }
     legend2->Draw();
     c4->SaveAs(("ControlPlots/"+idir+ "/" + (tmass!="" ? tmass : "") +"/NN_output_QQ_pSignal" + ".png").data());
-    c4->SaveAs(("ControlPlots/"+idir+ "/" + (tmass!="" ? tmass : "") +"/NN_output_QQ_pSignal" + ".C").data());
+    c4->SaveAs(("ControlPlots/"+idir+ "/" + (tmass!="" ? tmass : "") +"/NN_output_QQ_pSignal" + ".pdf").data());
   }
   
   // Filling CSV file of number of signal and bakcground, and significance by method
@@ -561,15 +562,15 @@ void nn_per_mass(string dir="", string name="",TString varname="pSignal_GM",bool
       if (j==0) cnfile << "CB,NN_ocv" << (mMulti==false ? ",NN_tcv" : "");
       if (j==1) { cnfile << sig_CB[mass] << "," << sig_NN_ocv[mass];
         if (mMulti==false) cnfile << "," << sig_NN_cv[mass];
-        if (mass!=masses[ms-1]) cnfile << ",";
+        if (mass!=masses[masses.size()-1]) cnfile << ",";
       }
       if (j==2) { cnfile << bkg_CB[mass] << "," << bkg_NN_ocv[mass];
         if (mMulti==false) cnfile << "," << bkg_NN_cv[mass];
-        if (mass!=masses[ms-1]) cnfile << ",";
+        if (mass!=masses[masses.size()-1]) cnfile << ",";
       }
       if (j==3) { cnfile << ams_CB[mass] << "," << ams_NN_ocv[mass];
         if (mMulti==false) cnfile << "," << ams_NN_cv[mass];
-        if (mass!=masses[ms-1]) cnfile << ",";
+        if (mass!=masses[masses.size()-1]) cnfile << ",";
       }
     }
     cnfile << endl;
