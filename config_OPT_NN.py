@@ -84,8 +84,8 @@ class input_samples:   ## default input_samples for vbf vs qq
 #                   'resonance.364250_Sherpa_222_NNPDF30NNLO_llll_ntuples.root.1',
 #                   'resonance.364250_Sherpa_222_NNPDF30NNLO_llll_ntuples.root.2',
                    'resonance.364253_Sherpa_222_NNPDF30NNLO_lllv_ntuples.0.root',   ## WZ QCD
-#                   'resonance.364253_Sherpa_222_NNPDF30NNLO_lllv_ntuples.root.1',
-#                   'resonance.364253_Sherpa_222_NNPDF30NNLO_lllv_ntuples.root.2',
+#                   'resonance.364253_Sherpa_222_NNPDF30NNLO_lllv_ntuples.1.root', #OK to skip this, only contians syst variation not nominal
+#                   'resonance.364253_Sherpa_222_NNPDF30NNLO_lllv_ntuples.2.root', #same as above line
                    'resonance.364742_MGPy8EG_NNPDF30NLO_A14NNPDF23LO_lvlljjEW6_SFPlus_ntuples.root' ## WZ EW
 ]
 # ],
@@ -196,8 +196,8 @@ class apply_samples:
     
 #GM  sig files to apply NN to
     shortList= [
-  450765,  502511,  450766,  502512,  450767,  502513,  450768,  502514,  450769,  502515,  450770,  502516,  450771,  502517,  502518,  502519,  502520,  502521,  502522, 502523]
-#      200,         225,        250,         275,        300,         325,         350,        375,        400,         425,         450,         475,        500,         525,         550,        600,        700,        800,         900,     1000
+        450765,  502511,  450766,  502512,  450767,  502513,  450768,  502514,  450769,  502515,  450770,  502516,  450771,  502517,  502518,  502519,  502520,  502521,  502522, 502523]
+#mass:     200,     225,     250,     275,     300,     325,     350,     375,     400,     425,     450,     475,     500,     525,     550,     600,     700,     800,     900,   1000
 
 # HVT samples:
 #                307730,307731,309528,307732,309529,307733,307734,307735,307736,307737,307738,       #HVT sig
