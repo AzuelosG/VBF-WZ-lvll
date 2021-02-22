@@ -12,7 +12,7 @@ then
 	"lcgenv -p LCG_92python3 x86_64-slc6-gcc62-opt Jinja2" \
 	"lcgenv -p LCG_92python3 x86_64-slc6-gcc62-opt matplotlib" \
 	"lcgenv -p LCG_92python3 x86_64-slc6-gcc62-opt h5py" \
-	"lcgenv -p LCG_92python3 x86_64-slc6-gcc62-opt scikitlearn"
+	"lcgenv -p LCG_92python3 x86_64-slc6-gcc62-opt scikitlearn" 
 else
     . $ATLAS_LOCAL_ROOT_BASE/packageSetups/localSetup.sh "lcgenv -p LCG_97python3 x86_64-centos7-gcc8-opt ROOT" \
         "lcgenv -p LCG_97python3 x86_64-centos7-gcc8-opt root_numpy" \

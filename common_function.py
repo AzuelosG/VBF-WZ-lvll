@@ -111,8 +111,9 @@ def read_data(filename,mass_window=False, mass=0,isSignal=False,isApplication=Fa
 
 ##########################################################
 class dataset:
-    def __init__(self,data,frac_train,variables,model,nFold,Findex,transform,apply_transform=True):
+    def __init__(self,data,frac_train,variables,model,nFold,Findex,sdir,transform,apply_transform=True):
         full=data.sample(frac=1)#,random_state=42)
+        print("full dataset columns before modifications:")
         full['WeightFinalized'] = full.WeightNormalized * full.WZInclusive
         #test=data.drop(full.index)
 
@@ -144,6 +145,24 @@ class dataset:
 
         X_train = train[variables]
         X_valid = validation[variables]
+
+        #HBB: dataframes needed for correlation plots
+        train_sig = train[train['Label']=='1']
+        train_bkg = train[train['Label']=='0']
+        valid_sig = validation[validation['Label']=='1']
+        valid_bkg = validation[validation['Label']=='0']
+
+        # HBB: draw correlation plots for training variables in different folds and sets
+        pairs = [(train_sig, "train-sig"), (train_bkg, "train-bkg"), (valid_sig, "valid-sig"), (valid_bkg, "valid-bkg")]
+        for p in pairs:
+            corr = p[0][variables].corr()
+            plt.matshow(corr)
+            plt.yticks(range(corr.shape[1]), corr.columns, fontsize=7)
+            plt.xticks(range(corr.shape[1]), corr.columns, fontsize=7, rotation=90)
+            plt.colorbar()
+            corr_figname = './VariablePlots/'+sdir+'/corr-{}'.format(p[1])+'-F{}'.format(Findex)+'o{}.png'.format(nFold)
+            print("Saving correlations plot for {} in set in fold {} as {}".format(p[1], Findex, corr_figname))
+            plt.savefig(corr_figname)
 
         #Save mean and std dev separately for both models
         if not(model=='GM' or model=='HVT' or model=='QQ'): raise NameError('Model needs to be either GM, HVT or QQ')
@@ -234,7 +253,7 @@ def conv_mass_points(mass_points_str):
     return mass_points_float
         
 ##########################################################
-def prepare_data(input_samples,model,Findex,nFold,arg_switches=list(),mass_window=True, mass=0,mass_points=[200],use_sig_masslabel=False,use_bkg_randomlabel=False):
+def prepare_data(input_samples,model,Findex,nFold,sdir,arg_switches=list(),mass_window=True, mass=0,mass_points=[200],use_sig_masslabel=False,use_bkg_randomlabel=False):
     """Read background and signal files and save them as panda data frames"""
 
     #Names of bck samples
@@ -331,7 +350,7 @@ def prepare_data(input_samples,model,Findex,nFold,arg_switches=list(),mass_windo
     data = data.sample(frac=1,random_state=42).reset_index(drop=True)
     # Pick a random seed for reproducible results
     transform=list()
-    data_cont = dataset(data,input_samples.trafrac,input_samples.variables,model,nFold,Findex,transform)
+    data_cont = dataset(data,input_samples.trafrac,input_samples.variables,model,nFold,Findex,sdir,transform)
     return data_cont,switches,transform,prob
 
 ##########################################################

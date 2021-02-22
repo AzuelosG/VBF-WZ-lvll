@@ -89,8 +89,10 @@ if __name__ == '__main__':
     # Checking for or creating subdirectory
     sub_dir_cp = "ControlPlots/"+args.sdir
     sub_dir_om = "OutputModel/"+args.sdir
+    sub_dir_vp = "VariablePlots/"+args.sdir
     Path(sub_dir_cp).mkdir(parents=True, exist_ok=True)
     Path(sub_dir_om).mkdir(parents=True, exist_ok=True)
+    Path(sub_dir_vp).mkdir(parents=True, exist_ok=True)
 
     #Load input_sample class from config file
     input_sample=conf.input_samples
@@ -127,7 +129,7 @@ if __name__ == '__main__':
 
     #KM: create list of integers from mass_points
     mass_points_float=conv_mass_points(args.mass_points)
-    data_set,tmp_switches,transform,prob= prepare_data(input_sample, args.model, args.Findex, args.nFold, arg_switches=tmp_switches, mass_window=mwin, mass=mss,mass_points=mass_points_float,use_sig_masslabel=args.use_sig_masslabel,use_bkg_randomlabel=args.use_bkg_randomlabel)
+    data_set,tmp_switches,transform,prob= prepare_data(input_sample, args.model, args.Findex, args.nFold, args.sdir, arg_switches=tmp_switches, mass_window=mwin, mass=mss,mass_points=mass_points_float,use_sig_masslabel=args.use_sig_masslabel,use_bkg_randomlabel=args.use_bkg_randomlabel)
     np.save('./OutputModel/'+args.sdir+'/prob'+args.model+('_F{}o{}'.format(args.Findex,args.nFold)), prob)
 
     ar_switches = np.array(tmp_switches)
