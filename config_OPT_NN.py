@@ -1,6 +1,6 @@
 import numpy as np
+import json
 
-#Filedir    = 'Inputs/MVA' #to change input dataset, change the link in the Inputs directory
 Filedir    = 'Inputs/' #to change input dataset, change the link in the Inputs directory
 
 ########################################################################################
@@ -127,7 +127,6 @@ class input_samples:   ## default input_samples for vbf vs qq
 #        'nevents' : [ 200000, 200000, 200000, 200000, 200000, 200000, 200000, 200000, 200000, 200000, 200000, 200000, 200000, 200000, 200000, 200000, 200000, 200000, 200000, 200000 ]
     }
     #HVT vbf signal files
-    Filedir = 'Inputs/'
     filedir =   Filedir
     sigHVT = {
         'name' : ['resonance.307730_MGPy8EG_A14NNPDF23LO_vbfHVT_Agv1_VzWZ_lvll_m0250_ntuples.root',
@@ -249,3 +248,15 @@ class apply_samples:
 
     labelGM = np.arange(len(list_apply_sigGM))
     labelHVT = np.arange(len(list_apply_sigHVT))
+
+def dump_to_JSON() :
+    output_dict = dict()
+    for c in [input_samples, input_samples_qq]:
+        class_dict = dict([(k,v) for k,v in c.__dict__.items() if not k.startswith('__')])
+        output_dict[c.__name__] = class_dict
+
+    with open('config_NN.json', 'w') as f:
+        json.dump(output_dict, f, indent=4)
+
+if __name__ == '__main__':
+    dump_to_JSON()        
