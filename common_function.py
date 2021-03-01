@@ -113,7 +113,6 @@ def read_data(filename,mass_window=False, mass=0,isSignal=False,isApplication=Fa
 class dataset:
     def __init__(self,data,frac_train,variables,model,nFold,Findex,sdir,transform,apply_transform=True):
         full=data.sample(frac=1)#,random_state=42)
-        print("full dataset columns before modifications:")
         full['WeightFinalized'] = full.WeightNormalized * full.WZInclusive
         #test=data.drop(full.index)
 
@@ -161,7 +160,7 @@ class dataset:
             plt.xticks(range(corr.shape[1]), corr.columns, fontsize=7, rotation=90)
             plt.colorbar()
             corr_figname = './VariablePlots/'+sdir+'/corr-{}'.format(p[1])+'-F{}'.format(Findex)+'o{}.png'.format(nFold)
-            print("Saving correlations plot for {} in set in fold {} as {}".format(p[1], Findex, corr_figname))
+            # print("Saving correlations plot for {} in set in fold {} as {}".format(p[1], Findex, corr_figname))
             plt.savefig(corr_figname)
 
         #Save mean and std dev separately for both models
