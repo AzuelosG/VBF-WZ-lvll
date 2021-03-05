@@ -287,14 +287,24 @@ int main()
         //clear canvas before plotting
         c.Clear();
 
+        //scale histograms to corresponding scale factors
         shist->Scale(sscale);
+        bhist->Scale(bscale);
+
+        float ymax = 0;
+        float ymaxs = shist->GetBinContent(shist->GetMaximumBin());
+        float ymaxb = bhist->GetBinContent(bhist->GetMaximumBin());
+        ymaxs>ymaxb ? ymax=ymaxs : ymax=ymaxb;
+
         shist->SetLineColor(kOrange+10);
+        shist->SetLineWidth(2);
         shist->GetXaxis()->SetTitle(xaxistitle.data());
         shist->GetYaxis()->SetTitle(yaxistitle.data());
+        shist->GetYaxis()->SetRangeUser(0, ymax*1.3);
         shist->Draw("hist");
 
-        bhist->Scale(bscale);
         bhist->SetLineColor(kAzure+1);
+        bhist->SetLineWidth(2);
         bhist->Draw("hist same");
 
         std::string cname = vars.at(i).data()+std::string(".pdf");
