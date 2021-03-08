@@ -1,5 +1,7 @@
 import numpy as np
 import json
+import re
+from copy import deepcopy
 
 Filedir    = 'Inputs/' #to change input dataset, change the link in the Inputs directory
 
@@ -249,10 +251,32 @@ class apply_samples:
     labelGM = np.arange(len(list_apply_sigGM))
     labelHVT = np.arange(len(list_apply_sigHVT))
 
+
+def decorate_class_dict(class_dict):
+    '''
+    Append {mass -> sample name} map to class_dict
+    '''
+    def is_model_sample_var(var_name):
+        return type(class_dict[var_name]) == dict \
+               and 'name' in class_dict[var_name].keys() \
+               and 'switch' in class_dict[var_name].keys()
+    model_sample_vars = deepcopy(filter(is_model_sample_var, class_dict.keys()))
+    for var_name in model_sample_vars:
+        sample_mass_dict = dict()
+        for sample_name in class_dict[var_name]['name']:
+            match = re.search(r'_m\d*_', sample_name)
+            if not match:
+                raise RuntimeError('Cannot find mass in sample name %s' % sample_name)
+            mass = int(match[0].strip('_').strip('m'))
+            sample_mass_dict[mass] = sample_name
+        class_dict[var_name+'_map'] = sample_mass_dict
+
+
 def dump_to_JSON() :
     output_dict = dict()
     for c in [input_samples, input_samples_qq]:
         class_dict = dict([(k,v) for k,v in c.__dict__.items() if not k.startswith('__')])
+        decorate_class_dict(class_dict)
         output_dict[c.__name__] = class_dict
 
     with open('config_NN.json', 'w') as f:
