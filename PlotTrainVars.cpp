@@ -5,12 +5,18 @@
 #include <iostream>
 #include <typeinfo>
 
+#include <bits/stdc++.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+
 #include "TFile.h"
 #include "TStyle.h"
 #include "TCanvas.h"
 #include "TH1F.h"
 #include "TTree.h"
 #include "TMath.h"
+#include "TLegend.h"
+#include "TLatex.h"
 #include "ROOT/RDataFrame.hxx"
 
 using json = nlohmann::json;
@@ -178,8 +184,76 @@ hist_settings GetHistSettings(std::string varname)
     return settings;
 }
 
-int main()
+void PlotATLASLabel(TCanvas* c, std::string label)
 {
+    float x=0.15, y=0.87, labelOffset=0.12;
+	TLatex txt;
+	txt.SetTextFont(72);
+	txt.SetTextSize(0.05);
+	txt.DrawLatexNDC(x,y,"ATLAS");
+	txt.SetTextFont(42);
+	txt.DrawLatexNDC(x+labelOffset,y, label.data());
+
+}
+
+int main(int argc, char* argv[])
+{
+    enum argument {invalid = -1, mass_points = 1, model = 2, dir = 3};
+    std::vector<std::string> mpoints;
+    std::string mod; 
+    std::string dirname;
+    argument a = invalid;
+
+    for (int i = 1; i<argc; ++i){
+        std::cout << "argv[" << i << "] = " << argv[i] << std::endl;
+        if (argv[i] == std::string("--mass_points")){
+            std::cout << "starting filling mass points " << std::endl;
+            a = mass_points;
+            std::cout << "a = " << a <<std::endl;
+        }
+        else if (argv[i] == std::string("--model")){
+            a = model;
+            std::cout << "a = " << a <<std::endl;
+        }
+        else if (argv[i] == std::string("--dir")){
+            a = dir;
+            std::cout << "a = " << a <<std::endl;
+        }
+        else {
+            if (a == 1) {
+                std::cout << "a = 1, filling mpoints vector" << std::endl;
+                mpoints.push_back(argv[i]);
+            }
+            else if (a == 2) {
+                std::cout << "a = 2, saving model type to mod variable" << std::endl;
+                mod = argv[i];
+            }
+            else if (a == 3) {
+                std::cout << "a = 3, saving directory name to dirname variable" << std::endl;
+                dirname = argv[i];
+            }
+            else {
+                std::cout << "Invalid argument provided, exiting..." << std::endl;
+                exit(0);
+            }
+        }
+    }
+    std::cout << "Mass points: " << std::endl;
+    for (auto mp : mpoints){
+        std::cout << mp << "\t";
+    }
+    std::cout << std::endl;
+    std::cout << "Model: " << mod << std::endl;
+    std::cout << "Dirname: " << dirname << std::endl;
+    //HBB: create the directory to save plots
+    int status;
+    std::string mkdir_command = std::string("mkdir -p VariablePlots/") + dirname.data();
+    status = system(mkdir_command.data());
+    if (status == -1)
+        std::cerr << "Error : " << strerror(errno) << std::endl;
+    else
+        std::cout << "Directories are created" << std::endl;
+
     // HBB: Reading info stored in config json file: 
     std::ifstream config_file("config_NN.json");
     auto conf = json::parse(config_file);
@@ -221,7 +295,10 @@ int main()
     TFile *fbkg = TFile::Open(fbkgname.data());
     TTree *tbkg = (TTree*)fbkg->Get("nominal");
 
-    TCanvas c("c", "c", 800, 600);
+    TCanvas* c = new TCanvas("c", "", 800, 600);
+    c->SetMargin(0.12, 0.02, 0.12, 0.03);
+    c->SetTicks();
+    gStyle->SetOptStat(0);
 
     // HBB: Using RDataFrames for easier handling root files
     //background
@@ -262,9 +339,24 @@ int main()
     c.SaveAs("sb.pdf");
     *****************************/
 
-   //initialise scale factors
-   float bscale = 1;
-   float sscale = 1;
+   //retrieve scale factors from a plot with a good range 
+   //first signal
+    float sscale = 1.;
+    auto shnjets = sdfsel_aug.Histo1D({"shnjets", "", 10, 0, 10}, "Njets", "WeightFinalized");
+    std::string sscale_str = std::to_string(1./(shnjets->Integral(0, shnjets->GetNbinsX()+1)));
+    sscale = stof(sscale_str);
+    //then background
+    float bscale = 1.;
+    auto bhnjets = bdfsel_aug.Histo1D({"bhnjets", "", 10, 0, 10}, "Njets", "WeightFinalized");
+    std::string bscale_str = std::to_string(1./(bhnjets->Integral(0, bhnjets->GetNbinsX()+1)));
+    bscale = stof(bscale_str);
+
+    TLegend leg(0.7, 0.76, 0.9, 0.92);
+    leg.SetFillStyle(0);
+    leg.SetBorderSize(0);
+    leg.SetTextSize(0.048);
+    leg.SetTextFont(42);
+
     for (int i=0; i<vars.size(); ++i){
         hist_settings settings;
         settings = GetHistSettings(vars.at(i));
@@ -275,40 +367,52 @@ int main()
         std::string yaxistitle = settings.yaxistitle;
 
         auto shist = sdfsel_aug.Histo1D({"shist", "", nbins, xmin, xmax}, vars.at(i), "WeightFinalized");
-        std::cout << typeid(shist).name() << std::endl;
+        // std::cout << typeid(shist).name() << std::endl;
         auto bhist = bdfsel_aug.Histo1D({"bhist", "", nbins, xmin, xmax}, vars.at(i), "WeightFinalized");
-        if (i==0){
-            std::string sscale_str = std::to_string(1./(shist->Integral(0, shist->GetNbinsX()+1)));
-            sscale = stof(sscale_str);
-            std::string bscale_str = std::to_string(1./(bhist->Integral(0, bhist->GetNbinsX()+1)));
-            bscale = stof(bscale_str);
-        }
 
-        //clear canvas before plotting
-        c.Clear();
+        //clear canvas and legend before plotting
+        c->Clear();
+        leg.Clear();
 
         //scale histograms to corresponding scale factors
         shist->Scale(sscale);
         bhist->Scale(bscale);
 
+        //set y axis range
         float ymax = 0;
         float ymaxs = shist->GetBinContent(shist->GetMaximumBin());
         float ymaxb = bhist->GetBinContent(bhist->GetMaximumBin());
         ymaxs>ymaxb ? ymax=ymaxs : ymax=ymaxb;
 
+        //plotting settings
         shist->SetLineColor(kOrange+10);
         shist->SetLineWidth(2);
         shist->GetXaxis()->SetTitle(xaxistitle.data());
         shist->GetYaxis()->SetTitle(yaxistitle.data());
         shist->GetYaxis()->SetRangeUser(0, ymax*1.3);
+        shist->GetXaxis()->SetTitleFont(42);
+        shist->GetXaxis()->SetTitleSize(0.05);
+        shist->GetXaxis()->SetTitleOffset(0.96);
+        shist->GetXaxis()->SetLabelSize(0.05);
+        shist->GetYaxis()->SetTitleFont(42);
+        shist->GetYaxis()->SetLabelSize(0.05);
+        shist->GetYaxis()->SetTitleSize(0.05);
+        shist->GetYaxis()->SetTitleOffset(1.14);
         shist->Draw("hist");
 
         bhist->SetLineColor(kAzure+1);
         bhist->SetLineWidth(2);
         bhist->Draw("hist same");
 
-        std::string cname = vars.at(i).data()+std::string(".pdf");
-        c.SaveAs(cname.data());
+        //add entries to legend
+        leg.AddEntry("shist", "Signal", "L");
+        leg.AddEntry("bhist", "Background", "L");
+        leg.Draw();
+
+        PlotATLASLabel(c, "Internal");
+
+        std::string cname = std::string("./VariablePlots/")+dirname.data()+std::string("/")+vars.at(i).data()+std::string(".pdf");
+        c->SaveAs(cname.data());
         
     }
 
