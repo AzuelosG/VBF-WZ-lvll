@@ -12,10 +12,10 @@ ROOT.gROOT.ProcessLine(".L nn_per_mass.C+")
 # 6                  bool drawCB=true, 
 # 7                  bool mMulti=false) {
 
-if   len(sys.argv)>6: ROOT.nn_per_mass(sys.argv[1],sys.argv[2],sys.argv[3],bool(sys.argv[4]),sys.argv[5], bool(sys.argv[6]), bool(sys.argv[7]))
-elif len(sys.argv)>6: ROOT.nn_per_mass(sys.argv[1],sys.argv[2],sys.argv[3],bool(sys.argv[4]),sys.argv[5], bool(sys.argv[6]))
-elif len(sys.argv)>5: ROOT.nn_per_mass(sys.argv[1],sys.argv[2],sys.argv[3],bool(sys.argv[4]),sys.argv[5])
-elif len(sys.argv)>4: ROOT.nn_per_mass(sys.argv[1],sys.argv[2],sys.argv[3],bool(sys.argv[4]))
+if   len(sys.argv)>7: ROOT.nn_per_mass(sys.argv[1],sys.argv[2],sys.argv[3],bool(int(sys.argv[4])),sys.argv[5], bool(int(sys.argv[6])), bool(int(sys.argv[7])))
+elif len(sys.argv)>6: ROOT.nn_per_mass(sys.argv[1],sys.argv[2],sys.argv[3],bool(int(sys.argv[4])),sys.argv[5], bool(int(sys.argv[6])))
+elif len(sys.argv)>5: ROOT.nn_per_mass(sys.argv[1],sys.argv[2],sys.argv[3],bool(int(sys.argv[4])),sys.argv[5])
+elif len(sys.argv)>4: ROOT.nn_per_mass(sys.argv[1],sys.argv[2],sys.argv[3],bool(int(sys.argv[4])))
 elif len(sys.argv)>3: ROOT.nn_per_mass(sys.argv[1],sys.argv[2],sys.argv[3])
 elif len(sys.argv)>2: ROOT.nn_per_mass(sys.argv[1],sys.argv[2])
 elif len(sys.argv)>1: ROOT.nn_per_mass(sys.argv[1])
