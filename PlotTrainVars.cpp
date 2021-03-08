@@ -17,6 +17,7 @@
 #include "TMath.h"
 #include "TLegend.h"
 #include "TLatex.h"
+#include "TChain.h"
 #include "ROOT/RDataFrame.hxx"
 
 using json = nlohmann::json;
@@ -267,14 +268,16 @@ int main(int argc, char* argv[])
     // sig_files = conf["input_samples"]["sigGM"]["name"];
     if (mod == std::string("GM")) {
         for (auto mp : mpoints){
-            std::string f = conf["input_samples"]["sigGM_map"][mp.data()];
-            sig_files.push_back(f);
+            std::string fname = conf["input_samples"]["sigGM_map"][mp.data()];
+            std::string fpath = std::string("./") + path_to_sig_files.data() + std::string("") + fname.data();
+            sig_files.push_back(fpath);
         }
     }
     else if (mod == std::string("HVT")){
         for (auto mp : mpoints){
-            std::string f = conf["input_samples"]["sigHVT_map"][mp.data()];
-            sig_files.push_back(f);
+            std::string fname = conf["input_samples"]["sigHVT_map"][mp.data()];
+            std::string fpath = std::string("./") + path_to_sig_files.data() + std::string("") + fname.data();
+            sig_files.push_back(fpath);
         }
     }
     else {std::cout << "Provide GM or HVT model to plot training variables, exiting..." << std::endl; exit(0);}
@@ -304,13 +307,7 @@ int main(int argc, char* argv[])
         std::cout << var << "\t";
     }
     std::cout << std::endl;
-    
-    //HBB: Getting path to a single sig file for testing
-    std::string fsigname = path_to_sig_files.data() + std::string("") + sig_files.at(0).data();
-    std::cout << "Sig file to open: " << fsigname << std::endl;
-    //retrieve the nominal tree from signal samples
-    TFile *fsig = TFile::Open(fsigname.data());
-    TTree *tsig = (TTree*)fsig->Get("nominal");
+
     //retrieve the nominal tree from background samples
     std::string fbkgname = path_to_bkg_files.data() + std::string("") + bkg_files.at(0).data();
     std::cout << "Bkg file to open: " << fbkgname << std::endl;
@@ -331,8 +328,8 @@ int main(int argc, char* argv[])
     auto bdfsel_aug =  bdfselected.Define("WeightFinalized", [](float w1, int w2) { return w1 * w2; }, {"WeightNormalized", "WZInclusive"});
 
     //signal
-    ROOT::RDataFrame sdf("nominal", fsigname);
-    std::cout << "sigfile entries (so before cut): " << tsig->GetEntries() << std::endl;
+    ROOT::RDataFrame sdf("nominal", sig_files);
+    // std::cout << "sigfile entries (so before cut): " << tsig->GetEntries() << std::endl;
     auto sdfselected = sdf.Filter("Jet1Pt>0 && Jet2Pt>0 && M_jj>100");
     std::cout << typeid(sdfselected).name() << std::endl;
     auto sdfsel_aug =  sdfselected.Define("WeightFinalized", [](float w1, int w2) { return w1 * w2; }, {"WeightNormalized", "WZInclusive"});
@@ -416,6 +413,6 @@ int main(int argc, char* argv[])
 
 
     //Close root files
-    fsig->Close();
+    // fsig->Close();
     fbkg->Close();
 }
