@@ -261,7 +261,29 @@ int main(int argc, char* argv[])
     std::string path_to_bkg_files = conf["input_samples"]["filedir"];
     std::string path_to_sig_files = conf["input_samples"]["filedirsig"];
     // std::cout << "Relative path to sig files: " << path_to_sig_files << " and to bkg files: " << path_to_bkg_files << std::endl;
-    std::vector<std::string> sig_GM_files = conf["input_samples"]["sigGM"]["name"];
+    
+    std::vector<std::string> sig_files;
+    // std::cout << typeid(conf["input_samples"]["sigGM"]["name"]).name() << std::endl;
+    // sig_files = conf["input_samples"]["sigGM"]["name"];
+    if (mod == std::string("GM")) {
+        for (auto mp : mpoints){
+            std::string f = conf["input_samples"]["sigGM_map"][mp.data()];
+            sig_files.push_back(f);
+        }
+    }
+    else if (mod == std::string("HVT")){
+        for (auto mp : mpoints){
+            std::string f = conf["input_samples"]["sigHVT_map"][mp.data()];
+            sig_files.push_back(f);
+        }
+    }
+    else {std::cout << "Provide GM or HVT model to plot training variables, exiting..." << std::endl; exit(0);}
+    std::cout << "sig_files size " << sig_files.size() << std::endl;
+    for (auto f : sig_files){
+        std::cout << "Using the following file: " << f << std::endl;
+    }
+
+    // std::vector<std::string> sig_GM_files = conf["input_samples"]["sigGM"]["name"];
     std::vector<std::string> bkg_files = conf["input_samples"]["bckgr"]["name"];
     std::vector<std::string> vars = conf["input_samples"]["variables"];
     // std::cout << conf["input_samples"]["variables"] << std::endl;
@@ -284,7 +306,7 @@ int main(int argc, char* argv[])
     std::cout << std::endl;
     
     //HBB: Getting path to a single sig file for testing
-    std::string fsigname = path_to_sig_files.data() + std::string("") + sig_GM_files.at(0).data();
+    std::string fsigname = path_to_sig_files.data() + std::string("") + sig_files.at(0).data();
     std::cout << "Sig file to open: " << fsigname << std::endl;
     //retrieve the nominal tree from signal samples
     TFile *fsig = TFile::Open(fsigname.data());
@@ -308,36 +330,12 @@ int main(int argc, char* argv[])
     std::cout << typeid(bdfselected).name() << std::endl;
     auto bdfsel_aug =  bdfselected.Define("WeightFinalized", [](float w1, int w2) { return w1 * w2; }, {"WeightNormalized", "WZInclusive"});
 
-    /**************************
-    auto h_b_etaZ = bdfsel_aug.Histo1D({"h_b_etaZ", "", 10, 0, 10}, "Njets", "WeightFinalized");
-    // auto h_b_etaZ = bdfsel_aug.Histo1D({"h_b_etaZ", "", 100, -10, 10}, "Eta_Z", "WeightFinalized");
-    std::string bscale_str = std::to_string(1./(h_b_etaZ->Integral(0, h_b_etaZ->GetNbinsX()+1)));
-    float bscale = stof(bscale_str);
-    std::cout << "Background scale factor: " << bscale << std::endl;
-    h_b_etaZ->Scale(bscale);
-    h_b_etaZ->SetLineColor(kAzure+1);
-    h_b_etaZ->Draw("hist");
-    ****************************/
-
-
     //signal
     ROOT::RDataFrame sdf("nominal", fsigname);
     std::cout << "sigfile entries (so before cut): " << tsig->GetEntries() << std::endl;
     auto sdfselected = sdf.Filter("Jet1Pt>0 && Jet2Pt>0 && M_jj>100");
     std::cout << typeid(sdfselected).name() << std::endl;
     auto sdfsel_aug =  sdfselected.Define("WeightFinalized", [](float w1, int w2) { return w1 * w2; }, {"WeightNormalized", "WZInclusive"});
-
-    /****************************
-    auto h_s_etaZ = sdfsel_aug.Histo1D({"h_s_etaZ", "", 10, 0, 10}, "Njets", "WeightFinalized");
-    // auto h_s_etaZ = sdfsel_aug.Histo1D({"h_s_etaZ", "", 100, -10, 10}, "Eta_Z", "WeightFinalized");
-    std::string sscale_str = std::to_string(1./(h_s_etaZ->Integral(0, h_s_etaZ->GetNbinsX()+1)));
-    float sscale = stof(sscale_str);
-    std::cout << "Signal scale factor: " << sscale << std::endl;
-    h_s_etaZ->Scale(sscale);
-    h_s_etaZ->SetLineColor(kOrange+10);
-    h_s_etaZ->Draw("hist same");
-    c.SaveAs("sb.pdf");
-    *****************************/
 
    //retrieve scale factors from a plot with a good range 
    //first signal
