@@ -199,6 +199,8 @@ void PlotATLASLabel(TCanvas* c, std::string label)
 
 int main(int argc, char* argv[])
 {
+    std::cout << "Plotting training variables..." << std::endl;
+
     enum argument {invalid = -1, mass_points = 1, model = 2, dir = 3};
     std::vector<std::string> mpoints;
     std::string mod; 
@@ -206,31 +208,24 @@ int main(int argc, char* argv[])
     argument a = invalid;
 
     for (int i = 1; i<argc; ++i){
-        std::cout << "argv[" << i << "] = " << argv[i] << std::endl;
+        // std::cout << "argv[" << i << "] = " << argv[i] << std::endl;
         if (argv[i] == std::string("--mass_points")){
-            std::cout << "starting filling mass points " << std::endl;
             a = mass_points;
-            std::cout << "a = " << a <<std::endl;
         }
         else if (argv[i] == std::string("--model")){
             a = model;
-            std::cout << "a = " << a <<std::endl;
         }
         else if (argv[i] == std::string("--dir")){
             a = dir;
-            std::cout << "a = " << a <<std::endl;
         }
         else {
             if (a == 1) {
-                std::cout << "a = 1, filling mpoints vector" << std::endl;
                 mpoints.push_back(argv[i]);
             }
             else if (a == 2) {
-                std::cout << "a = 2, saving model type to mod variable" << std::endl;
                 mod = argv[i];
             }
             else if (a == 3) {
-                std::cout << "a = 3, saving directory name to dirname variable" << std::endl;
                 dirname = argv[i];
             }
             else {
@@ -252,20 +247,19 @@ int main(int argc, char* argv[])
     status = system(mkdir_command.data());
     if (status == -1)
         std::cerr << "Error : " << strerror(errno) << std::endl;
-    else
-        std::cout << "Directories are created" << std::endl;
+    // else
+    //     std::cout << "Directories are created" << std::endl;
 
-    // HBB: Reading info stored in config json file: 
+    // HBB: Read info stored in config json file: 
     std::ifstream config_file("config_NN.json");
     auto conf = json::parse(config_file);
 
+    // HBB: Retrieve paths to sig files
     std::string path_to_bkg_files = conf["input_samples"]["filedir"];
     std::string path_to_sig_files = conf["input_samples"]["filedirsig"];
-    // std::cout << "Relative path to sig files: " << path_to_sig_files << " and to bkg files: " << path_to_bkg_files << std::endl;
     
+    //HBB: Retrieve signal files based on which model and mass points you are interested in
     std::vector<std::string> sig_files;
-    // std::cout << typeid(conf["input_samples"]["sigGM"]["name"]).name() << std::endl;
-    // sig_files = conf["input_samples"]["sigGM"]["name"];
     if (mod == std::string("GM")) {
         for (auto mp : mpoints){
             std::string fname = conf["input_samples"]["sigGM_map"][mp.data()];
@@ -281,38 +275,31 @@ int main(int argc, char* argv[])
         }
     }
     else {std::cout << "Provide GM or HVT model to plot training variables, exiting..." << std::endl; exit(0);}
-    std::cout << "sig_files size " << sig_files.size() << std::endl;
+    
+    std::cout << "Using the following signal files: " << std::endl;
     for (auto f : sig_files){
-        std::cout << "Using the following file: " << f << std::endl;
+        std::cout << f << std::endl;
     }
 
-    // std::vector<std::string> sig_GM_files = conf["input_samples"]["sigGM"]["name"];
-    std::vector<std::string> bkg_files = conf["input_samples"]["bckgr"]["name"];
+    //HBB: Retrieve background files
+    std::vector<std::string> bkg_files;
+    std::vector<std::string> bkg_fnames = conf["input_samples"]["bckgr"]["name"];
+    for (auto f : bkg_fnames){
+        std::string fpath = std::string("./") + path_to_bkg_files.data() + std::string("") + f.data();
+        bkg_files.push_back(fpath.data());
+    }
+    std::cout << "Using the following background files: " << std::endl;
+    for (auto f : bkg_files){
+        std::cout << f << std::endl;
+    }
+
+    // HBB: Retrieve the training variables to plot
     std::vector<std::string> vars = conf["input_samples"]["variables"];
-    // std::cout << conf["input_samples"]["variables"] << std::endl;
-    // std::cout << typeid(conf["input_samples"]["variables"]).name() << std::endl;
-    // std::cout << "variable vector length = " << vars.size() << std::endl;
-    // std::cout << "Sig GM files vector length = " << sig_GM_files.size() << std::endl;
-    // std::cout << "Signal files:" << std::endl;
-    // for (auto sfile : sig_GM_files){
-    //     std::cout << "Current file: " << sfile << std::endl;
-    // }
-    // std::cout << "----------------------------" << std::endl;
-    // std::cout << "Background files:" << std::endl;
-    // for (auto bfile : bkg_files){
-    //     std::cout << "Current file: " << bfile << std::endl;
-    // }
     std::cout << "Training variables:" << std::endl;
     for (auto var : vars){
         std::cout << var << "\t";
     }
     std::cout << std::endl;
-
-    //retrieve the nominal tree from background samples
-    std::string fbkgname = path_to_bkg_files.data() + std::string("") + bkg_files.at(0).data();
-    std::cout << "Bkg file to open: " << fbkgname << std::endl;
-    TFile *fbkg = TFile::Open(fbkgname.data());
-    TTree *tbkg = (TTree*)fbkg->Get("nominal");
 
     TCanvas* c = new TCanvas("c", "", 800, 600);
     c->SetMargin(0.12, 0.02, 0.12, 0.03);
@@ -321,21 +308,19 @@ int main(int argc, char* argv[])
 
     // HBB: Using RDataFrames for easier handling root files
     //background
-    ROOT::RDataFrame bdf("nominal", fbkgname);
-    std::cout << "bkgfile entries (so before cut): " << tbkg->GetEntries() << std::endl;
+    ROOT::RDataFrame bdf("nominal", bkg_files);
     auto bdfselected = bdf.Filter("Jet1Pt>0 && Jet2Pt>0 && M_jj>100");
-    std::cout << typeid(bdfselected).name() << std::endl;
+    // std::cout << typeid(bdfselected).name() << std::endl;
     auto bdfsel_aug =  bdfselected.Define("WeightFinalized", [](float w1, int w2) { return w1 * w2; }, {"WeightNormalized", "WZInclusive"});
 
     //signal
     ROOT::RDataFrame sdf("nominal", sig_files);
-    // std::cout << "sigfile entries (so before cut): " << tsig->GetEntries() << std::endl;
     auto sdfselected = sdf.Filter("Jet1Pt>0 && Jet2Pt>0 && M_jj>100");
-    std::cout << typeid(sdfselected).name() << std::endl;
+    // std::cout << typeid(sdfselected).name() << std::endl;
     auto sdfsel_aug =  sdfselected.Define("WeightFinalized", [](float w1, int w2) { return w1 * w2; }, {"WeightNormalized", "WZInclusive"});
 
-   //retrieve scale factors from a plot with a good range 
-   //first signal
+    //HBB: Retrieve scale factors from a plot with a good range 
+    //first signal
     float sscale = 1.;
     auto shnjets = sdfsel_aug.Histo1D({"shnjets", "", 10, 0, 10}, "Njets", "WeightFinalized");
     std::string sscale_str = std::to_string(1./(shnjets->Integral(0, shnjets->GetNbinsX()+1)));
@@ -365,21 +350,21 @@ int main(int argc, char* argv[])
         // std::cout << typeid(shist).name() << std::endl;
         auto bhist = bdfsel_aug.Histo1D({"bhist", "", nbins, xmin, xmax}, vars.at(i), "WeightFinalized");
 
-        //clear canvas and legend before plotting
+        //HBB: Clear canvas and legend before plotting
         c->Clear();
         leg.Clear();
 
-        //scale histograms to corresponding scale factors
+        //HBB: scale histograms to corresponding scale factors
         shist->Scale(sscale);
         bhist->Scale(bscale);
 
-        //set y axis range
+        //HBB: Set y axis range
         float ymax = 0;
         float ymaxs = shist->GetBinContent(shist->GetMaximumBin());
         float ymaxb = bhist->GetBinContent(bhist->GetMaximumBin());
         ymaxs>ymaxb ? ymax=ymaxs : ymax=ymaxb;
 
-        //plotting settings
+        //HBB: Plotting settings
         shist->SetLineColor(kOrange+10);
         shist->SetLineWidth(2);
         shist->GetXaxis()->SetTitle(xaxistitle.data());
@@ -399,7 +384,7 @@ int main(int argc, char* argv[])
         bhist->SetLineWidth(2);
         bhist->Draw("hist same");
 
-        //add entries to legend
+        // HBB: Add entries to legend
         leg.AddEntry("shist", "Signal", "L");
         leg.AddEntry("bhist", "Background", "L");
         leg.Draw();
@@ -410,9 +395,5 @@ int main(int argc, char* argv[])
         c->SaveAs(cname.data());
         
     }
-
-
-    //Close root files
-    // fsig->Close();
-    fbkg->Close();
+    std::cout << "Finished plotting training variables, the results are saved in: VariablePlots/" << dirname << std::endl;
 }
