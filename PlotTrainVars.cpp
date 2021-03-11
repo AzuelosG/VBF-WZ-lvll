@@ -179,7 +179,7 @@ hist_settings GetHistSettings(std::string varname)
             settings.nbins = 50;
             settings.xmin = 0;
             settings.xmax = 50;
-            settings.xaxistitle = "Varname";
+            settings.xaxistitle = varname.data();
             settings.yaxistitle = "Normalized to unity";
     }
     return settings;
@@ -187,7 +187,7 @@ hist_settings GetHistSettings(std::string varname)
 
 void PlotATLASLabel(TCanvas* c, std::string label)
 {
-    float x=0.15, y=0.87, labelOffset=0.12;
+    float x=0.16, y=0.85, labelOffset=0.12;
 	TLatex txt;
 	txt.SetTextFont(72);
 	txt.SetTextSize(0.05);
@@ -302,7 +302,7 @@ int main(int argc, char* argv[])
     std::cout << std::endl;
 
     TCanvas* c = new TCanvas("c", "", 800, 600);
-    c->SetMargin(0.12, 0.02, 0.12, 0.03);
+    c->SetMargin(0.12, 0.06, 0.12, 0.06);
     c->SetTicks();
     gStyle->SetOptStat(0);
 
@@ -331,7 +331,7 @@ int main(int argc, char* argv[])
     std::string bscale_str = std::to_string(1./(bhnjets->Integral(0, bhnjets->GetNbinsX()+1)));
     bscale = stof(bscale_str);
 
-    TLegend leg(0.7, 0.76, 0.9, 0.92);
+    TLegend leg(0.68, 0.78, 0.84, 0.886);
     leg.SetFillStyle(0);
     leg.SetBorderSize(0);
     leg.SetTextSize(0.048);
@@ -372,12 +372,13 @@ int main(int argc, char* argv[])
         shist->GetYaxis()->SetRangeUser(0, ymax*1.3);
         shist->GetXaxis()->SetTitleFont(42);
         shist->GetXaxis()->SetTitleSize(0.05);
-        shist->GetXaxis()->SetTitleOffset(0.96);
+        shist->GetXaxis()->SetTitleOffset(1.0);
         shist->GetXaxis()->SetLabelSize(0.05);
         shist->GetYaxis()->SetTitleFont(42);
         shist->GetYaxis()->SetLabelSize(0.05);
         shist->GetYaxis()->SetTitleSize(0.05);
-        shist->GetYaxis()->SetTitleOffset(1.14);
+        shist->GetYaxis()->SetTitleOffset(1.22);
+        shist->GetYaxis()->SetDecimals();
         shist->Draw("hist");
 
         bhist->SetLineColor(kAzure+1);
