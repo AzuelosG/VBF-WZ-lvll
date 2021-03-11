@@ -262,6 +262,10 @@ int main(int argc, char* argv[])
     std::vector<std::string> sig_files;
     if (mod == std::string("GM")) {
         for (auto mp : mpoints){
+            if (!conf["input_samples"]["sigGM_map"].count(mp.data())) {
+                std::cout << "Incorrect mass point provided (m=" << mp.data() << "), exiting..." << std::endl;
+                exit(0);
+            }
             std::string fname = conf["input_samples"]["sigGM_map"][mp.data()];
             std::string fpath = std::string("./") + path_to_sig_files.data() + std::string("") + fname.data();
             sig_files.push_back(fpath);
@@ -269,12 +273,16 @@ int main(int argc, char* argv[])
     }
     else if (mod == std::string("HVT")){
         for (auto mp : mpoints){
+            if (!conf["input_samples"]["sigHVT_map"].count(mp.data())) {
+                std::cout << "Incorrect mass point provided (m=" << mp.data() << "), exiting..." << std::endl;
+                exit(0);
+            }
             std::string fname = conf["input_samples"]["sigHVT_map"][mp.data()];
             std::string fpath = std::string("./") + path_to_sig_files.data() + std::string("") + fname.data();
             sig_files.push_back(fpath);
         }
     }
-    else {std::cout << "Provide GM or HVT model to plot training variables, exiting..." << std::endl; exit(0);}
+    else {std::cout << "Incorrect model provided, choose GM or HVT model to plot training variables, exiting..." << std::endl; exit(0);}
     
     std::cout << "Using the following signal files: " << std::endl;
     for (auto f : sig_files){
