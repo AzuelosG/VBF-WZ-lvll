@@ -21,6 +21,7 @@ import config_OPT_NN as conf
 import ROOT, pickle
 from pathlib import Path
 import os
+import subprocess
 
 def KerasModel(input_dim,numlayer,numn, dropout):
     model = Sequential()
@@ -54,6 +55,21 @@ Optional arguments
   --lr=<lr> Learning rate for SGD optimizer
 """
 
+def RunCppPlottingMacro(mpoints, model, dir):
+    conf.dump_to_JSON()
+    # print("Executing cpp code")
+    cmd1 = "g++ -std=c++17 -Ijson/include -o plotVars PlotTrainVars.cpp `root-config --cflags --glibs`"
+    ret1 = subprocess.run(cmd1, shell=True)
+    if not ret1.returncode == 0:
+        print("WARNING: PlotTrainVars.cpp compilation failed, will continue without making plots!")
+        return
+    strmpoints = " ".join([str(x) for x in mpoints])
+    cmd2 = "./plotVars --mass_points {} --model {} --dir {}".format(strmpoints, model, dir)
+    ret2 = subprocess.run(cmd2, shell=True)
+    if not ret2.returncode == 0:
+        print("WARNING: Execution of PlotTrainVars.cpp failed, will continue without making plots!")
+        return
+    # print("Successfully executed cpp code")
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description = 'NN optimisation')
@@ -93,6 +109,10 @@ if __name__ == '__main__':
     Path(sub_dir_cp).mkdir(parents=True, exist_ok=True)
     Path(sub_dir_om).mkdir(parents=True, exist_ok=True)
     Path(sub_dir_vp).mkdir(parents=True, exist_ok=True)
+
+    #HBB: Add plotting of train variables 
+    if args.Findex == 0: #to run only once
+        RunCppPlottingMacro(args.mass_points,args.model,args.sdir)
 
     #Load input_sample class from config file
     input_sample=conf.input_samples
