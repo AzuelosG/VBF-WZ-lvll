@@ -272,7 +272,7 @@ def decorate_class_dict(class_dict):
         class_dict[var_name+'_map'] = sample_mass_dict
 
 
-def dump_to_JSON() :
+def dump_to_JSON():
     output_dict = dict()
     for c in [input_samples, input_samples_qq]:
         class_dict = dict([(k,v) for k,v in c.__dict__.items() if not k.startswith('__')])

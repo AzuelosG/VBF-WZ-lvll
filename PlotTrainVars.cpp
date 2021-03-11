@@ -130,14 +130,14 @@ hist_settings GetHistSettings(std::string varname)
             settings.nbins = 50;
             settings.xmin = 0;
             settings.xmax = 5000;
-            settings.xaxistitle = "Leading jet energy [Gev]";
+            settings.xaxistitle = "Leading jet energy [GeV]";
             settings.yaxistitle = "Normalized to unity";
     }
     else if (varname=="Jet2E"){
             settings.nbins = 50;
             settings.xmin = 0;
             settings.xmax = 5000;
-            settings.xaxistitle = "Subleading jet energy [Gev]";
+            settings.xaxistitle = "Subleading jet energy [GeV]";
             settings.yaxistitle = "Normalized to unity";
     }
     else if (varname=="PtBalanceZ"){
@@ -396,4 +396,6 @@ int main(int argc, char* argv[])
         
     }
     std::cout << "Finished plotting training variables, the results are saved in: VariablePlots/" << dirname << std::endl;
+    
+    return 0;
 }
