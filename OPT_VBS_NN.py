@@ -58,7 +58,7 @@ Optional arguments
 def RunCppPlottingMacro(mpoints, model, dir):
     conf.dump_to_JSON()
     # print("Executing cpp code")
-    cmd1 = "g++ -std=c++17 -Ijson/include -o plotVars PlotTrainVars.cpp `root-config --cflags --glibs`"
+    cmd1 = "make"
     ret1 = subprocess.run(cmd1, shell=True)
     if not ret1.returncode == 0:
         print("WARNING: PlotTrainVars.cpp compilation failed, will continue without making plots!")
