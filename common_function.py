@@ -162,7 +162,7 @@ class dataset:
             corr_figname = './VariablePlots/'+sdir+'/corr-{}'.format(p[1])+'-F{}'.format(Findex)+'o{}.png'.format(nFold)
             # print("Saving correlations plot for {} in set in fold {} as {}".format(p[1], Findex, corr_figname))
             plt.savefig(corr_figname)
-
+            plt.clf()
         #Save mean and std dev separately for both models
         if not(model=='GM' or model=='HVT' or model=='QQ'): raise NameError('Model needs to be either GM, HVT or QQ')
         #np.save('./mean'+model, np.mean(X_train))
