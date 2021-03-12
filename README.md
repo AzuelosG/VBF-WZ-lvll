@@ -7,6 +7,7 @@ Cloning repository and setting up environment:
 
     git clone https://github.com/AzuelosG/VBF-WZ-lvll.git
     cd VBF-WZ-lvll
+    git submodule update --init --recursive
     ln -s /home/zp/azuelos/lvll/MVA/VBF-WZ-lvll_GL/Inputs/
     source setup.sh
 </details>
@@ -14,6 +15,8 @@ Cloning repository and setting up environment:
 From the next time you login each time (you have to be in the main directory): 
 
     source setup.sh
+
+
 
 # General information about the code:
 <details> <summary>Expand/collapse details</summary>
@@ -63,6 +66,36 @@ General explanation of the cross vadlidation can be found in [this link](https:/
 </details>
 
 # How to run training and application processes
+
+## Plotting training variables
+<details> <summary>Expand/collapse the command</summary>
+The main code to prepare plots of the training variables is located in PlotTrainVars.cpp file. 
+So far, plotting is implemented only for the GM and HVT models in the VBF category. 
+The information needed to run the code comes from two sources:
+
+* [config_OPT_NN.py](config_OPT_NN.py) file:
+    * variables used in the training,
+    * samples associated with different mass points,
+* user
+    * theoretical model,
+    * mass points,
+    * directory name (to be created within VariablePlots directory) to hold the pdf and png files.
+
+Code can be run in two ways: when running the training (no need to run anything other 
+than the usual training command) or in the standalone mode, by running:
+``` 
+    python3 config_OPT_NN.py
+    make
+    ./plotVars --mass_points <mass-points-list> --model <model> --dir <dirname>
+```
+Executing [config_OPT_NN.py](config_OPT_NN.py) file is essential if this file has been modified 
+(i.e. if the sample or training variable list has been updated). If a new variable is 
+added to the list of training variables, it is required to add histogram settings in 
+order to adjust the range and binning. This can be done by modifying function GetHistSettings() 
+in [PlotTrainVars.cpp](PlotTrainVars.cpp) file.
+
+</details>
+
 
 ## Running training process
 <details> <summary>Expand/collapse the command</summary>
@@ -154,35 +187,6 @@ then run
 
 * [README_HVT](README_HVT.md)
 * [README_QQ](README_QQ.md)
-
-## Plotting training variables
-<details> <summary>Expand/collapse the command</summary>
-The main code to prepare plots of the training variables is located in 
-[PlotTrainVars.cpp](PlotTrainVars.cpp) file. 
-So far, plotting is implemented only for the GM and HVT models in the VBF category. 
-The information needed to run the code comes from two sources:
-* [config_OPT_NN.py](config_OPT_NN.py) file:
-    * variables used in the training,
-    * samples associated with different mass points,
-* user
-    * theoretical model,
-    * mass points,
-    * directory name (to be created within VariablePlots directory) to hold the pdf and png files.
-
-Code can be run in two ways: when running the training (no need to run anything other 
-than the usual training command) or in the standalone mode, by running:
-``` 
-    python3 config_OPT_NN.py
-    make
-    ./plotVars --mass_points <mass-points-list> --model <model> --dir <dirname>
-```
-Executing [config_OPT_NN.py](config_OPT_NN.py) file is essential if this file has been modified 
-(i.e. if the sample or training variable list has been updated). If a new variable is 
-added to the list of training variables, it is required to add histogram settings in 
-order to adjust the range and binning. This can be done by modifying function GetHistSettings() 
-in [PlotTrainVars.cpp](PlotTrainVars.cpp) file.
-
-</details>
 
 # Useful git-specific commands:
 <details>
