@@ -400,8 +400,10 @@ int main(int argc, char* argv[])
 
         PlotATLASLabel(c, "Internal");
 
-        std::string cname = std::string("./VariablePlots/")+dirname.data()+std::string("/")+vars.at(i).data()+std::string(".pdf");
-        c->SaveAs(cname.data());
+        std::string cnamepdf = std::string("./VariablePlots/")+dirname.data()+std::string("/")+vars.at(i).data()+std::string(".pdf");
+        c->SaveAs(cnamepdf.data());
+        std::string cnamepng = std::string("./VariablePlots/")+dirname.data()+std::string("/")+vars.at(i).data()+std::string(".png");
+        c->SaveAs(cnamepng.data());
         
     }
     std::cout << "Finished plotting training variables, the results are saved in: VariablePlots/" << dirname << std::endl;
