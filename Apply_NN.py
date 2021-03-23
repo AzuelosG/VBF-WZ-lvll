@@ -401,7 +401,7 @@ if __name__ == '__main__':
     if phys_model=="HVT":mass_pionts=mass_points_HVT
 
     #in case the argument is given, take that instead of default values
-    if len(args.mass_points)>0: masspoints=args.mass_points
+    if len(args.mass_points)>0: mass_points=args.mass_points
 
     for bkg_file in list_bkg:
         print(bkg_file)
