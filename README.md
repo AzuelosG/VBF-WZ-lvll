@@ -179,7 +179,7 @@ edit nn_per_mass.C and set:
 
 then run
 
-    python3 nn_per_mass.py "GM_test" "m300"
+    python3 nn_per_mass.py GM_test m300 pSignal_GM 1 GM 1 0  
 
 </details>
 
