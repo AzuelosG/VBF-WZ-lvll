@@ -398,7 +398,7 @@ if __name__ == '__main__':
     mass_points_GM =[200,225,250,275,300,325,350,375,400,425,450,475,500,525,550,600,700,800,900,1000]
     mass_points_HVT=[250,300,350,400,450,500,600,700,800,900,1000]
     mass_points=mass_points_GM
-    if phys_model=="HVT":mass_pionts=mass_points_HVT
+    if phys_model=="HVT":mass_points=mass_points_HVT
 
     #in case the argument is given, take that instead of default values
     if len(args.mass_points)>0: mass_points=args.mass_points
