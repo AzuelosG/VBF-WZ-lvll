@@ -422,7 +422,7 @@ void nn_per_mass(string dir="", string name="",TString varname="pSignal_GM",bool
   if (mMulti==false)
     auto significance = get_significance_hist(hists[stoi(tmass.substr(1,4))], hists_bkg[stoi(tmass.substr(1,4))], 1., true);
   
-  auto firstMassPoint=true;
+  auto firstMassPoint=mMulti;
   for (auto mass : masses) {
 
     if (mass==0) continue;
