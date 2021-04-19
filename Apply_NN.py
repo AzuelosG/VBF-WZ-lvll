@@ -294,11 +294,24 @@ def parse_directory(sdir):
     #print(nFold,len(last_paths))
     #for path in last_paths: print(path)
 
-    # revert back again and put together into a string
+    # revert back again
     last_paths.reverse()
+
+    # re-sort files according to fold-index
+    final_paths=list()
+    for idx in range(nFold):
+        for aPath in last_paths:
+            #print(aPath[aPath.find('_F')+2:aPath.find('_F')+3])
+            if idx==int(aPath[aPath.find('_F')+2:aPath.find('_F')+3]):
+                final_paths.append(aPath)
+                break
+            pass
+        pass
+    
+    #put together into a string
     first_file=True
     models_str=''
-    for path in last_paths:
+    for path in final_paths:
         if first_file:
             models_str +=path[path.rfind('/')+1:]
             first_file=False
