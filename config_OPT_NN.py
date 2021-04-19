@@ -64,11 +64,12 @@ class input_samples_qq:   ## input sample for qq HVT
     variables = ['M_jj','Deta_jj', 'Dphi_jj',
                  'Jet1Pt', 'Jet2Pt',
                  'Jet1Eta','Jet2Eta',
-                 'Jet1E','Jet2E','Jet3Eta',
+                 'Jet1E','Jet2E',#'Jet3Eta',
                  'Lep1Eta','Lep2Eta', 'Lep3Eta', 
                  'PtBalanceZ','PtBalanceW',
                  'Eta_W', 'Eta_Z',
-                 'ZetaLep','Njets']
+                 'ZetaLep'#,'Njets'
+                 ]
 
 ########################################################################################
 class input_samples:   ## default input_samples for vbf vs qq
