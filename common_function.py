@@ -210,7 +210,7 @@ def get_mass_label_random(data,X,prob_files):
 
     return mlabel
 
-def get_mass_label(mWZ,mass_points,debug=False):
+def get_mass_label(mWZ,mass_points,debug=False,use_zeros=True):
 
     #bars = [225,275,325,375,425,475,550,650,750,850,950]
 #    bars = [212.5,237.5,262.5,287.5,
@@ -220,7 +220,7 @@ def get_mass_label(mWZ,mass_points,debug=False):
 #            575,650,750,850,950]
 #    print(bars)
 
-    if len(mass_points)==1: return np.zeros(len(mWZ))
+    if len(mass_points)==1 or use_zeros: return np.zeros(len(mWZ))
 
     bars=list()
     for i in range(len(mass_points)-1): bars.append( (mass_points[i]+mass_points[i+1])/2 )
