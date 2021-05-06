@@ -19,6 +19,28 @@ from common_function import read_data_apply, calc_sig, f1, f1_loss
 import config_OPT_NN as conf
 from pathlib import Path
 
+def check_tree(sample_file,syst_var):
+    
+    rootfile = ROOT.TFile(sample_file)
+    tree     = rootfile.Get(syst_var)
+    flag = bool(tree)
+
+    # print()
+    # print(flag)
+
+    #rootfile.Close()
+    ROOT.gROOT.CloseFiles()
+
+    if not flag:
+        print("WARNING: ",syst_var, "missing! Skipping to process...")
+        if syst_var=='nominal':
+            print("FatalError: nominal is null! Aborting...")
+            exit(1)
+            pass
+        pass
+
+    return flag
+
 def read_phys_model(file_name):
 
     s_model_name='GM'
@@ -153,6 +175,10 @@ def analyze_data_folds(filedir,filename, models, tr_files, label, variables, phy
 
     use_app_randomlabel=False
     if os.path.isfile(('OutputModel/'+sub_dir+'use_bkg_randomlabel')): use_app_randomlabel=True
+
+    #print()
+    #print(use_app_randomlabel)
+    #print()
 
     data, X = read_data_apply(filedir+filename, tr_files, label, variables, prob_files, syst_var,mass_points=mass_points,use_app_randomlabel=use_app_randomlabel)
 
@@ -424,8 +450,11 @@ if __name__ == '__main__':
             #if ('450772' in bkg_file) and (('FT_EFF_Eigen_C' in syst_var) or syst_var=='FT_EFF_Eigen_Light_0__1down'): continue
             #if ('410155' in bkg_file) and syst_var=='MUON_EFF_TTVA_SYS__1up' : continue
             print('Current file and systematic variation= ',bkg_file,"\t",syst_var,end='')
+            if not check_tree(input_dirpath+bkg_file,syst_var): continue
             analyze_data_folds(input_dirpath,bkg_file,models, tr_files,-1,input_sample.variables,phys_model,cut_values,args.sdir,syst_var,mass_points)
         pass
+
+    print("Successful run!!!")
     
 #    print('Applying on sig sample')
 #    for i in range(len(list_sig)):
