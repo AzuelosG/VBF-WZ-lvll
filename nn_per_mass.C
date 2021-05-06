@@ -559,7 +559,8 @@ void nn_per_mass(string dir="", string name="",TString varname="pSignal_GM",bool
     if (j==3) cnfile << "Significance,";
     for (auto mass : masses) {
       if (mass == 0) continue;
-      if (j==0) cnfile << "CB,NN_ocv" << (mMulti==false ? ",NN_tcv" : "");
+      if (j==0) cnfile << " CB" << ",NN_ocv" << (mMulti==false ? ",NN_tcv," : "");
+//	if (j==0) cnfile << "CB,NN_ocv" << (mMulti==false ? ",NN_tcv" : "");
       if (j==1) { cnfile << sig_CB[mass] << "," << sig_NN_ocv[mass];
         if (mMulti==false) cnfile << "," << sig_NN_cv[mass];
         if (mass!=masses[masses.size()-1]) cnfile << ",";
