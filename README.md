@@ -8,7 +8,7 @@ Cloning repository and setting up environment:
     git clone https://github.com/AzuelosG/VBF-WZ-lvll.git
     cd VBF-WZ-lvll
     git submodule update --init --recursive
-    ln -s /home/zp/azuelos/lvll/MVA/VBF-WZ-lvll_GL/Inputs/
+    ln -s /lcg/storage19/atlas/mociduki/lvll_samples/miaoran_20210425_merged Inputs
     source setup.sh
 </details>
 
