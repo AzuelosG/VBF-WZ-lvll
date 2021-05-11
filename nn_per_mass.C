@@ -247,12 +247,12 @@ TH1F* get_significance_hist(TH1F* h_sig, TH1F* h_bkg, float sf=1, bool is_tm=fal
   Nsig_ocv = Nsig[ocv_bin];
   Nbkg_ocv = Nbkg[ocv_bin];
 
-  std::cout<<". Optimal cut for this mass: " << significance->GetBinLowEdge(ocv_bin)<<std::endl;
-
   if (is_tm) tmCV = ocv_bin;
   Nsig_cv = Nsig[tmCV];
   Nbkg_cv = Nbkg[tmCV];
   AMS_cv  = significance->GetBinContent(tmCV);
+
+  std::cout<<". Optimal cut for this mass: " << significance->GetBinLowEdge(ocv_bin)<<", significance= "<<significance->GetBinContent(significance->GetMaximumBin())<<", whereas sig(cv_200)= "<< AMS_cv <<std::endl;
 
   return significance;
 }
@@ -312,6 +312,9 @@ void nn_per_mass(string dir="", string name="",TString varname="pSignal_GM",bool
 
   // Mass points for GM
   vector<int> masses{0, 200,225,250,275, 300,325,350,375, 400,425,450,475, 500,525,550, 600,700,800,900,1000}; // background + masses for which trained NN was applied
+  vector<int> masses_hvt{0, 250,300,400,500, 600,700,800,900,1000}; // background + masses for which trained NN was applied
+  if (phys_model!="GM") masses = masses_hvt;
+
 
   if (phys_model=="QQ") masses={0,600};
   int      hms = masses.size()/2+1;
@@ -503,7 +506,7 @@ void nn_per_mass(string dir="", string name="",TString varname="pSignal_GM",bool
       k++;
     }
     ams_curve->SetMinimum(0);
-    if (mMulti==false && phys_model=="HVT" && (stoi(tmass.substr(1,4))>400)) {c3->SetLogy(); ams_curve->SetMinimum(10E-3);}
+    if (phys_model=="HVT") {ams_curve->SetMinimum(10E-3); c3->SetLogy();}
     ams_curve->SetMaximum(25);
     ams_curve->SetMinimum(-0.8);
     if (phys_model=="QQ") ams_curve->SetMaximum(2);
