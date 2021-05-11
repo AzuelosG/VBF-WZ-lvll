@@ -93,6 +93,7 @@ if __name__ == '__main__':
     parser.add_argument('--nFold', help = "number of folds", default=2, type=int)
     parser.add_argument('--Findex', help = "index in nfolds", default=0, type=int)
     parser.add_argument('--sdir', help = 'Name of subdirectory within Controlplots/', default='', type=str)
+    parser.add_argument('--use_weights', help = 'Use x-sections and other weights for training', default=0, type=int)
     parser.add_argument('--debug', help = 'Debug flag to dump output info', default=False, type=bool)
 
     args = parser.parse_args()
@@ -204,10 +205,18 @@ if __name__ == '__main__':
     if args.use_sig_masslabel:   Path('./OutputModel/'+args.sdir+'/use_sig_masslabel').touch()
     if args.use_bkg_randomlabel: Path('./OutputModel/'+args.sdir+'/use_bkg_randomlabel').touch()
 
+    sample_weight_train = np.ones(num_train)
+    valid_data=(data_set.X_valid.values, data_set.y_valid.values)
+    if args.use_weights: 
+        sample_weight_train = data_set.W_train.values[:,0]
+        valid_data     =(data_set.X_valid.values, data_set.y_valid.values, data_set.W_valid.values[:,0])
+        pass
+
     if not args.no_train:
         # Train Model
-        logs = model.fit(data_set.X_train.values, data_set.y_train.values, epochs=args.epochs,
-                         validation_data=(data_set.X_valid.values, data_set.y_valid.values),batch_size=256, callbacks=callbacks, verbose =args.v, class_weight = 'auto')
+        logs = model.fit(data_set.X_train.values, data_set.y_train.values,sample_weight=sample_weight_train,
+                         validation_data=valid_data,
+                         epochs=args.epochs,batch_size=256, callbacks=callbacks, verbose =args.v, class_weight = 'auto')
         
         # accuracy vs epochs
         plt.plot(logs.history['acc'], label='train')
