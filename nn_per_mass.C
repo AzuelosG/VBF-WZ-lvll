@@ -148,6 +148,9 @@ TH1F* get_bkg_hist(TString phys_model="GM") {
   }
   else{
     chain->Add( ((TString)"OutputRoot/")+sdir+phys_model+"_"+"resonance.364253_Sherpa_222_NNPDF30NNLO_lllv_ntuples.0.root");
+    chain->Add( ((TString)"OutputRoot/")+sdir+phys_model+"_"+"resonance.364739_MGPy8EG_NNPDF30NLO_A14NNPDF23LO_lvlljjEW6_OFMinus_ntuples.root");
+    chain->Add( ((TString)"OutputRoot/")+sdir+phys_model+"_"+"resonance.364740_MGPy8EG_NNPDF30NLO_A14NNPDF23LO_lvlljjEW6_OFPlus_ntuples.root");
+    chain->Add( ((TString)"OutputRoot/")+sdir+phys_model+"_"+"resonance.364741_MGPy8EG_NNPDF30NLO_A14NNPDF23LO_lvlljjEW6_SFMinus_ntuples.root");
     chain->Add( ((TString)"OutputRoot/")+sdir+phys_model+"_"+"resonance.364742_MGPy8EG_NNPDF30NLO_A14NNPDF23LO_lvlljjEW6_SFPlus_ntuples.root");
   }
   TH1F* hist = new TH1F("bkg",title,nbins,xmin,xmax);
@@ -252,14 +255,15 @@ TH1F* get_significance_hist(TH1F* h_sig, TH1F* h_bkg, float sf=1, bool is_tm=fal
   Nbkg_cv = Nbkg[tmCV];
   AMS_cv  = significance->GetBinContent(tmCV);
 
-  std::cout<<". Optimal cut for this mass: " << significance->GetBinLowEdge(ocv_bin)<<", significance= "<<significance->GetBinContent(significance->GetMaximumBin())<<", whereas sig(cv_200)= "<< AMS_cv <<std::endl;
+  std::cout<<". Optimal cut for this mass: " << significance->GetBinLowEdge(ocv_bin)<<", significance= "<<significance->GetBinContent(significance->GetMaximumBin())<<", whereas sig(cv_"<<tmass<<")= "<< AMS_cv <<std::endl;
 
   return significance;
 }
 
 // ======================================================
 
-void nn_per_mass(string dir="", string name="",TString varname="pSignal_GM",bool norm2yield=true, TString phys_model="GM", bool drawCB=true, bool mMulti=true) {
+void nn_per_mass(string dir="", string name="",TString varname="pSignal_GM",bool norm2yield=true, TString phys_model="GM", bool drawCB=true, bool mMulti=true, int refMass4cut=200) {
+  if (phys_model!="GM" and refMass4cut==200) refMass4cut=250;
 
   //if (norm2yield) mfac=20;
   if (!norm2yield) proj_option="norm"; //normalize to 1
@@ -422,10 +426,11 @@ void nn_per_mass(string dir="", string name="",TString varname="pSignal_GM",bool
   map<int, float> sig_CB, sig_NN_ocv, bkg_CB, bkg_NN_ocv, ams_CB, ams_NN_ocv;
   map<int, float> sig_NN_cv, bkg_NN_cv, ams_NN_cv;
 
-  if (mMulti==false)
-    auto significance = get_significance_hist(hists[stoi(tmass.substr(1,4))], hists_bkg[stoi(tmass.substr(1,4))], 1., true);
+  //if single mass training, then use mXXX, else take refMass4Cut
+  if (mMulti==false) refMass4cut = stoi(tmass.substr(1,4));
+  auto significance = get_significance_hist(hists[refMass4cut], hists_bkg[refMass4cut], 1., true);
   
-  auto firstMassPoint=mMulti;
+  //auto firstMassPoint= mMulti;
   for (auto mass : masses) {
 
     if (mass==0) continue;
@@ -439,7 +444,7 @@ void nn_per_mass(string dir="", string name="",TString varname="pSignal_GM",bool
     // Signal, background and significance
     std::cout<<"Calculating significance curve for mass: "<<mass;
 
-    auto significance = get_significance_hist(hists[mass],hists_bkg[mass],1,firstMassPoint);
+    auto significance = get_significance_hist(hists[mass],hists_bkg[mass],1);
     sig_NN_ocv[mass] = Nsig_ocv;
     bkg_NN_ocv[mass] = Nbkg_ocv;
     ams_NN_ocv[mass] = significance->GetBinContent(significance->GetMaximumBin());
@@ -471,7 +476,7 @@ void nn_per_mass(string dir="", string name="",TString varname="pSignal_GM",bool
       ams_CB[mass] = cb_ams;
       significance->SetMaximum(30);
     }
-    firstMassPoint=false;
+    //firstMassPoint=false;
   }
   legend2->Draw();
 
