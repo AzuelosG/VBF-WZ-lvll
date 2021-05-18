@@ -89,6 +89,9 @@ class input_samples:   ## default input_samples for vbf vs qq
                    'resonance.364253_Sherpa_222_NNPDF30NNLO_lllv_ntuples.0.root',   ## WZ QCD
 #                   'resonance.364253_Sherpa_222_NNPDF30NNLO_lllv_ntuples.1.root', #OK to skip this, only contians syst variation not nominal
 #                   'resonance.364253_Sherpa_222_NNPDF30NNLO_lllv_ntuples.2.root', #same as above line
+                   'resonance.364739_MGPy8EG_NNPDF30NLO_A14NNPDF23LO_lvlljjEW6_OFMinus_ntuples.root',
+                   'resonance.364740_MGPy8EG_NNPDF30NLO_A14NNPDF23LO_lvlljjEW6_OFPlus_ntuples.root',
+                   'resonance.364741_MGPy8EG_NNPDF30NLO_A14NNPDF23LO_lvlljjEW6_SFMinus_ntuples.root',
                    'resonance.364742_MGPy8EG_NNPDF30NLO_A14NNPDF23LO_lvlljjEW6_SFPlus_ntuples.root' ## WZ EW
 ]
 # ],
@@ -185,6 +188,9 @@ class apply_samples:
     # parse all files in the directory, except signals
     list_apply_bkg = [
         'resonance.364253_Sherpa_222_NNPDF30NNLO_lllv_ntuples.0.root',
+        'resonance.364739_MGPy8EG_NNPDF30NLO_A14NNPDF23LO_lvlljjEW6_OFMinus_ntuples.root',
+        'resonance.364740_MGPy8EG_NNPDF30NLO_A14NNPDF23LO_lvlljjEW6_OFPlus_ntuples.root',
+        'resonance.364741_MGPy8EG_NNPDF30NLO_A14NNPDF23LO_lvlljjEW6_SFMinus_ntuples.root',
         'resonance.364742_MGPy8EG_NNPDF30NLO_A14NNPDF23LO_lvlljjEW6_SFPlus_ntuples.root'
         ]
 #    list_apply_bkg = [  'resonance.302267_MadGraphPythia8EvtGen_A14NNPDF23LO_HVT_Agv1_VcWZ_lvll_m0600_ntuples.root']   # QQ HVT, 600 GeV
