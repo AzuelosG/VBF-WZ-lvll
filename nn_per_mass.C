@@ -353,7 +353,7 @@ void nn_per_mass(string dir="", string name="",TString varname="pSignal_GM",bool
   
   for (auto mass : masses) {
     
-    select_weight = "(M_jj>100)";
+    select_weight = "(M_jj>100)*(NBjets==0)";
     if (norm2yield) select_weight += "*WeightNormalized*WZInclusive";   
     
     //Separating the curves on 2 figures
@@ -385,7 +385,7 @@ void nn_per_mass(string dir="", string name="",TString varname="pSignal_GM",bool
 
     if (mass != 0) {
       // Cut-based selection histogram
-      select_weight = Form("(M_jj>500)*(Deta_jj>3.5)*(M_WZ>(%i*%f)*(M_WZ<(%i*%f)))",mass,m_lo,mass,m_up);
+      select_weight = Form("(NBjets==0)*(M_jj>500)*(Deta_jj>3.5)*(M_WZ>(%i*%f)*(M_WZ<(%i*%f)))",mass,m_lo,mass,m_up);
       if (norm2yield) select_weight += "*WeightNormalized*WZInclusive";
       hists_bkg_cb[mass] = get_hist(0,phys_model.Data());
       hists_cb[mass] = get_hist(mass,phys_model.Data());
@@ -532,7 +532,7 @@ void nn_per_mass(string dir="", string name="",TString varname="pSignal_GM",bool
     c4->cd(1);
     
     for (auto mass : masses) {
-      select_weight = "(M_jj>100)";
+      select_weight = "(M_jj>100)*(NBjets==0)";
       if (norm2yield) select_weight += "*WeightNormalized*WZInclusive";
       
       //Separating the curves on 2 figures
