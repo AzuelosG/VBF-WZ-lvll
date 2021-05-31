@@ -152,17 +152,17 @@ class input_samples:   ## default input_samples for vbf vs qq
     }
     #Variables used for training
     variables = ['M_jj','Deta_jj', 'Dphi_jj',
-                 'Jet1Pt', 'Jet2Pt',
-                 'Jet1Eta','Jet2Eta',
-                 'Jet1E','Jet2E',
-                 #'Jet3Eta', #added
-                 #'Lep1Pt', 'Lep2Pt','Lep3Pt', ### removed to reduce mass dependence
-                 'Lep1Eta','Lep2Eta', 'Lep3Eta', 
-                 'PtBalanceZ','PtBalanceW',
-                 #'Pt_W', 'Pt_Z',  ### removed to reduce mass dependence
-                 'Eta_W', 'Eta_Z', ### added instead
-                 'ZetaLep'#,'Njets' #,'Met'
-                 ]
+                'Jet1Pt', 'Jet2Pt',
+                'Jet1Eta','Jet2Eta',
+                # 'Jet1E','Jet2E',
+                # 'Jet3Eta', #added
+                # 'Lep1Pt', 'Lep2Pt','Lep3Pt', ### removed to reduce mass dependence
+                'Lep1Eta','Lep2Eta', 'Lep3Eta', 
+                'PtBalanceZ','PtBalanceW',
+                # 'Pt_W', 'Pt_Z',  ### removed to reduce mass dependence
+                'Eta_W', 'Eta_Z', ### added instead
+                'ZetaLep'#,'Njets' #,'Met'
+                ]
 
     #original set
     #variables = ['M_jj','Deta_jj',
