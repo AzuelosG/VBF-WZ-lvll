@@ -158,10 +158,11 @@ class input_samples:   ## default input_samples for vbf vs qq
                 # 'Jet3Eta', #added
                 # 'Lep1Pt', 'Lep2Pt','Lep3Pt', ### removed to reduce mass dependence
                 'Lep1Eta','Lep2Eta', 'Lep3Eta', 
-                'PtBalanceZ','PtBalanceW',
+                #'PtBalanceZ','PtBalanceW',
                 # 'Pt_W', 'Pt_Z',  ### removed to reduce mass dependence
                 'Eta_W', 'Eta_Z', ### added instead
-                'ZetaLep'#,'Njets' #,'Met'
+                'ZetaLep'#,'Njets' 
+                ,'Met'
                 ]
 
     #original set
