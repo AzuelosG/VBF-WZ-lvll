@@ -1,7 +1,7 @@
 import keras
 from keras.utils.np_utils import to_categorical
 import ROOT, pickle
-from root_numpy import root2array, tree2array, array2root
+from root_numpy import root2array, tree2array
 import pandas as pd
 import numpy as np
 import matplotlib as mpl
