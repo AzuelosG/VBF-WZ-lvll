@@ -103,7 +103,7 @@ if __name__ == '__main__':
     print('  FOLD INDEX  : {}/{}'.format(args.Findex,args.nFold))
     print('=====================================================================\n')
 
-    if args.patience==0: args.patience=args.patience
+    if args.patience==0: args.patience=args.epochs
     
     # Checking for or creating subdirectory
     sub_dir_cp = "ControlPlots/"+args.sdir
