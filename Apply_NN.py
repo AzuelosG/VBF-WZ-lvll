@@ -138,9 +138,11 @@ def save_file(data, pred, proba, filename, phys_model, sub_dir, syst_var):
     
     # Checking for or creating subdirectory
     sub_dir_or = "OutputRoot/"+sub_dir
+    if args.appOutdir!='': sub_dir_or+='/'+args.appOutdir
     Path(sub_dir_or).mkdir(parents=True, exist_ok=True)
     #    outputPath=sub_dir_or+'/new_'+phys_model+'_'+filename     #print(outputPath)
     outputPath=sub_dir_or+'/'+phys_model+'_'+filename     #print(outputPath)
+    if args.appSameOutfile: outputPath=sub_dir_or+'/'+filename
     
     save_mode='update'
     if syst_var=='nominal': save_mode='recreate'
@@ -360,6 +362,10 @@ if __name__ == '__main__':
     parser.add_argument("--single_file", help="Single target file", default="", type=str)
     parser.add_argument('--mass_points', help = "mass points to be included in the training", default=list(), type=int,nargs='+')
     # parser.add_argument("--phys_model", help="Specify Model (HVT or GM)", default='GM', type=str)
+
+    # for Miaoran's application
+    parser.add_argument('--appSameOutfile', help = 'Debug flag to dump output info', default=False, type=bool)
+    parser.add_argument('--appOutdir', help = 'Debug flag to dump output info', default='', type=str)
 
     args = parser.parse_args()
     print(args)
