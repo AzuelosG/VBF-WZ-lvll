@@ -187,8 +187,8 @@ if __name__ == '__main__':
     
     #Possible optimizers
     sgd = optimizers.SGD(lr=args.lr, decay=1e-6, momentum=args.momentum, nesterov=True)
-    ada= optimizers.Adadelta(lr=1, rho=0.95, epsilon=None, decay=0.01)
-    nadam=keras.optimizers.Nadam(lr=0.002, beta_1=0.9, beta_2=0.999, epsilon=None, schedule_decay=0.004)
+    ada= optimizers.Adadelta(lr=args.lr, rho=0.95, epsilon=None, decay=0.01) #was lr=1
+    nadam=keras.optimizers.Nadam(lr=args.lr, beta_1=0.9, beta_2=0.999, epsilon=None, schedule_decay=0.004) #was lr=0.002
 
     model.compile(loss='binary_crossentropy'#f1_loss
                   , optimizer=sgd, metrics=['accuracy'])#,f1])
