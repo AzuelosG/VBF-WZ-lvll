@@ -138,7 +138,7 @@ def save_file(data, pred, proba, filename, phys_model, sub_dir, syst_var):
     
     # Checking for or creating subdirectory
     sub_dir_or = "OutputRoot/"+sub_dir
-    if args.appOutdir!='': sub_dir_or+='/'+args.appOutdir
+    if args.appOutdir!='': sub_dir_or=args.appOutdir #    if args.appOutdir!='': sub_dir_or+='/'+args.appOutdir
     Path(sub_dir_or).mkdir(parents=True, exist_ok=True)
     #    outputPath=sub_dir_or+'/new_'+phys_model+'_'+filename     #print(outputPath)
     outputPath=sub_dir_or+'/'+phys_model+'_'+filename     #print(outputPath)
